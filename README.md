@@ -17,11 +17,13 @@ The versioned artifact of this repo is **`openapi/openapi.yaml`** — an **UNOFF
 │       ├── schemas/             # one file per components.schemas entry
 │       └── security-schemes/    # one file per components.securitySchemes entry
 ├── redocly.yaml            # Redocly CLI config (lint rules, code-sample languages)
+├── redoc-template.hbs      # HTML template for docs:build (SEO meta tags, GA)
+├── static/robots.txt        # Copied into generated/docs/ by docs:build
 ├── package.json            # npm scripts: lint, docs:build (HTML reference), generate:client (Orval)
 ├── orval.config.ts         # Orval config — generates generated/node/ from the bundled spec
 ├── generated/               # build output — git-IGNORED entirely, regenerate on demand
 │   ├── node/                  # Orval-generated TS/fetch client (`npm run generate:client`)
-│   └── docs/                  # Redocly-built static HTML API reference (`npm run docs:build`)
+│   └── docs/                  # Redocly-built static HTML API reference (`npm run docs:build`), published to GitHub Pages
 ├── mise.toml               # Toolchain (python 3.12, jq, yq, node 22) + tasks
 ├── requirements.txt        # Python deps (pypdf, openpyxl, requests, python-dotenv) — ad hoc scripts only
 ├── .env.example             # Template for SECRETS (no values) — versioned
@@ -75,6 +77,14 @@ npx tsx tests/generated_node/smoke.ts   # smoke-tests the generated client
 ```
 
 There's no generated Python client — the only generated client is the Node/TS one via Orval (`generated/node/`), which exports one plain `fetch`-based function per operation plus a `getXxxUrl()` helper. It has no built-in base URL: prepend the right host (`.env.hml`/`.env.prd`) yourself, and note that Chargeback's operations need an extra `/chargeback` path segment on top of the host (see that operation's `servers:` override under `openapi/paths/`).
+
+## GitHub Pages
+
+The HTML API reference is published at **https://lmarqs.github.io/safrapay/**.
+
+`.github/workflows/docs.yml` builds it on every push to `main` that touches `openapi/**`, `package.json`, or `package-lock.json` (or via manual `workflow_dispatch`): it runs `npm run docs:build` — which also copies `static/robots.txt` in — then deploys `generated/docs/` with `actions/upload-pages-artifact` + `actions/deploy-pages`. The Pages source is configured as "GitHub Actions" in the repo settings, not the `/docs` branch folder.
+
+`redoc-template.hbs` customizes the generated page's `<head>` (title, meta description, canonical URL, Open Graph/Twitter tags, Google Analytics) on top of Redocly's default template.
 
 ## 🔒 Sensitive data
 

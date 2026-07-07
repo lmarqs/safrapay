@@ -2,9 +2,10 @@
   "name": "safrapay",
   "version": "0.0.0",
   "private": true,
+  "license": "UNLICENSED",
   "scripts": {
     "spec:bundle": "redocly bundle openapi/openapi.yaml -o generated/openapi.bundled.yaml",
-    "docs:build": "redocly build-docs openapi/openapi.yaml --output generated/docs/index.html",
+    "docs:build": "redocly build-docs openapi/openapi.yaml --output generated/docs/index.html --title \"SafraPay API — Documentação não oficial\" --template redoc-template.hbs --templateOptions.metaDescription \"Referência não oficial da API SafraPay: Gateway de Pagamentos, Cobrança, PIX, Boletos, Cartão Protegido, Recorrência, Chargeback e Webhook.\" --templateOptions.canonicalUrl \"https://lmarqs.github.io/safrapay/\" && cp static/robots.txt generated/docs/robots.txt",
     "docs:preview": "redocly preview --product redoc",
     "lint": "redocly lint",
     "generate:client": "npm run spec:bundle && orval --config orval.config.ts"

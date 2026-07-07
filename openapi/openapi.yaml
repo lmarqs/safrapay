@@ -8,12 +8,6 @@ info:
     Cobre Gateway de Pagamentos, Cobrança, Link de Pagamentos, Checkout, Boletos, Taxas, Cartão Protegido, Recorrência, Chargeback, Webhook e o Agente TEF local.
 
     **Autenticação:** chame `POST /v2/merchant/auth` enviando o *MerchantToken* no header `Authorization`; use o `accessToken` (JWT, ~30 min) retornado como `Authorization: Bearer <accessToken>` nas demais chamadas. Renove via `POST /v2/refreshtoken`.
-  contact:
-    name: Integração e-commerce SafraPay
-    email: integracao.ecommerce@safra.com.br
-  license:
-    name: Proprietary — SafraPay
-    url: https://developers.safrapay.com.br
 externalDocs:
   description: Portal do desenvolvedor SafraPay
   url: https://developers.safrapay.com.br

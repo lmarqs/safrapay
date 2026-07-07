@@ -1,0 +1,15 @@
+description: |-
+  Enumerador `EntityType`. Aceita o valor inteiro ou a string equivalente.
+
+  * `1` — **IndividualMerchant**: Pessoa Física
+  * `2` — **Company**: Pessoa Jurídica
+oneOf:
+- type: integer
+  format: int32
+  enum:
+  - 1
+  - 2
+- type: string
+  enum:
+  - IndividualMerchant
+  - Company

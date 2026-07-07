@@ -1,0 +1,535 @@
+get:
+  tags:
+  - Link de Pagamentos
+  summary: GET /smartcheckout
+  operationId: get_v2_smartcheckout
+  parameters:
+  - name: MerchantId
+    in: header
+    required: true
+    schema:
+      type: string
+    description: Número de identificação da loja.
+  - name: startDate
+    in: query
+    required: false
+    schema:
+      type: string
+    description: A data inicial da consulta
+  - name: endDate
+    in: query
+    required: false
+    schema:
+      type: string
+    description: A data final da consulta
+  - name: type
+    in: query
+    required: true
+    schema:
+      type: integer
+      format: int32
+    description: O tipo de smartCheckout
+  - name: status
+    in: query
+    required: false
+    schema:
+      type: integer
+      format: int32
+    description: O status de smartCheckout
+  - name: pageSize
+    in: query
+    required: true
+    schema:
+      type: integer
+      format: int32
+    description: Quantidade de items por pagina de consulta
+  - name: currentPage
+    in: query
+    required: true
+    schema:
+      type: integer
+      format: int32
+    description: O número da página atual da consulta
+  responses:
+    '200':
+      description: Sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              smartcheckouts:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      description: O número de identificação do smartCheckout
+                    amount:
+                      type: integer
+                      format: int32
+                      description: A valor do smartCheckout
+                    creationDate:
+                      type: string
+                      description: Data de criação do smartCheckout
+                    expiration:
+                      type: string
+                      description: Data de expiração do smartCheckout
+                    status:
+                      type: integer
+                      format: int32
+                      description: O status de smartCheckout
+                    statusDescription:
+                      type: string
+                      description: Descrição do status.
+              total:
+                type: integer
+                format: int32
+                description: Quantidade total de smartCheckouts encontrados.
+              success:
+                type: boolean
+                description: Se o endpoint processou a requisição com sucesso.
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    errorCode:
+                      type: integer
+                      format: int32
+                      description: Código do erro.
+                    message:
+                      type: string
+                      description: Mensagem para identificar qual foi o erro retornado.
+                description: 'Se success: false , esse array contem a descrição dos erros retornados.'
+              traceKey:
+                type: string
+                description: Identificador da operação.
+          example:
+            smartcheckouts:
+            - id: 5c700232-c987-4a3a-bb99-c8286c20324b
+              amount: 999
+              creationDate: '2021-06-01 15:00:44Z'
+              expiration: '2021-06-02 15:00:44Z'
+              status: 101
+              statusDescription: Expirado pelo limite de tempo
+            total: 1
+            success: true
+            errors: []
+            traceKey: 300f7c93-2cc5-7893-ad52-1b9151b345e2
+    '400':
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '401':
+      description: Não autenticado / token inválido
+  security:
+  - bearerAuth: []
+post:
+  tags:
+  - Checkout
+  summary: POST /smartcheckout Chechout
+  operationId: post_v2_smartcheckout
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            amount:
+              type: integer
+              format: int32
+              description: Valor a ser cobrado. Obrigatório se o checkout / link de pagamento não possui produto(s).
+            orderCode:
+              type: string
+              description: Código ou descrição enviado pelo lojista pra identificar o link de pagamento/checkout.
+            description:
+              type: string
+              description: Descrição do checkout / link de pagamento.
+            planId:
+              type: string
+              description: Se o link de pagamento é para fins de assinatura.
+            remoteIp:
+              type: string
+              description: '[OBRIGATÓRIO quando antifraude ativo] O endereço IP do comprador. Este dado é fundamental para análises de risco mais precisas. Suporta IPv4 (exemplo: 192.168.1.100 ). Consulte documentação completa .'
+            customer:
+              type: object
+              description: Dados do comprador.
+              properties:
+                id:
+                  type: string
+                  description: ID do comprador.
+                name:
+                  type: string
+                  description: Nome completo do comprador.
+                email:
+                  type: string
+                  description: E-mail do comprador.
+                entityType:
+                  $ref: ../components/schemas/EntityType.yaml
+                  description: Se é pessoa física ou jurídica
+                documentType:
+                  $ref: ../components/schemas/DocumentType.yaml
+                  description: Tipo do documento do comprador
+                document:
+                  type: string
+                  description: Documento do comprador.
+                birthday:
+                  type: string
+                  format: date
+                  description: Data de nascimento do comprador.
+                gender:
+                  $ref: ../components/schemas/Gender.yaml
+                  description: Gênero do comprador.
+                phone:
+                  type: object
+                  description: Telefone do comprador.
+                  properties:
+                    countryCode:
+                      type: string
+                      description: Código do país.
+                    areaCode:
+                      type: string
+                      description: Código de área.
+                    number:
+                      type: string
+                      description: Número do Telefone.
+                    type:
+                      $ref: ../components/schemas/Phone.yaml
+                      description: Tipo do telefone.
+                  required:
+                  - countryCode
+                  - areaCode
+                  - number
+                  - type
+                address:
+                  type: object
+                  description: Endereço do comprador.
+                  properties:
+                    street:
+                      type: string
+                      description: Rua.
+                    number:
+                      type: string
+                      description: Número.
+                    neighborhood:
+                      type: string
+                      description: Bairro.
+                    city:
+                      type: string
+                      description: Cidade.
+                    state:
+                      type: string
+                      description: Estado.
+                    country:
+                      type: string
+                      description: País.
+                    zipCode:
+                      type: string
+                      description: CEP.
+                    complement:
+                      type: string
+                      description: Complemento.
+                  required:
+                  - street
+                  - number
+                  - neighborhood
+                  - city
+                  - state
+                  - country
+                  - zipCode
+                  - complement
+                bankAccounts:
+                  type: object
+                  description: Contas do comprador.
+                  properties:
+                    bankCode:
+                      type: string
+                      description: Código do banco.
+                    bankName:
+                      type: string
+                      description: Nome do banco.
+                    branch:
+                      type: string
+                      description: Filial.
+                    branchCheckDigit:
+                      type: string
+                      description: Dígito de verificação da filial.
+                    account:
+                      type: string
+                      description: Conta bancária.
+                    accountCheckDigit:
+                      type: string
+                      description: Dígito de verificação da conta bancária.
+                    type:
+                      type: integer
+                      format: int32
+                      description: Tipo de conta.
+                    isActive:
+                      type: boolean
+                      description: Se a conta está ativa ou não.
+                  required:
+                  - bankCode
+                  - bankName
+                  - branch
+                  - branchCheckDigit
+                  - account
+                  - accountCheckDigit
+                  - type
+                  - isActive
+                isActive:
+                  type: boolean
+                  description: Se o comprador está ativo ou não.
+              required:
+              - name
+              - email
+              - entityType
+              - documentType
+              - document
+              - phone
+              - address
+            products:
+              type: array
+              items:
+                type: string
+              description: ID dos produtos vendidos no checkout / link de pagamentos.
+            emailNotification:
+              type: string
+              description: E-mail do comprador. Se preenchido, será enviado link para pagamento por e-mail.
+            phoneNotification:
+              type: string
+              description: Telefone do comprador. Se preenchido, será enviado link para pagamento por SMS.
+            paymentSupportedTypes:
+              type: array
+              items:
+                type: integer
+                format: int32
+              description: Meios de pagamento permitidos no checkout. Cada item do array é um valor inteiro do enum PaymentType (ver guia de acesso ). O comprador só poderá pagar por um dos tipos informados.
+            discount:
+              type: integer
+              format: int32
+              description: Desconto no pagamento em centavos.
+            shippingAmount:
+              type: integer
+              format: int32
+              description: Valor do frete em centavos.
+            hostUrl:
+              type: string
+              description: URL de origem. Utilizado para customizar a logo no e-mail com link para pagamento.
+            shippingAddress:
+              type: object
+              x-original-type: Address
+              description: Endereço de entrega dos produtos.
+              properties:
+                street:
+                  type: string
+                  description: Rua.
+                number:
+                  type: string
+                  description: Número.
+                neighborhood:
+                  type: string
+                  description: Bairro.
+                city:
+                  type: string
+                  description: Cidade.
+                state:
+                  type: string
+                  description: Estado.
+                country:
+                  type: string
+                  description: País.
+                zipCode:
+                  type: string
+                  description: CEP.
+                complement:
+                  type: string
+                  description: Complemento.
+              required:
+              - street
+              - number
+              - neighborhood
+              - city
+              - state
+              - country
+              - zipCode
+              - complement
+            newProducts:
+              type: object
+              x-original-type: NewProducts
+              description: 'Produtos a serem cadastrados e vendidos no checkout / link de pagamentos. Importante: Os produtos nesse objeto também podem já ter sido cadastrados, porém seus IDs são desconhecidos. Nesse caso, a estrutura do produto deve ser reenviada utilizando o SKU original .'
+              properties:
+                merchantId:
+                  type: string
+                  description: ID da loja dona dos produtos cadastrados.
+                products:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        description: Nome do produto, campo livre.
+                      description:
+                        type: string
+                        description: Descrição do produto, campo livre.
+                      imagesRef:
+                        type: array
+                        items:
+                          type: string
+                        description: URLs de Imagens relacionados ao produto, string deve ser URL válida.
+                      amount:
+                        type: string
+                        description: Valor do produto em centavos.
+                      sku:
+                        type: string
+                        description: Identificador único do produto na loja. Não é permitido valor duplicado.
+                      isActive:
+                        type: boolean
+                        description: Se o produto está disponível na loja. Default false .
+                    required:
+                    - name
+                    - amount
+                    - sku
+                  description: Informação dos produtos cadastrados.
+                userId:
+                  type: string
+                  description: O usuário que está inserindo o produto no banco de dados.
+              required:
+              - merchantId
+              - products
+            expiration:
+              type: string
+              format: date
+              description: Data de expiração do checkout / link de pagamento. Valor default próximo dia (+ 24 horas).
+            maxInstallmentNumber:
+              type: integer
+              format: int32
+              description: Número máximo de parcelas suportadas pelo checkout / link de pagamentos. Valor default 12.
+            minInstallmentAmount:
+              type: integer
+              format: int32
+              description: Valor mínimo por parcela. Valor default ilimitado.
+            limitApprovedCharges:
+              type: integer
+              format: int32
+              description: Número limite de transações aprovadas para o checkout / link de pagamentos. Valor default ilimitado.
+            primaryColor:
+              type: string
+              description: RGB da cor primária da loja. Utilizado para customizar o tema do e-mail com o link para pagamento.
+            secondaryColor:
+              type: string
+              description: RGB da cor secundária da loja. Utilizado para customizar o tema do e-mail com o link para pagamento.
+            installmentNumber:
+              type: integer
+              format: int32
+              description: Número exato de parcelas suportado pelo checkout / link de pagamentos. Se esse valor for recebido, maxInstallmentNumber é ignorado. Se não for enviado, será considerado apenas o maxInstallmentNumber .
+            limitDeniedCharges:
+              type: integer
+              format: int32
+              description: Número limite de transações negadas para o checkout / link de pagamentos. Valor default ilimitado.
+            customTemplate:
+              type: string
+              description: Identificador do layout a ser exibido na URL do checkout / link de pagamentos. Se não for enviado, será usado o template default.
+            documentSupportedTypes:
+              type: array
+              items:
+                type: integer
+                format: int32
+              description: Os tipos de documentos que o link de pagamento suporta.
+            supportMultipleTransactions:
+              type: boolean
+              description: Indica se o link de pagamento suporta múltiplos cartões para um pagamento. Valor padrão sempre será "false".
+          required:
+          - customer
+        example:
+          planId: 932168be-46b8-45d3-80f1-45cdd0cd7d6a
+          customer:
+            name: Jorge Felipe
+            email: jorginho.felps@email.com.br
+            document: '01234567891'
+            phone:
+              countryCode: '+55'
+              areaCode: '21'
+              number: '999999999'
+              type: 5
+  responses:
+    '200':
+      description: Sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: string
+                description: ID do checkout / link de pagamento criado.
+              smartCheckoutUrl:
+                type: string
+                description: URI que deverá ser utilizada em conjunto com uma URL base para acessar a tela de pagamentos.
+              products:
+                type: array
+                items:
+                  type: object
+                  x-original-type: Product
+                  properties:
+                    name:
+                      type: string
+                      description: Sim
+                    description:
+                      type: string
+                      description: Não
+                    imagesRef:
+                      type: array
+                      items:
+                        type: string
+                      description: Não
+                    amount:
+                      type: string
+                      description: Sim
+                    sku:
+                      type: string
+                      description: Sim
+                    isActive:
+                      type: boolean
+                      description: Não
+                description: Lista de produtos criados, se houve algum novo produto na criação do checkout / link de pagamento.
+              success:
+                type: boolean
+                description: Se o endpoint processou a requisição com sucesso.
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    errorCode:
+                      type: integer
+                      format: int32
+                      description: Não
+                    message:
+                      type: string
+                      description: Não
+                description: 'Se success: false , esse array contem a descrição dos erros retornados.'
+              traceKey:
+                type: string
+                description: Identificador da operação.
+          example:
+            id: 50025917-afac-4d16-9b5f-982840064591
+            smartCheckoutUrl: /v2/checkout/50025917-afac-4d16-9b5f-982840064591?signinToken=eyJhbHciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MjQwMzIwOTQsImlzcyI6IkFkaXR1bSIsImF1ZCI6IndhbGxldCJ9.QzuLYDtGOcjwH6-jc7UFEHo_iTWqYVM9yvQfHirfNmw
+            success: true
+            errors: []
+            traceKey: 17139692-d012-441d-bb34-fa4007383ba2
+    '400':
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '401':
+      description: Não autenticado / token inválido
+  security:
+  - bearerAuth: []

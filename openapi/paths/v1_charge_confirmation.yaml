@@ -1,0 +1,56 @@
+get:
+  tags:
+  - TEF (Agente local)
+  summary: GET Confirm
+  operationId: get_v1_charge_confirmation
+  description: 'Realiza confirmação de pagamento aprovado anteriormente. Deve ser utilizada após a aplicação integradora concluir seus processos internos de tratamento do resultado da transação (ex.: emissão de nota-fiscal, liberação de produto). Se não confirmada, a transação fica pendente, podendo ainda ser confirmada ou desfeita. Ao fim do dia, todas as transações pendentes são automaticamente confirmadas.'
+  parameters:
+  - name: nsu
+    in: query
+    required: true
+    schema:
+      type: string
+    description: Número Sequencial Único (NSU) da transação a ser confirmada.
+  responses:
+    '200':
+      description: Sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              confirmed:
+                type: boolean
+                description: Define se a transação foi confirmada ou não.
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    errorCode:
+                      type: string
+                      description: Código de erro.
+                    message:
+                      type: string
+                      description: Mensagem de erro.
+                description: Contém a lista de erros, se algum ocorreu.
+              success:
+                type: boolean
+                description: Define se a operação foi executada com sucesso.
+          example:
+            confirmed: true
+            errors: []
+            success: true
+    '400':
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '401':
+      description: Não autenticado / token inválido
+  security:
+  - partnerToken: []
+  servers:
+  - url: http://localhost:4090
+    description: Agente TEF local (GerenciadorPadrãoTEF / INTPOS)

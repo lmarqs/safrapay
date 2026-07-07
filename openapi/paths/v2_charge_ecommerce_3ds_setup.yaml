@@ -1,0 +1,214 @@
+post:
+  tags:
+  - Pagamentos
+  summary: POST /v2/charge/ecommerce/3ds/setup
+  operationId: post_v2_charge_ecommerce_3ds_setup
+  description: 'Endpoint compartilhado. Variações documentadas: 3DS, 1. Transação comum com 3DS.'
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            customerId:
+              type: string
+              description: ID exclusivo de cliente.
+            source:
+              type: integer
+              format: int32
+              description: Origem da requisição.
+            transactions:
+              type: array
+              items:
+                type: object
+                properties:
+                  card:
+                    type: object
+                    properties:
+                      billingAddress:
+                        type: object
+                        properties:
+                          city:
+                            type: string
+                            description: Cidade.
+                          complement:
+                            type: string
+                            description: Complemento.
+                          country:
+                            type: string
+                            description: País.
+                          neighborhood:
+                            type: string
+                            description: Bairro.
+                          number:
+                            type: string
+                            description: Número.
+                          state:
+                            type: string
+                            description: Estado.
+                          street:
+                            type: string
+                            description: Rua.
+                          zipCode:
+                            type: string
+                            description: CEP.
+                        description: Informações do endereço conectado ao cartão de crédito ou débito. As empresas usam o endereço de cobrança para verificar o uso autorizado de tal cartão. É também para onde as empresas enviam contas em papel e extratos bancários.
+                      brand:
+                        $ref: ../components/schemas/CardBrand.yaml
+                        description: A bandeira do cartão à qual o imposto se aplica. .
+                      cardHolderDocument:
+                        type: string
+                        description: Número do documento do títular, CNPJ ou CPF.
+                      cardHolderName:
+                        type: string
+                        description: Nome do títular do cartão.
+                      cardId:
+                        type: string
+                        description: ID do cartão tokenizado (payload mínimo).
+                      cardholderDocument:
+                        type: string
+                        description: Documento do portador (payload completo).
+                      cardholderName:
+                        type: string
+                        description: Nome do portador (payload completo).
+                      cvv:
+                        type: string
+                        description: Card Verification Value (CVV), recurso de segurança para transações de cartão de pagamento com "ausência de cartão" instituídas para reduzir a incidência de fraude.
+                      expirationMonth:
+                        type: integer
+                        format: int32
+                        description: O Mês de expiração do cartão com 2 dígitos.
+                      expirationYear:
+                        type: integer
+                        format: int32
+                        description: O Ano de expiração do cartão com 4 dígitos.
+                      number:
+                        type: string
+                        description: Primary Account Number (PAN), o número impresso na frente do cartão.
+                    required:
+                    - billingAddress
+                    - expirationMonth
+                    - expirationYear
+                    - number
+                    description: Cartão a ser criado no sistema.
+                  paymentType:
+                    type: integer
+                    format: int32
+                    description: Tipo de pagamento.
+                required:
+                - card
+                - paymentType
+          required:
+          - customerId
+          - source
+          - transactions
+        examples:
+          3DS:
+            summary: 3DS
+            value:
+              CustomerId: d4273875-e7b0-428d-ba5a-45ebf1844693
+              transactions:
+              - card:
+                  expirationMonth: 3
+                  expirationYear: 2030
+                  brand: 2
+                  number: '5200000000001005'
+                  cardholderName: FERNANDO SILVA
+                  cardholderDocument: '95353507495'
+                  cvv: '321'
+                  billingAddress:
+                    street: Rua Ibiapava
+                    number: '144'
+                    neighborhood: Vila Apiai
+                    city: Santo André
+                    state: SP
+                    country: Brasil
+                    zipCode: '09185360'
+                    complement: ap 1702
+                paymentType: 2
+              source: 1
+          1_Transa_o_comum_com_3DS:
+            summary: 1. Transação comum com 3DS (payload mínimo)
+            value:
+              customerId: fd43eb2d-0034-4274-882e-afd27ff65192
+              transactions:
+              - card:
+                  cardId: ed8dc20b-4674-4eaa-89a5-7ba4dbe3d8b5
+                paymentType: 2
+              source: 1
+  responses:
+    '200':
+      description: Sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              chargeId:
+                type: string
+                description: ID da cobrança gerada.
+              transactions:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    accessToken:
+                      type: string
+                      description: Token de acesso gerado.
+                    deviceDataCollectionUrl:
+                      type: string
+                      description: URL com os dados coletados do dispositivo de origem.
+                    cardholderAuthenticationReferenceId:
+                      type: string
+                      description: ID de referência da autenticação do portador do cartão.
+                    cardholderAuthenticationId:
+                      type: string
+                      description: ID da autenticação do portador do cartão.
+                    pan:
+                      type: string
+                      description: Primary Account Number (PAN), o número impresso na frente do cartão.
+                description: Informações da transação.
+              success:
+                type: boolean
+                description: Se o endpoint processou a requisição com sucesso.
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    errorCode:
+                      type: integer
+                      format: int32
+                      description: Código do erro.
+                    message:
+                      type: string
+                      description: Mensagem para identificar qual foi o erro retornado.
+                description: 'Se success: false , esse array contem a descrição dos erros retornados.'
+              traceKey:
+                type: string
+                description: Identificador da operação.
+          examples:
+            3DS:
+              summary: 3DS
+              value:
+                chargeId: 8cf35e58-f895-4a7a-8937-66a707f092a8
+                transactions:
+                - accessToken: eyJhbGciOiJIUzI1NiIs...
+                  deviceDataCollectionUrl: https://centinelapistag.cardinalcommerce.com/...
+                  cardholderAuthenticationReferenceId: d82e58c1-20fc-4b57-894e-73f8fda737ca
+                  cardholderAuthenticationId: '7731709875686966104807'
+                  pan: 400000******1000
+                success: true
+                errors: []
+                traceKey: 3a2f884b-a5ad-42a6-b6c0-ff4daf282971
+    '400':
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '401':
+      description: Não autenticado / token inválido
+  security:
+  - bearerAuth: []

@@ -1,0 +1,133 @@
+get:
+  tags:
+  - Webhook
+  summary: GET /webhook
+  operationId: get_v1_webhook
+  description: O endpoint responsável por obter notificações webhook.
+  parameters:
+  - name: MerchantId
+    in: header
+    required: true
+    schema:
+      type: string
+    description: O número de identificação do comerciante.
+  - name: pageSize
+    in: query
+    required: true
+    schema:
+      type: integer
+      format: int32
+    description: Quantidade de webhooks por página.
+  - name: currentPage
+    in: query
+    required: true
+    schema:
+      type: integer
+      format: int32
+    description: Página atual da consulta.
+  responses:
+    '200':
+      description: Sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              webhooks:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    eventType:
+                      type: string
+                      description: Representa o tipo de evento.
+                    webhookId:
+                      type: string
+                      description: O ID único do Webhook.
+                    status:
+                      $ref: ../components/schemas/WebhookStatus.yaml
+                    targetUrl:
+                      type: string
+                      description: URL onde a solicitação foi feita.
+                    creationDate:
+                      type: string
+                      description: Data de criação do Webhook.
+                    email:
+                      type: string
+                      description: Email para contato.
+                    lastTimeUsed:
+                      type: string
+                      description: Data/hora do último disparo deste webhook.
+                    lastResponseHttpStatus:
+                      type: integer
+                      format: int32
+                      description: Código de status HTTP retornado pelo último disparo deste webhook.
+                    customHeaders:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          param:
+                            type: string
+                            description: Nome do cabeçalho definido no cabeçalho da solicitação.
+                          value:
+                            type: string
+                            description: Valor do cabeçalho definido no parâmetro da solicitação.
+                      description: Lista de objetos contendo parâmetros e valores que foram enviados nos cabeçalhos do Webhook.
+                description: Representa um evento de interesse.
+              total:
+                type: integer
+                format: int32
+                description: Indica quantos Webhooks foram encontrados na consulta.
+              success:
+                type: boolean
+                description: Se o endpoint processou a requisição com sucesso.
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    errorCode:
+                      type: integer
+                      format: int32
+                      description: Código do erro.
+                    message:
+                      type: string
+                      description: Mensagem para identificar qual foi o erro retornado.
+                description: 'Se success: false , esse array contem a descrição dos erros retornados.'
+              traceKey:
+                type: string
+                description: Identificador da operação.
+          example:
+            webhooks:
+            - eventType: ChargeCreated
+              webhookId: 7e768876-042c-4c47-a712-37f56aa7ead7
+              status: Active
+              targetUrl: https://typedwebhook.tools/webhook/1ffe334f-d284-4f48-bee7-4598c1cda210
+              creationDate: '2021-06-23 20:39:01Z'
+              email: ggabriellyalinemartins@webin.com.br
+            - eventType: ChargeUpdated
+              webhookId: 807a0ac2-832c-44f1-bb67-f706c43528e8
+              status: Active
+              targetUrl: https://typedwebhook.tools/webhook/1ffe334f-d284-4f48-bee7-4598c1cda210
+              creationDate: '2021-06-23 20:39:01Z'
+              email: ggabriellyalinemartins@webin.com.br
+            total: 2
+            success: true
+            errors: []
+            traceKey: 22f9281e-d12e-4e22-977b-bcf5451679a1
+    '400':
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '401':
+      description: Não autenticado / token inválido
+  security:
+  - bearerAuth: []
+  servers:
+  - url: https://webhook.safrapay.com.br
+    description: Produção
+  - url: https://webhook-hml.safrapay.com.br
+    description: Homologação (sandbox)

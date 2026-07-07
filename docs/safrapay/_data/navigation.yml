@@ -1,0 +1,56 @@
+# Sidebar navigation for the SafraPay API docs.
+# Order mirrors the original developer-portal sidebar, regrouped into
+# Guides / API Reference / Reference. Each `url` matches a page permalink.
+# Consumed by _includes/nav.html (rendered through the layout, so Liquid
+# always runs here even though page bodies have render_with_liquid: false).
+
+- section: Guias
+  items:
+    - title: Primeiros Passos
+      url: /guias/primeiros-passos/
+    - title: Antifraude
+      url: /guias/antifraude/
+    - title: Chargeback
+      url: /guias/chargeback/
+    - title: Integrações com Plataformas
+      url: /guias/integracoes/
+    - title: Smart POS
+      url: /guias/smart-pos/
+    - title: Monitor de API (Tracer)
+      url: /guias/monitor-de-api/
+    - title: Monitor de Webhooks
+      url: /guias/monitor-de-webhooks/
+
+- section: Referência da API
+  items:
+    - title: Autenticação
+      url: /api/autenticacao/
+    - title: Pagamentos (Gateway)
+      url: /api/gateway/
+    - title: Link de Pagamentos
+      url: /api/link-de-pagamento/
+    - title: Checkout
+      url: /api/checkout/
+    - title: Boletos
+      url: /api/boletos/
+    - title: Taxas
+      url: /api/taxas/
+    - title: Cobrança
+      url: /api/cobranca/
+    - title: Cartão Protegido
+      url: /api/cartao-protegido/
+    - title: Recorrência e Planos
+      url: /api/recorrencia/
+    - title: Webhooks
+      url: /api/webhooks/
+    - title: TEF
+      url: /api/tef/
+
+- section: Referência
+  items:
+    - title: Endpoints
+      url: /referencia/endpoints/
+    - title: Enumeradores
+      url: /referencia/enumeradores/
+    - title: Variáveis
+      url: /referencia/variaveis/

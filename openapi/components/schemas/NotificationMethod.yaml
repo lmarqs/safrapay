@@ -1,0 +1,12 @@
+description: |-
+  Enumerador `NotificationMethod`. Aceita o valor inteiro ou a string equivalente.
+
+  * `1` — **Email**: As notificações são enviadas por e-mail.
+oneOf:
+- type: integer
+  format: int32
+  enum:
+  - 1
+- type: string
+  enum:
+  - Email

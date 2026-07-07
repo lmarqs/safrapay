@@ -1,0 +1,15 @@
+description: |-
+  Enumerador `SortDirection`. Aceita o valor inteiro ou a string equivalente.
+
+  * `1` — **Ascending**: Usado para classificação crescente.
+  * `2` — **Descending**: Usado para classificação decrescente.
+oneOf:
+- type: integer
+  format: int32
+  enum:
+  - 1
+  - 2
+- type: string
+  enum:
+  - Ascending
+  - Descending

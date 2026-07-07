@@ -1,0 +1,62 @@
+post:
+  tags:
+  - Chargeback
+  summary: Acatar Débito da Disputa
+  operationId: post_v1_disputes_disputeId_debts_accept
+  description: |-
+    Descrição: Aceita o débito de uma disputa especificada.
+
+    Nota: a tabela de códigos de status do doc-fonte indica 204 (No Content),
+    mas o próprio doc mostra um exemplo de corpo de resposta 200 OK logo
+    abaixo — uma contradição do doc original, não introduzida aqui. Modelado
+    como 200 com corpo, por ser o que o exemplo do doc realmente mostra;
+    confirmar o comportamento real em homologação (Fase 4).
+  parameters:
+  - name: disputeId
+    in: path
+    required: true
+    schema:
+      type: string
+  responses:
+    '200':
+      description: Sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    errorCode:
+                      type: integer
+                      format: int32
+                    message:
+                      type: string
+                    field:
+                      type: string
+              traceKey:
+                type: string
+          example:
+            success: true
+            errors: []
+            traceKey: de162330-ee49-44a7-a9ef-073b207e39b7
+    '400':
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '401':
+      description: Não autenticado / token inválido
+  security:
+  - bearerAuth: []
+  servers:
+  - url: https://payment.safrapay.com.br/chargeback
+    description: Produção
+  - url: https://payment-hml.safrapay.com.br/chargeback
+    description: Homologação (sandbox)

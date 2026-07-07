@@ -1,0 +1,4 @@
+type: http
+scheme: bearer
+bearerFormat: JWT
+description: accessToken (JWT) obtido em /v2/merchant/auth. Expira em ~30 min.

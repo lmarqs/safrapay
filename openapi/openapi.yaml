@@ -1,0 +1,269 @@
+openapi: 3.1.0
+info:
+  title: SafraPay API
+  version: '2026.07'
+  description: |-
+    Especificação **não-oficial** da API SafraPay, gerada a partir da documentação do portal de desenvolvedores (ambiente de homologação: developers-hml.safrapay.com.br).
+
+    Cobre Gateway de Pagamentos, Cobrança, Link de Pagamentos, Checkout, Boletos, Taxas, Cartão Protegido, Recorrência, Chargeback, Webhook e o Agente TEF local.
+
+    **Autenticação:** chame `POST /v2/merchant/auth` enviando o *MerchantToken* no header `Authorization`; use o `accessToken` (JWT, ~30 min) retornado como `Authorization: Bearer <accessToken>` nas demais chamadas. Renove via `POST /v2/refreshtoken`.
+  contact:
+    name: Integração e-commerce SafraPay
+    email: integracao.ecommerce@safra.com.br
+  license:
+    name: Proprietary — SafraPay
+    url: https://developers.safrapay.com.br
+externalDocs:
+  description: Portal do desenvolvedor SafraPay
+  url: https://developers.safrapay.com.br
+servers:
+- url: https://payment.safrapay.com.br
+  description: Produção
+- url: https://payment-hml.safrapay.com.br
+  description: Homologação (sandbox)
+tags:
+- name: Autenticação
+  description: Geração e renovação de tokens de acesso (Gateway API).
+- name: Pagamentos
+  description: Criação de cobranças (crédito, débito, voucher, PIX, 3DS), compradores e produtos.
+- name: Cobrança
+  description: Consulta, captura e cancelamento/estorno de cobranças.
+- name: Link de Pagamentos
+  description: Criação e gestão de links de pagamento (SmartCheckout).
+- name: Checkout
+  description: SmartCheckout transparente e redirect.
+- name: Boletos
+  description: Emissão e consulta de boletos.
+- name: Taxas
+  description: Planos de taxas (MDR).
+- name: Cartão Protegido
+  description: Tokenização e gestão de cartões.
+- name: Recorrência e Planos
+  description: Planos e assinaturas recorrentes.
+- name: Chargeback
+  description: Consulta e defesa de disputas.
+- name: Webhook
+  description: Cadastro e gestão de notificações webhook.
+- name: TEF (Agente local)
+  description: API do agente TEF local (localhost:4090) para PIN-pads / POS.
+paths:
+  /v2/merchant/auth:
+    $ref: ./paths/v2_merchant_auth.yaml
+  /v2/refreshtoken:
+    $ref: ./paths/v2_refreshtoken.yaml
+  /v1/Card/Bin/Brand/{bin}:
+    $ref: ./paths/v1_Card_Bin_Brand_{bin}.yaml
+  /v1/product:
+    $ref: ./paths/v1_product.yaml
+  /v1/product/{productId}:
+    $ref: ./paths/v1_product_{productId}.yaml
+  /v2/charge/authorization:
+    $ref: ./paths/v2_charge_authorization.yaml
+  /v2/charge/ecommerce:
+    $ref: ./paths/v2_charge_ecommerce.yaml
+  /v2/charge/ecommerce/3ds/enrollment:
+    $ref: ./paths/v2_charge_ecommerce_3ds_enrollment.yaml
+  /v2/charge/ecommerce/3ds/setup:
+    $ref: ./paths/v2_charge_ecommerce_3ds_setup.yaml
+  /v2/charge/pix:
+    $ref: ./paths/v2_charge_pix.yaml
+  /v2/charge/preauthorization:
+    $ref: ./paths/v2_charge_preauthorization.yaml
+  /v2/customer:
+    $ref: ./paths/v2_customer.yaml
+  /v2/charge/cancelation/{chargeId}:
+    $ref: ./paths/v2_charge_cancelation_{chargeId}.yaml
+  /v2/charge/capture/{chargeId}:
+    $ref: ./paths/v2_charge_capture_{chargeId}.yaml
+  /v2/charge/{chargeId}:
+    $ref: ./paths/v2_charge_{chargeId}.yaml
+  /v2/paymentlink:
+    $ref: ./paths/v2_paymentlink.yaml
+  /v2/smartcheckout:
+    $ref: ./paths/v2_smartcheckout.yaml
+  /v2/smartcheckout/{smartcheckoutId}:
+    $ref: ./paths/v2_smartcheckout_{smartcheckoutId}.yaml
+  /v2/smartcheckout/{smartcheckoutId}/detail:
+    $ref: ./paths/v2_smartcheckout_{smartcheckoutId}_detail.yaml
+  /v2/charge/boleto:
+    $ref: ./paths/v2_charge_boleto.yaml
+  /v2/charge/{chargeId}/boleto/{transactionId}:
+    $ref: ./paths/v2_charge_{chargeId}_boleto_{transactionId}.yaml
+  /v2/tax:
+    $ref: ./paths/v2_tax.yaml
+  /v2/tax/Activate/{taxPlanId}:
+    $ref: ./paths/v2_tax_Activate_{taxPlanId}.yaml
+  /v2/tax/{taxPlanId}:
+    $ref: ./paths/v2_tax_{taxPlanId}.yaml
+  /v2/card:
+    $ref: ./paths/v2_card.yaml
+  /v2/card/byCustomer:
+    $ref: ./paths/v2_card_byCustomer.yaml
+  /v2/card/validation/zerodollar:
+    $ref: ./paths/v2_card_validation_zerodollar.yaml
+  /v2/card/{cardId}:
+    $ref: ./paths/v2_card_{cardId}.yaml
+  /v2/temporary/card:
+    $ref: ./paths/v2_temporary_card.yaml
+  /v2/plan:
+    $ref: ./paths/v2_plan.yaml
+  /v2/plan/all:
+    $ref: ./paths/v2_plan_all.yaml
+  /v2/subscription:
+    $ref: ./paths/v2_subscription.yaml
+  /v2/subscription/bulk:
+    $ref: ./paths/v2_subscription_bulk.yaml
+  /v2/subscription/cancelation/{subscriptionId}:
+    $ref: ./paths/v2_subscription_cancelation_{subscriptionId}.yaml
+  /v2/subscription/{subscriptionId}:
+    $ref: ./paths/v2_subscription_{subscriptionId}.yaml
+  /v1/disputes/second-presentment:
+    $ref: ./paths/v1_disputes_second-presentment.yaml
+  /v1/disputes/summary:
+    $ref: ./paths/v1_disputes_summary.yaml
+  /v1/disputes/total:
+    $ref: ./paths/v1_disputes_total.yaml
+  /v1/disputes/{disputeId}:
+    $ref: ./paths/v1_disputes_{disputeId}.yaml
+  /v1/disputes/{disputeId}/debts/accept:
+    $ref: ./paths/v1_disputes_{disputeId}_debts_accept.yaml
+  /v1/merchant/auth:
+    $ref: ./paths/v1_merchant_auth.yaml
+  /v1/Webhook/Cancel/{webhookId}:
+    $ref: ./paths/v1_Webhook_Cancel_{webhookId}.yaml
+  /v1/webhook:
+    $ref: ./paths/v1_webhook.yaml
+  /v1/webhook/bulk:
+    $ref: ./paths/v1_webhook_bulk.yaml
+  /v1/charge/authorization:
+    $ref: ./paths/v1_charge_authorization.yaml
+  /v1/charge/authorization/abort:
+    $ref: ./paths/v1_charge_authorization_abort.yaml
+  /v1/charge/cancelation:
+    $ref: ./paths/v1_charge_cancelation.yaml
+  /v1/charge/confirmation:
+    $ref: ./paths/v1_charge_confirmation.yaml
+  /v1/charge/pending:
+    $ref: ./paths/v1_charge_pending.yaml
+  /v1/charge/reversal:
+    $ref: ./paths/v1_charge_reversal.yaml
+  /v1/pinpad/display:
+    $ref: ./paths/v1_pinpad_display.yaml
+  /v1/pinpad/init:
+    $ref: ./paths/v1_pinpad_init.yaml
+  /v1/pinpad/input/datapicker:
+    $ref: ./paths/v1_pinpad_input_datapicker.yaml
+  /v1/pinpad/input/events:
+    $ref: ./paths/v1_pinpad_input_events.yaml
+  /v1/pinpad/removecard:
+    $ref: ./paths/v1_pinpad_removecard.yaml
+  /v1/status:
+    $ref: ./paths/v1_status.yaml
+components:
+  securitySchemes:
+    merchantToken:
+      $ref: ./components/security-schemes/merchantToken.yaml
+    bearerAuth:
+      $ref: ./components/security-schemes/bearerAuth.yaml
+    partnerToken:
+      $ref: ./components/security-schemes/partnerToken.yaml
+  schemas:
+    Payer:
+      $ref: ./components/schemas/Payer.yaml
+    Receiver:
+      $ref: ./components/schemas/Receiver.yaml
+    ErrorResponse:
+      $ref: ./components/schemas/ErrorResponse.yaml
+    DisputeTotalsGroup:
+      $ref: ./components/schemas/DisputeTotalsGroup.yaml
+    DisputeTotalsBucket:
+      $ref: ./components/schemas/DisputeTotalsBucket.yaml
+    AcquirerCode:
+      $ref: ./components/schemas/AcquirerCode.yaml
+    AdjustmentsReason:
+      $ref: ./components/schemas/AdjustmentsReason.yaml
+    AdjustmentsType:
+      $ref: ./components/schemas/AdjustmentsType.yaml
+    BankAccounts:
+      $ref: ./components/schemas/BankAccounts.yaml
+    BankSlipIssuer:
+      $ref: ./components/schemas/BankSlipIssuer.yaml
+    CancelStatus:
+      $ref: ./components/schemas/CancelStatus.yaml
+    CardBrand:
+      $ref: ./components/schemas/CardBrand.yaml
+    ChargeEventMode:
+      $ref: ./components/schemas/ChargeEventMode.yaml
+    ChargeStatus:
+      $ref: ./components/schemas/ChargeStatus.yaml
+    ContactType:
+      $ref: ./components/schemas/ContactType.yaml
+    DiscountType:
+      $ref: ./components/schemas/DiscountType.yaml
+    DocumentFile:
+      $ref: ./components/schemas/DocumentFile.yaml
+    DocumentFileType:
+      $ref: ./components/schemas/DocumentFileType.yaml
+    DocumentType:
+      $ref: ./components/schemas/DocumentType.yaml
+    EntityType:
+      $ref: ./components/schemas/EntityType.yaml
+    EntryMode:
+      $ref: ./components/schemas/EntryMode.yaml
+    EstablishmentStatusEnum:
+      $ref: ./components/schemas/EstablishmentStatusEnum.yaml
+    EventType:
+      $ref: ./components/schemas/EventType.yaml
+    Frequency:
+      $ref: ./components/schemas/Frequency.yaml
+    Gender:
+      $ref: ./components/schemas/Gender.yaml
+    InstallmentType:
+      $ref: ./components/schemas/InstallmentType.yaml
+    MerchantType:
+      $ref: ./components/schemas/MerchantType.yaml
+    NotificationMethod:
+      $ref: ./components/schemas/NotificationMethod.yaml
+    PaymentSource:
+      $ref: ./components/schemas/PaymentSource.yaml
+    PaymentType:
+      $ref: ./components/schemas/PaymentType.yaml
+    Phone:
+      $ref: ./components/schemas/Phone.yaml
+    ReceivableMode:
+      $ref: ./components/schemas/ReceivableMode.yaml
+    ReceiverType:
+      $ref: ./components/schemas/ReceiverType.yaml
+    ReconciliationAdjustment:
+      $ref: ./components/schemas/ReconciliationAdjustment.yaml
+    ReconciliationAdjustmentReason:
+      $ref: ./components/schemas/ReconciliationAdjustmentReason.yaml
+    ReconciliationSettingsStatus:
+      $ref: ./components/schemas/ReconciliationSettingsStatus.yaml
+    ReconciliationTransactionsStatus:
+      $ref: ./components/schemas/ReconciliationTransactionsStatus.yaml
+    ReconciliationType:
+      $ref: ./components/schemas/ReconciliationType.yaml
+    RolesEnum:
+      $ref: ./components/schemas/RolesEnum.yaml
+    SafrapayProduct:
+      $ref: ./components/schemas/SafrapayProduct.yaml
+    SmartCheckoutStatus:
+      $ref: ./components/schemas/SmartCheckoutStatus.yaml
+    SmartCheckoutType:
+      $ref: ./components/schemas/SmartCheckoutType.yaml
+    SortDirection:
+      $ref: ./components/schemas/SortDirection.yaml
+    TefPollingStatus:
+      $ref: ./components/schemas/TefPollingStatus.yaml
+    TransactionStatus:
+      $ref: ./components/schemas/TransactionStatus.yaml
+    TransferInterval:
+      $ref: ./components/schemas/TransferInterval.yaml
+    TransferOrderStatus:
+      $ref: ./components/schemas/TransferOrderStatus.yaml
+    WebhookStatus:
+      $ref: ./components/schemas/WebhookStatus.yaml
+security:
+- bearerAuth: []

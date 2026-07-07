@@ -1,0 +1,21 @@
+description: |-
+  Enumerador `TransferInterval`. Aceita o valor inteiro ou a string equivalente.
+
+  * `1` — **Day**: Dia
+  * `2` — **Week**: Semana
+  * `3` — **Month**: Mês
+  * `4` — **Year**: Ano
+oneOf:
+- type: integer
+  format: int32
+  enum:
+  - 1
+  - 2
+  - 3
+  - 4
+- type: string
+  enum:
+  - Day
+  - Week
+  - Month
+  - Year

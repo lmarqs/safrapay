@@ -1,0 +1,33 @@
+description: |-
+  Enumerador `TransferOrderStatus`. Aceita o valor inteiro ou a string equivalente.
+
+  * `1` — **Ordered**: Quando a transferência é solicitada.
+  * `2` — **Transferred**: Quando o pedido de transferência é feito, ou seja, pago.
+  * `3` — **Cancelled**: Status de quando o usuário cancela o pedido de transferência.
+  * `4` — **NotTransferred**: Situação de quando o pedido de transferência não é realizada por motivos internos.
+  * `5` — **Processing**: Status de quando a transferência está sendo processada.
+  * `6` — **InsufficientBalanceAtExecuteTed**: Saldo total no inferior ao solicitado no momento da TED. Como as transferências podem ser agendadas e não é necessário prever o saldo no horário agendado, visto que muitas operações podem ocorrer naquele horário, então no momento do TED é feita uma verificação para ver se o saldo da conta é maior que o valor de TED solicitado.
+  * `7` — **BankAccountInexistent**: Acontece quando a conta bancária não é encontrada antes do envio do TED.
+  * `8` — **BankAccountInvalid**: Acontece quando a conta bancária encontrada é inválida antes do envio do TED.
+oneOf:
+- type: integer
+  format: int32
+  enum:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  - 6
+  - 7
+  - 8
+- type: string
+  enum:
+  - Ordered
+  - Transferred
+  - Cancelled
+  - NotTransferred
+  - Processing
+  - InsufficientBalanceAtExecuteTed
+  - BankAccountInexistent
+  - BankAccountInvalid

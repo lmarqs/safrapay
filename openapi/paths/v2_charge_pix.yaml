@@ -1,0 +1,312 @@
+post:
+  tags:
+  - Pagamentos
+  summary: POST /charge/pix
+  operationId: post_v2_charge_pix
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            charge:
+              type: object
+              description: Dados da cobrança.
+              properties:
+                merchantChargeId:
+                  type: string
+                  description: ID de cobrança definido pelo sistema do comerciante.
+                customer:
+                  type: object
+                  description: Dados do comprador. Obrigatório se o customerId não estiver presente.
+                  properties:
+                    id:
+                      type: string
+                      description: ID do comprador.
+                    name:
+                      type: string
+                      description: Nome completo do comprador.
+                    email:
+                      type: string
+                      description: E-mail do comprador.
+                    document:
+                      type: string
+                      description: Documento do comprador.
+                    documentType:
+                      type: integer
+                      format: int32
+                      description: Tipo do documento do comprador.
+                    phone:
+                      type: object
+                      description: Telefone do comprador.
+                      properties:
+                        countryCode:
+                          type: string
+                          description: Código do país.
+                        areaCode:
+                          type: string
+                          description: Código de área.
+                        number:
+                          type: string
+                          description: Número do Telefone.
+                        type:
+                          type: integer
+                          format: int32
+                          description: Tipo do telefone
+                      required:
+                      - countryCode
+                      - areaCode
+                      - number
+                      - type
+                    bankAccount:
+                      type: object
+                      properties:
+                        bankCode:
+                          type: integer
+                          format: int32
+                          description: Código definido pela FEBRABAN para identificar de forma única uma empresa bancária.
+                        bankName:
+                          type: string
+                          description: O nome do banco.
+                        branch:
+                          type: string
+                          description: Uma agência, centro bancário ou centro financeiro é um local de varejo onde um banco, cooperativa de  crédito ou outra instituição financeira (incluindo uma corretora) oferece uma ampla gama de serviços presenciais e automatizados aos seus clientes.
+                        branchCheckDigit:
+                          type: string
+                          description: Dígito de verificação usado para confirmar.
+                        account:
+                          type: string
+                          description: Uma conta bancária é uma conta financeira mantida por um banco para um cliente. Uma conta bancária pode ser uma conta de depósito, uma conta de cartão de crédito, uma conta corrente ou qualquer outro tipo de conta oferecida por uma instituição financeira e representa os fundos que um cliente confiou à instituição financeira e dos quais o cliente pode fazer retiradas.
+                        accountCheckDigit:
+                          type: string
+                          description: Dígito de verificação usado para confirmar.
+                        type:
+                          type: string
+                          description: (Definido pelo banco no tipo de emissor do cartão, define a forma como o cartão e o banco interagem com os fundos de contas bancárias) bankaccounts.
+                        isActive:
+                          type: boolean
+                          description: Define se a conta bancária está ativa ou não.
+                    isActive:
+                      type: boolean
+                      description: Define se o comprador a está ativo ou não.
+                  required:
+                  - name
+                  - email
+                  - document
+                  - documentType
+                  - phone
+                transactions:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      amount:
+                        type: integer
+                        format: int32
+                        description: O valor da transação do PIX.
+                    required:
+                    - amount
+                  description: Lista com os valores das transações PIX.
+                receivers:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        description: O ID do recebedor.
+                      mdrDiscount:
+                        type: boolean
+                        description: IDs dos receptores envolvidos na cobrança. Isso definirá quem recebe a transação, dividindo o valor total da cobrança em pagamentos separados.
+                      fixedAmountComission:
+                        type: integer
+                        format: int32
+                        description: Quantia fixa que o recebedor deve receber.
+                      chargeRemainder:
+                        type: boolean
+                        description: Após o processamento dos valores de cada divisão, se sobrar centavos da divisão, este sinalizador indica o destinatário que deve receber os centavos extras. Isso pode ser usado para penny split (exemplo 100/3) ou para quando o destinatário não tem uma regra específica.
+                      percentageComission:
+                        type: number
+                        format: float
+                        description: Essa comissão é calculada sobre o valor da transação, em porcentagem.
+                      mdrComission:
+                        type: number
+                        format: float
+                        description: Percentual relativo ao mdr calculado na liquidação.
+                      membershipComission:
+                        type: number
+                        format: float
+                        description: Comissão percentual para associados da transação.
+                      amount:
+                        type: number
+                        format: float
+                        description: Valor que será enviado ao recebedor.
+                  description: Lista com informações dos recebedores envolvidos na transação.
+                metadata:
+                  type: object
+                  description: Lista de informações personalizados.
+                  properties:
+                    key:
+                      type: string
+                      description: O nome da chave (campo)
+                    value:
+                      type: string
+                      description: O valor da chave passada no campo metadata.key .
+                source:
+                  type: integer
+                  format: int32
+                  description: Define a o tipo da cobrança, POS, PinPad, E-Commerce, Pix etc...
+              required:
+              - transactions
+              - source
+          required:
+          - charge
+        example:
+          charge:
+            merchantChargeId: TASK5333
+            customer:
+              name: Nicolas Anthony da Cunha
+              email: nicolasanthonydacunha@teste.com.br
+              document: '49349151251'
+              documentType: 1
+              phone:
+                number: '999999999'
+                countryCode: '55'
+                areaCode: '21'
+                type: 5
+            transactions:
+            - amount: 1000
+            metadata:
+            - key: Key_Sample
+              value: Value_Sample
+            source: 1
+  responses:
+    '200':
+      description: Sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              charge:
+                type: object
+                properties:
+                  merchantChargeId:
+                    type: string
+                    description: O ID de cobrança definido pelo sistema do comerciante.
+                  smartCheckoutId:
+                    type: string
+                    description: O ID do smartCheckout.
+                  id:
+                    type: string
+                    description: O ID da cobrança.
+                  nsu:
+                    type: string
+                    description: O número da transação.
+                  customerId:
+                    type: string
+                    description: O ID do comprador.
+                  chargeStatus:
+                    type: string
+                    description: Status atual da cobrança, indicando em qual estágio do processo de autorização a cobrança está. Ele reflete diretamente todos os status de transação dentro da cobrança.
+                  transactions:
+                    type: array
+                    description: Uma ou várias transações realizadas dentro da cobrança.
+                    items:
+                      type: object
+                      properties:
+                        amount:
+                          type: integer
+                          format: int32
+                          description: O valor da transação PIX.
+                        transactionId:
+                          type: string
+                          description: O ID da transação PIX.
+                        paymentType:
+                          type: string
+                          description: Tipo de transação.
+                        transactionStatus:
+                          type: string
+                          description: Indica qual o status da transação.
+                        acquirer:
+                          type: string
+                          description: O nome da adquirente.
+                        creationDateTime:
+                          type: string
+                          description: A data de criação da transação.
+                        bankIssuerId:
+                          type: string
+                          description: O nome do banco emissor.
+                        aditumNumber:
+                          type: string
+                          description: O código de identificação gerado pela Safrapay.
+                        qrCode:
+                          type: string
+                          description: Código do QRCode.
+                        qrCodeBase64:
+                          type: string
+                          description: Código do QRCode em Base64.
+                        token:
+                          type: string
+                          description: Token identificador da transação PIX.
+                  metadata:
+                    type: object
+                    description: Lista de informações personalizados.
+                    properties:
+                      key:
+                        type: string
+                        description: O nome da chave (campo)
+                      value:
+                        type: string
+                        description: O valor da chave passada no campo metadata.key .
+              success:
+                type: boolean
+                description: Se o endpoint processou a requisição com sucesso.
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    errorCode:
+                      type: integer
+                      format: int32
+                      description: Código do erro.
+                    message:
+                      type: string
+                      description: Mensagem para identificar qual foi o erro retornado.
+                description: 'Se success: false , esse array contem a descrição dos erros retornados.'
+              traceKey:
+                type: string
+                description: Identificador da operação.
+          example:
+            charge:
+              merchantChargeId: TESTE
+              id: 402d125e-efcb-7890-9282-58191748178d
+              customerId: c4d3398d-47fe-43ec-b819-fe341cc5196f
+              chargeStatus: PreAuthorized
+              transactions:
+              - aditumNumber: 397d6cd312314674a9bbdcaf92606594
+                qrCode: 00020101021226770014BR.GOV.BCB.PIX0136a826e12e-2156-4f61-84d5-efdab324bc160215QRCODE Safrapay520454625303986540510.005802BR5915MORADA DOS PAES6012SP.SAO PAULO62180514SP1086899020216304A11C
+                qrCodeBase64: Qk1GTQEAAAAAADYAAAAoAAAAkgAAAJIAAAABACAAAAAAAAAAAADEDgAAxA4AAAAAAAAAAAAA///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////...
+                transactionId: 4d9debb0-5t6y-11ec-bf19-235a10ca5ed5
+                paymentType: Pix
+                amount: 1000
+                transactionStatus: PendingPayment
+                acquirer: Safrapay
+                creationDateTime: '2021-11-24T18:05:51.4486267-03:00'
+                bankIssuerId: Safra
+              nsu: '000000386'
+            success: true
+            errors: []
+            traceKey: 176ba227-8u6t-415d-83c8-06ffce194ecb
+    '400':
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '401':
+      description: Não autenticado / token inválido
+  security:
+  - bearerAuth: []

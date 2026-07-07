@@ -1,0 +1,260 @@
+post:
+  tags:
+  - TEF (Agente local)
+  summary: POST Payment
+  operationId: post_v1_charge_authorization
+  description: 'Inicializa e obtem resultado do fluxo de pagamento EMV no pinpad. Funciona por polling: deve ser chamado em loop até que `errors` ou `charge` seja diferente de `null`. Enquanto o fluxo está em progresso, `status` indica a etapa atual e `errors`/`charge` permanecem nulos.'
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            amount:
+              type: integer
+              format: int32
+              description: Valor da transação em centavos.
+            paymentType:
+              $ref: ../components/schemas/PaymentType.yaml
+              description: 'Tipo da transação. Se não preenchido, será selecionado pelo usuário.'
+            installmentType:
+              $ref: ../components/schemas/InstallmentType.yaml
+              description: 'Tipo de parcelamento em caso de tipo de transação crédito. Padrão: "None" (à vista).'
+            installmentNumber:
+              type: integer
+              format: int32
+              description: 'Numero de parcelas da transação, sendo 1 o valor mínimo. Se não preenchido, será considerado como pagamento a vista. Padrão: 1.'
+            boardingAmount:
+              type: integer
+              format: int32
+              description: Taxa de embarque, utilizada em transações IATA.
+            manualEntry:
+              type: boolean
+              description: Configura transação por entrada manual dos dados do cartão (depende das configurações do lojista na adquirente e da bandeira para aceitação).
+            origin:
+              type: string
+              description: 'Identificador da origem da transação. Ex: "Caixa 8".'
+            merchantChargeId:
+              type: string
+              description: Identificador da transação pelo lojista.
+          required:
+          - amount
+        example:
+          amount: 100
+          paymentType: Credit
+          installmentType: None
+  responses:
+    '200':
+      description: Resposta do Pagamento
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              charge:
+                type: object
+                description: Dados da transação. Nulo até que o processamento seja concluído.
+                properties:
+                  acquirerName:
+                    type: string
+                    description: Nome da adquirete.
+                  aid:
+                    type: string
+                    description: AID do cartão utilizado.
+                  amount:
+                    type: integer
+                    format: int32
+                    description: Valor da transação em centavos.
+                  balance:
+                    type: integer
+                    format: int32
+                    description: Saldo para cartão do tipo voucher.
+                  authorizationCode:
+                    type: string
+                    description: Código de autorização retornado pelo emissor.
+                  authorizationResponseCode:
+                    type: string
+                    description: Código de autorização retornado pela rede credenciadora.
+                  brand:
+                    type: string
+                    description: Bandeira.
+                  cancelationDateTime:
+                    type: string
+                    description: Data de cancelamento da transação.
+                  captureDateTime:
+                    type: string
+                    description: Data de captura da transação.
+                  cardHolderName:
+                    type: string
+                    description: Nome do portador do cartão.
+                  cardNumber:
+                    type: string
+                    description: Número mascarado do cartão utilizado, apenas ultimos digitos.
+                  cardholderReceipt:
+                    type: array
+                    items:
+                      type: string
+                    description: Recibo em via unica destinada ao portador, cada string da lista representa uma linha do recibo.
+                  merchantReceipt:
+                    type: array
+                    items:
+                      type: string
+                    description: Recibo via do lojista, cada string da lista representa uma linha do recibo.
+                  creationDateTime:
+                    type: string
+                    format: date-time
+                    description: Data de criação da transação.
+                  installmentNumber:
+                    type: integer
+                    format: int32
+                    description: Numero de parcelas da transação, sendo 1 o valor mínimo.
+                  installmentType:
+                    $ref: ../components/schemas/InstallmentType.yaml
+                    description: Tipo de parcelamento em caso de tipo de transação crédito.
+                  isApproved:
+                    type: boolean
+                    description: Define se a transação foi aprovada ou não.
+                  isCanceled:
+                    type: boolean
+                    description: Define se a transação foi cancelada ou não.
+                  merchantChargeId:
+                    type: string
+                    description: Identificador da transação pelo lojista.
+                  merchantIdOnAcquirer:
+                    type: string
+                    format: uuid
+                    description: Identificador do lojista registrado na adquirente.
+                  nsu:
+                    type: string
+                    description: Número Sequencial Único (NSU) da transação no GerenciadorPadrãoTEF.
+                  origin:
+                    type: string
+                    description: Identificador da origem da transação.
+                  paymentType:
+                    $ref: ../components/schemas/PaymentType.yaml
+                    description: Tipo da transação selecionado.
+                  transactionId:
+                    type: string
+                    description: Número Sequencial Único (NSU) da autorização, caso o pagamento seja aprovado pelo Emissor.
+                  transactionIdOnAcquirer:
+                    type: string
+                    description: Identificador da cobrança definido pela adquirente.
+                  receipt:
+                    type: object
+                    description: Vias de recibo da transação se aprovada.
+                    properties:
+                      single:
+                        type: array
+                        items:
+                          type: string
+                        description: Recibo em via unica, cada string da lista representa uma linha do recibo.
+                      merchant:
+                        type: array
+                        items:
+                          type: string
+                        description: Recibo via do lojista, cada string da lista representa uma linha do recibo.
+                      client:
+                        type: array
+                        items:
+                          type: string
+                        description: Recibo via do portador do cartão, cada string da lista representa uma linha do recibo.
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    errorCode:
+                      type: string
+                      description: Código de erro.
+                    message:
+                      type: string
+                      description: Mensagem de erro.
+                description: Contém a lista de erros, se algum ocorreu.
+              isApproved:
+                type: boolean
+                description: Contém o status de aprovação da transação, será nulo até que esteja disponível o status logo após o processamento da transação.
+              status:
+                $ref: ../components/schemas/TefPollingStatus.yaml
+                description: Etapa atual da transação.
+              operatorMessage:
+                type: string
+                description: Mensagem a ser exibida ao operador.
+              success:
+                type: boolean
+                description: Indica se a comunicação com o gateway Safrapay foi bem sucedida.
+          example:
+            charge:
+              acquirerName: Simulator
+              aid: A0000000041010
+              amount: 100
+              authorizationCode: '923428'
+              authorizationResponseCode: '00'
+              balance: null
+              brand: MasterCard
+              cancelationDateTime: null
+              captureDateTime: null
+              cardHolderName: TESTE/TESTE R C
+              cardNumber: 550209******9149
+              cardholderReceipt:
+              - "      SIMULATOR - VIA DO CLIENTE      "
+              - "             MK TEC TESTE             "
+              - "       CNPJ: 99.951.985/0001-99       "
+              - "           CREDITO A VISTA            "
+              - "                                      "
+              - "***************9149  21/09/2021  18:30"
+              - "TESTE/TESTE R C                       "
+              - "EC: 123                    AUT: 923428"
+              - "DOC TEF: 000000005                    "
+              - "AID: A0000000041010                   "
+              - "MASTERCARD CREDIT                     "
+              - "TOTAL:                         R$ 1,00"
+              - "          DOC TEF: 000000005          "
+              - "                                 1.2.6"
+              creationDateTime: '2021-09-21T18:30:53.522-03:00'
+              installmentNumber: 0
+              installmentType: None
+              isApproved: true
+              isCanceled: false
+              merchantChargeId: null
+              merchantIdOnAcquirer: '123'
+              merchantReceipt:
+              - "      SIMULATOR - VIA DO LOJISTA      "
+              - "             MK TEC TESTE             "
+              - "       CNPJ: 99.951.985/0001-99       "
+              - "           CREDITO A VISTA            "
+              - "                                      "
+              - "***************9149  21/09/2021  18:30"
+              - "TESTE/TESTE R C                       "
+              - "EC: 123                    AUT: 923428"
+              - "DOC TEF: 000000005                    "
+              - "AC: 931FFFAC7F84A5CD           ONL-EMV"
+              - "AID: A0000000041010                   "
+              - "MASTERCARD CREDIT                     "
+              - "                                      "
+              - "TOTAL:                         R$ 1,00"
+              - "     TRANSAÇÃO APROVADA COM SENHA     "
+              - "          DOC TEF: 000000005          "
+              - "                                 1.2.6"
+              nsu: '000000005'
+              origin: null
+              paymentType: Credit
+              transactionId: 85b7ce7c-d57b-4665-8d7e-7e81cb715378
+            errors: []
+            isApproved: true
+            operatorMessage: null
+            status: FINISHED
+            success: true
+    '400':
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '401':
+      description: Não autenticado / token inválido
+  security:
+  - partnerToken: []
+  servers:
+  - url: http://localhost:4090
+    description: Agente TEF local (GerenciadorPadrãoTEF / INTPOS)

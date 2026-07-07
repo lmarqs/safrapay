@@ -1,0 +1,42 @@
+post:
+  tags:
+  - Chargeback
+  summary: Criar Representação Secundária
+  operationId: post_v1_disputes_second_presentment
+  description: 'Descrição: Cria uma representação secundária rejeitando o débito.'
+  requestBody:
+    required: true
+    content:
+      multipart/form-data:
+        schema:
+          type: object
+          description: 'Nota: o doc-fonte não especifica os nomes exatos dos campos do formulário; disputeId e o anexo abaixo são inferidos da descrição funcional e devem ser confirmados em homologação.'
+          properties:
+            disputeId:
+              type: string
+              description: ID da disputa a ser reapresentada.
+            attachment:
+              type: string
+              format: binary
+              description: Documento de defesa. Apenas .pdf, tamanho máximo 2MB. O nome do arquivo não deve conter caracteres especiais (ex. ç, ã, @,
+          required:
+          - disputeId
+          - attachment
+  responses:
+    '204':
+      description: Segunda apresentação criada com sucesso.
+    '400':
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '401':
+      description: Não autenticado / token inválido
+  security:
+  - bearerAuth: []
+  servers:
+  - url: https://payment.safrapay.com.br/chargeback
+    description: Produção
+  - url: https://payment-hml.safrapay.com.br/chargeback
+    description: Homologação (sandbox)

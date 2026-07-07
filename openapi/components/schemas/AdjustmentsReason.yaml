@@ -1,0 +1,30 @@
+description: |-
+  Enumerador `AdjustmentsReason`. Aceita o valor inteiro ou a string equivalente.
+
+  * `1` — **Payment**: Valor de crédito que se refere a uma transação
+  * `2` — **Chargeback**: Valor de débito que vem de uma transação estornada
+  * `3` — **Cancellation**: Valor de débito que se refere a uma transação cancelada
+  * `4` — **POSRent**: Valor de débito que se refere a um aluguel de POS
+  * `5` — **Antecipation**: Valor de crédito referente a antecipação de transação
+  * `6` — **ChargebackRefund**: Valor de crédito que se refere a um estorno que foi refutado
+  * `999` — **Others**: Outros motivos que não são mapeados
+oneOf:
+- type: integer
+  format: int32
+  enum:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  - 6
+  - 999
+- type: string
+  enum:
+  - Payment
+  - Chargeback
+  - Cancellation
+  - POSRent
+  - Antecipation
+  - ChargebackRefund
+  - Others

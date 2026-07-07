@@ -1,0 +1,15 @@
+description: |-
+  Enumerador `ReconciliationAdjustment`. Aceita o valor inteiro ou a string equivalente.
+
+  * `1` — **Credit**: O ajuste de crédito adicionará mais dinheiro para a conta do comerciante.
+  * `2` — **Debit**: O ajuste de débito subtrairá o dinheiro das contas a receber do comerciante.
+oneOf:
+- type: integer
+  format: int32
+  enum:
+  - 1
+  - 2
+- type: string
+  enum:
+  - Credit
+  - Debit

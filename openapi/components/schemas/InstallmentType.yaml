@@ -1,0 +1,18 @@
+description: |-
+  Enumerador `InstallmentType`. Aceita o valor inteiro ou a string equivalente.
+
+  * `0` — **None**: Transação a vista.
+  * `1` — **Merchant**: Transação parcelada pelo lojista, ou seja, sem juros .
+  * `2` — **Issuer**: Transação parcelada pelo emissor do cartão, ou seja, com juros .
+oneOf:
+- type: integer
+  format: int32
+  enum:
+  - 0
+  - 1
+  - 2
+- type: string
+  enum:
+  - None
+  - Merchant
+  - Issuer

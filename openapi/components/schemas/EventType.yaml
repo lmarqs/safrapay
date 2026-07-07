@@ -1,0 +1,15 @@
+description: |-
+  Enumerador `EventType`. Aceita o valor inteiro ou a string equivalente.
+
+  * `1` — **Created**: Evento disparado quando uma cobrança é feita.
+  * `2` — **Updated**: Evento disparado quando uma atualização na cobrança é feita, ou seja, captura, cancelamento, etc.
+oneOf:
+- type: integer
+  format: int32
+  enum:
+  - 1
+  - 2
+- type: string
+  enum:
+  - Created
+  - Updated

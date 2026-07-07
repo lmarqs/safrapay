@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+#MISE description="Smoke-test the generated Node client (import/compile + basic checks)"
+set -e
+npx tsx tests/generated_node/smoke.ts

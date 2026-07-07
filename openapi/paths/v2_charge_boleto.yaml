@@ -1,0 +1,360 @@
+post:
+  tags:
+  - Boletos
+  summary: POST /charge/boleto
+  operationId: post_v2_charge_boleto
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            charge:
+              type: object
+              properties:
+                merchantChargeId:
+                  type: string
+                  description: ID de cobrança definido pelo sistema do comerciante.
+                sessionId:
+                  type: string
+                  description: ID da sessão criada pelo servidor do site do cliente e usada durante a visita de um determinado usuário.
+                deadline:
+                  type: string
+                  description: Vencimento do boleto.
+                smartCheckoutId:
+                  type: string
+                  description: ID Smart Checkout, se aplicável.
+                customerId:
+                  type: string
+                  description: ID do cliente que foi adicionado anteriormente para o comerciante.
+                customer:
+                  type: object
+                  x-original-type: '-'
+                  description: Dados do comprador.
+                  properties:
+                    name:
+                      type: string
+                      description: Nome completo do comprador.
+                    email:
+                      type: string
+                      description: E-mail do comprador.
+                    entityType:
+                      $ref: ../components/schemas/EntityType.yaml
+                      description: Se é pessoa física ou jurídica.
+                    documentType:
+                      $ref: ../components/schemas/DocumentType.yaml
+                      description: Tipo do documento do comprador .
+                    document:
+                      type: string
+                      description: Documento do comprador.
+                    phone:
+                      type: object
+                      description: Telefone do comprador.
+                      properties:
+                        countryCode:
+                          type: string
+                          description: Código do país.
+                        areaCode:
+                          type: string
+                          description: Código de área.
+                        number:
+                          type: string
+                          description: Número do Telefone.
+                        type:
+                          $ref: ../components/schemas/Phone.yaml
+                          description: Tipo do telefone .
+                      required:
+                      - countryCode
+                      - areaCode
+                      - number
+                      - type
+                    address:
+                      type: object
+                      description: Endereço do comprador.
+                      properties:
+                        street:
+                          type: string
+                          description: Rua.
+                        number:
+                          type: string
+                          description: Número.
+                        neighborhood:
+                          type: string
+                          description: Bairro.
+                        city:
+                          type: string
+                          description: Cidade.
+                        state:
+                          type: string
+                          description: Estado.
+                        country:
+                          type: string
+                          description: País.
+                        zipCode:
+                          type: string
+                          description: CEP.
+                        complement:
+                          type: string
+                          description: Complemento.
+                      required:
+                      - street
+                      - number
+                      - neighborhood
+                      - city
+                      - state
+                      - country
+                      - zipCode
+                      - complement
+                  required:
+                  - name
+                  - email
+                  - entityType
+                  - documentType
+                  - document
+                  - phone
+                transactions:
+                  type: array
+                  description: Uma ou várias transações a serem realizadas dentro da cobrança.
+                  items:
+                    type: object
+                    properties:
+                      amount:
+                        type: integer
+                        format: int32
+                        description: Valor em centavos do boleto.
+                      fine:
+                        type: object
+                        properties:
+                          startDate:
+                            type: string
+                            description: Data de início que multa começará a contar.
+                          amount:
+                            type: integer
+                            format: int32
+                            description: Valor a ser pago após a data de vencimento.
+                          interest:
+                            type: integer
+                            format: int32
+                            description: Os juros financeiros representam um valor em porcentagem que será calculado todos os dias após a data de vencimento.
+                        required:
+                        - startDate
+                        - amount
+                        - interest
+                      discount:
+                        type: object
+                        properties:
+                          type:
+                            type: integer
+                            format: int32
+                            description: Tipo de desconto .
+                          amount:
+                            type: integer
+                            format: int32
+                            description: Valor em centavos ou porcentagem com base no tipo de desconto.
+                          deadline:
+                            type: string
+                            description: Data limite em que o desconto pode ser aplicado.
+                        required:
+                        - type
+                        - amount
+                        - deadline
+                      instructions:
+                        type: string
+                        description: Instruções de 255 caracteres a serem adicionadas no boleto bancário.
+                    required:
+                    - amount
+                source:
+                  type: integer
+                  format: int32
+                  description: Define a fonte de cobrança .
+                origin:
+                  type: string
+                  description: Uma propriedade que o cliente pode usar para identificar a origem da cobrança, como nome do fornecedor ou identificador.
+                metadata:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      key:
+                        type: string
+                        description: O nome da chave (campo)
+                      value:
+                        type: string
+                        description: O valor da chave.
+                  description: Entradas coletadas para iniciação do evento.
+              required:
+              - deadline
+              - customer
+              - transactions
+              - source
+        example:
+          charge:
+            deadline: '2021-06-22'
+            customer:
+              name: Yago Sebastião Lima
+              email: yagosebastiaolima@archosolutions.com.br
+              entityType: 1
+              documentType: 1
+              document: '38000266350'
+              address:
+                street: RUA ALEKRIN
+                number: '99'
+                neighborhood: Parque Residencial Nova Fronteira
+                city: Gurupi
+                state: BA
+                country: BR
+                zipCode: '212211150'
+              phone:
+                countryCode: '55'
+                areaCode: '21'
+                number: '999999999'
+                type: 5
+            transactions:
+            - amount: 1000
+              instructions: Pagamento até o vencimento
+            source: 7
+  responses:
+    '200':
+      description: Sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              charge:
+                type: object
+                properties:
+                  merchantChargeId:
+                    type: string
+                    description: ID de cobrança definido pelo sistema do comerciante.
+                  id:
+                    type: string
+                    description: O ID da cobrança.
+                  chargeStatus:
+                    type: string
+                    description: Indica o status da cobrança.
+                  transactions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        aditumNumber:
+                          type: string
+                          description: Número transacional.
+                        transactionId:
+                          type: string
+                          description: Número Sequencial Único (NSU) da autorização, caso o pagamento seja aprovado pelo Emissor.
+                        digitalLine:
+                          type: string
+                          description: Uma linha de transmissão que usa apenas código binário para recepção e emissão.
+                        barcode:
+                          type: string
+                          description: O código de barras do boleto.
+                        bankSlipId:
+                          type: string
+                          description: O ID do boleto.
+                        deadline:
+                          type: string
+                          description: Data de vencimento do boleto.
+                        paymentType:
+                          type: string
+                          description: Tipo de pagamento.
+                        amount:
+                          type: integer
+                          format: int32
+                          description: Valor a pagar do boleto.
+                        transactionStatus:
+                          type: string
+                          description: Indica o status da transação.
+                        bankIssuerId:
+                          type: string
+                          description: O nome do banco.
+                        bankErrorMessage:
+                          type: string
+                          description: A mensagem de erro enviada do banco.
+                        bankErrorCode:
+                          type: string
+                          description: O código do erro enviado do banco.
+                        creationDateTime:
+                          type: string
+                          description: A data de criação da cobrança.
+                        bankSlipUrl:
+                          type: string
+                          description: O url da cobrança.
+                        fine:
+                          type: object
+                          properties:
+                            startDate:
+                              type: string
+                              description: Data de início que multa começará a contar.
+                            amount:
+                              type: integer
+                              format: int32
+                              description: Valor a ser pago após a data de vencimento.
+                            interest:
+                              type: integer
+                              format: int32
+                              description: Os juros financeiros representam um valor em porcentagem que será calculado todos os dias após a data de vencimento.
+                        discount:
+                          type: object
+                          properties:
+                            type:
+                              type: integer
+                              format: int32
+                              description: Tipo de desconto .
+                            amount:
+                              type: integer
+                              format: int32
+                              description: Valor em centavos ou porcentagem com base no tipo de desconto.
+                            deadline:
+                              type: string
+                              description: Data limite em que o desconto pode ser aplicado.
+                        virtualAcquirerId:
+                          type: string
+                          description: O adquirente virtual da taxa sobre boleto bancário.
+              success:
+                type: boolean
+                description: Se o endpoint processou a requisição com sucesso.
+              errors:
+                type: array
+                items:
+                  type: object
+                  additionalProperties: true
+                description: 'Se success: false , esse array contem a descrição dos erros retornados.'
+              traceKey:
+                type: string
+                description: Identificador da operação.
+          example:
+            charge:
+              id: 0b2edbfb-4770-43f6-afa8-af30d7ff8fc5
+              chargeStatus: PreAuthorized
+              transactions:
+              - aditumNumber: '0000000421     '
+                transactionId: '0000000000094'
+                digitalLine: '03399000378200000000000009401019686590000001000'
+                barcode: '03396865900000020009000381000000000000940101'
+                bankSlipId: '0000000000094'
+                deadline: '2021-06-22T00:00:00'
+                paymentType: Boleto
+                amount: 1000
+                transactionStatus: PendingPayment
+                bankIssuerId: Santander
+                bankErrorMessage: 00000 - Título registrado em cobrança
+                bankErrorCode: '0'
+                creationDateTime: '2021-06-18T23:37:14.6061259Z'
+                bankSlipUrl: /v2/charge/0b2edbfb-4770-43f6-afa8-af30d7ff8fc5/boleto/0000000000094
+                virtualAcquirerId: df61a4d2-d04c-4575-8713-26d6dbd50560
+            success: true
+            errors: []
+            traceKey: e280c533-4327-4d4f-b2b3-a78ac75a1fb9
+    '400':
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '401':
+      description: Não autenticado / token inválido
+  security:
+  - bearerAuth: []

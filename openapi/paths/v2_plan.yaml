@@ -1,0 +1,697 @@
+post:
+  tags:
+  - Recorrência e Planos
+  summary: POST /plan
+  operationId: post_v2_plan
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            plan:
+              type: object
+              description: Informações do plano.
+              properties:
+                id:
+                  type: string
+                  description: ID retornado na criação do plano.
+                amount:
+                  type: integer
+                  format: int32
+                  description: Valor do plano em centavos.
+                frequency:
+                  type: integer
+                  format: int32
+                  description: A frequência com que uma assinatura deve ser cobrada. .
+                label:
+                  type: string
+                  description: Tag do plano definida pelo cliente.
+                cycles:
+                  type: integer
+                  format: int32
+                  description: O número de vezes que suas assinaturas serão cobradas.
+                freeCycles:
+                  type: integer
+                  format: int32
+                  description: O número de vezes que suas assinaturas serão cobradas.
+                chargeEvents:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      description:
+                        type: string
+                        description: Descrição do evento de cobrança.
+                      amount:
+                        type: integer
+                        format: int32
+                        description: Quantia do evento de cobrança.
+                      mode:
+                        type: integer
+                        format: int32
+                        description: Evento de cobrança aplicado a uma recorrência
+                      strategy:
+                        type: object
+                        description: Estratégia do evento de cobrança.
+                        properties:
+                          firstCharges:
+                            type: integer
+                            format: int32
+                            description: Primeiras cobranças.
+                  description: Eventos de cobrança usados para adicionar descontos e taxas extras às assinaturas do plano.
+                merchantId:
+                  type: string
+                  description: Identificação do comerciante que criou este plano.
+                isActive:
+                  type: boolean
+                  description: Define se o plano está ativo ou não.
+                planItems:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      itemCode:
+                        type: string
+                        description: Código do item.
+                      description:
+                        type: string
+                        description: A descrição do item.
+                      value:
+                        type: integer
+                        format: int32
+                        description: O valor do item.
+                      quantity:
+                        type: integer
+                        format: int32
+                        description: A quantidade do item.
+                      categoryId:
+                        type: string
+                        description: A categoria que o item pertence.
+                  description: Os itens que irão compor o plano.
+                planFine:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      value:
+                        type: integer
+                        format: int32
+                        description: O valor da multa.
+                      daysAfterDueDate:
+                        type: integer
+                        format: int32
+                        description: Dias após a data de vencimento.
+                      interest:
+                        type: number
+                        description: Os juros financeiros representam um valor em porcentagem que será calculado todos os dias após a data de vencimento.
+                  description: A multa que será aplicada ao plano caso não seja paga na data de vencimento.
+                planDiscount:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      percentual:
+                        type: number
+                        description: O valor do desconto em porcentagem.
+                      fixValue:
+                        type: number
+                        description: O valor do desconto, valor fixo.
+                      dailyValue:
+                        type: number
+                        description: Valor diário.
+                      dayBeforeTheDueDate:
+                        type: integer
+                        format: int32
+                        description: Dia antes da data de vencimento.
+                  description: O desconto a ser aplicado ao plano.
+                closeInvoiceDay:
+                  type: integer
+                  format: int32
+                  description: O dia em que a fatura será fechada.
+                bankSlipDueDateDay:
+                  type: integer
+                  format: int32
+                  description: O dia da data de vencimento do boleto bancário.
+                paymentType:
+                  type: integer
+                  format: int32
+                  description: Tipo de transação.
+              required:
+              - amount
+              - frequency
+          required:
+          - plan
+        example:
+          plan:
+            amount: 10000
+            frequency: 3
+            label: Academia
+            cycles: 12
+            merchantId: 22eb9083-ec20-4b5e-85d6-22cf9c35a898
+            isActive: true
+            paymentType: 2
+  responses:
+    '200':
+      description: Sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              plan:
+                type: object
+                x-original-type: '-'
+                description: O plano criado.
+                properties:
+                  id:
+                    type: string
+                    description: ID retornado na criação do plano.
+                  amount:
+                    type: integer
+                    format: int32
+                    description: Valor do plano em centavos.
+                  frequency:
+                    type: integer
+                    format: int32
+                    description: A frequência com que uma assinatura deve ser cobrada. .
+                  label:
+                    type: string
+                    description: Tag do plano definida pelo cliente.
+                  cycles:
+                    type: string
+                    description: O número de vezes que suas assinaturas serão cobradas.
+                  chargeEvents:
+                    type: object
+                    x-original-type: '-'
+                    description: Eventos de cobrança usados para adicionar descontos e taxas extras às assinaturas do plano.
+                    properties:
+                      description:
+                        type: string
+                        description: Descrição do evento de cobrança.
+                      amount:
+                        type: integer
+                        format: int32
+                        description: Quantia do evento de cobrança.
+                      mode:
+                        type: integer
+                        format: int32
+                        description: Evento de cobrança aplicado a uma recorrência
+                      strategy:
+                        type: array
+                        items:
+                          type: object
+                          additionalProperties: true
+                        description: Estratégia do evento de cobrança.
+                  merchantId:
+                    type: string
+                    description: Identificação do comerciante que criou este plano.
+                  isActive:
+                    type: boolean
+                    description: Define se o plano está ativo ou não.
+                  planItems:
+                    type: object
+                    x-original-type: '-'
+                    description: Os itens que irão compor o plano.
+                    properties:
+                      itemCode:
+                        type: string
+                        description: Código do item.
+                      description:
+                        type: string
+                        description: A descrição do item.
+                      value:
+                        type: integer
+                        format: int32
+                        description: O valor do item.
+                      quantity:
+                        type: integer
+                        format: int32
+                        description: A quantidade do item.
+                      categoryId:
+                        type: string
+                        description: A categoria que o item pertence.
+                  planFine:
+                    type: object
+                    x-original-type: '-'
+                    description: A multa que será aplicada ao plano caso não seja paga na data de vencimento.
+                    properties:
+                      value:
+                        type: integer
+                        format: int32
+                        description: O valor da multa.
+                      daysAfterDueDate:
+                        type: integer
+                        format: int32
+                        description: Dias após a data de vencimento.
+                      interest:
+                        type: number
+                        description: Os juros financeiros representam um valor em porcentagem que será calculado todos os dias após a data de vencimento.
+                  planDiscount:
+                    type: object
+                    x-original-type: '-'
+                    description: O desconto a ser aplicado ao plano.
+                    properties:
+                      percentual:
+                        type: number
+                        description: O valor do desconto em porcentagem.
+                      fixValue:
+                        type: number
+                        description: O valor do desconto, valor fixo.
+                      dailyValue:
+                        type: number
+                        description: Valor diário.
+                      dayBeforeTheDueDate:
+                        type: integer
+                        format: int32
+                        description: Dia antes da data de vencimento.
+                  closeInvoiceDay:
+                    type: integer
+                    format: int32
+                    description: O dia em que a fatura será fechada.
+                  bankSlipDueDateDay:
+                    type: integer
+                    format: int32
+                    description: O dia da data de vencimento do boleto bancário.
+                  paymentType:
+                    type: integer
+                    format: int32
+                    description: Tipo de transação.
+              success:
+                type: boolean
+                description: Se o endpoint processou a requisição com sucesso.
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    errorCode:
+                      type: integer
+                      format: int32
+                      description: Código do erro.
+                    message:
+                      type: string
+                      description: Mensagem para identificar qual foi o erro retornado.
+                description: 'Se success: false , esse array contem a descrição dos erros retornados.'
+              traceKey:
+                type: string
+                description: Identificador da operação.
+          example:
+            plan:
+              id: 780f19be-03b2-4b8e-b153-86715225aa5c
+              amount: 10000
+              frequency: Monthly
+              label: Academia
+              cycles: 12
+              isActive: true
+              paymentType: Credit
+            success: true
+            errors: []
+            traceKey: 4112eb66-c429-448f-9d84-662e66f4feb3
+    '400':
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '401':
+      description: Não autenticado / token inválido
+  security:
+  - bearerAuth: []
+put:
+  tags:
+  - Recorrência e Planos
+  summary: PUT /plan
+  operationId: put_v2_plan
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            plan:
+              type: object
+              x-original-type: '-'
+              description: Plano atualizado. Deve conter apenas as propriedades com informações atualizadas; ou o objeto do plano completo. Os planos definem informações básicas para assinaturas.
+              properties:
+                id:
+                  type: string
+                  description: ID retornado na criação do plano.
+                amount:
+                  type: integer
+                  format: int32
+                  description: Valor do plano em centavos.
+                frequency:
+                  type: integer
+                  format: int32
+                  description: A frequência com que uma assinatura deve ser cobrada. .
+                label:
+                  type: string
+                  description: Tag do plano definida pelo cliente.
+                cycles:
+                  type: string
+                  description: O número de vezes que suas assinaturas serão cobradas.
+                freeCycles:
+                  type: integer
+                  format: int32
+                  description: O número de vezes que suas assinaturas serão cobradas.
+                chargeEvents:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      description:
+                        type: string
+                        description: Descrição do evento de cobrança.
+                      amount:
+                        type: integer
+                        format: int32
+                        description: Quantia do evento de cobrança.
+                      mode:
+                        type: integer
+                        format: int32
+                        description: Evento de cobrança aplicado a uma recorrência
+                      strategy:
+                        type: object
+                        description: Estratégia do evento de cobrança.
+                        properties:
+                          firstCharges:
+                            type: integer
+                            format: int32
+                            description: Primeiras cobranças.
+                    required:
+                    - amount
+                    - mode
+                    - strategy
+                  description: Eventos de cobrança usados para adicionar descontos e taxas extras às assinaturas do plano.
+                merchantId:
+                  type: string
+                  description: Identificação do comerciante que criou este plano.
+                isActive:
+                  type: boolean
+                  description: Define se o plano está ativo ou não.
+                planItems:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      itemCode:
+                        type: string
+                        description: Código do item.
+                      description:
+                        type: string
+                        description: A descrição do item.
+                      value:
+                        type: integer
+                        format: int32
+                        description: O valor do item.
+                      quantity:
+                        type: integer
+                        format: int32
+                        description: A quantidade do item.
+                      categoryId:
+                        type: string
+                        description: A categoria que o item pertence.
+                    required:
+                    - value
+                    - quantity
+                  description: Os itens que irão compor o plano.
+                planFine:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      value:
+                        type: integer
+                        format: int32
+                        description: O valor da multa.
+                      daysAfterDueDate:
+                        type: integer
+                        format: int32
+                        description: Dias após a data de vencimento.
+                      interest:
+                        type: number
+                        description: Os juros financeiros representam um valor em porcentagem que será calculado todos os dias após a data de vencimento.
+                  description: A multa que será aplicada ao plano caso não seja paga na data de vencimento.
+                planDiscount:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      percentual:
+                        type: number
+                        description: O valor do desconto em porcentagem.
+                      fixValue:
+                        type: number
+                        description: O valor do desconto, valor fixo.
+                      dailyValue:
+                        type: number
+                        description: Valor diário.
+                      dayBeforeTheDueDate:
+                        type: integer
+                        format: int32
+                        description: Dia antes da data de vencimento.
+                  description: O desconto a ser aplicado ao plano.
+                closeInvoiceDay:
+                  type: integer
+                  format: int32
+                  description: O dia em que a fatura será fechada.
+                bankSlipDueDateDay:
+                  type: integer
+                  format: int32
+                  description: O dia da data de vencimento do boleto bancário.
+                paymentType:
+                  type: integer
+                  format: int32
+                  description: Tipo de transação.
+              required:
+              - id
+              - amount
+              - frequency
+              - isActive
+              - planFine
+              - planDiscount
+              - paymentType
+          required:
+          - plan
+  responses:
+    '200':
+      description: Sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              updatedPlan:
+                type: object
+                description: Plano atualizado.
+                properties:
+                  id:
+                    type: string
+                    description: ID retornado na criação do plano.
+                  amount:
+                    type: integer
+                    format: int32
+                    description: Valor do plano em centavos.
+                  frequency:
+                    type: integer
+                    format: int32
+                    description: A frequência com que uma assinatura deve ser cobrada. .
+                  label:
+                    type: string
+                    description: Tag do plano definida pelo cliente.
+                  cycles:
+                    type: string
+                    description: O número de vezes que suas assinaturas serão cobradas.
+                  chargeEvents:
+                    type: object
+                    x-original-type: '-'
+                    description: Eventos de cobrança usados para adicionar descontos e taxas extras às assinaturas do plano.
+                    properties:
+                      description:
+                        type: string
+                        description: Descrição do evento de cobrança.
+                      amount:
+                        type: integer
+                        format: int32
+                        description: Quantia do evento de cobrança.
+                      mode:
+                        type: integer
+                        format: int32
+                        description: Evento de cobrança aplicado a uma recorrência
+                      strategy:
+                        type: array
+                        items:
+                          type: object
+                          additionalProperties: true
+                        description: Estratégia do evento de cobrança.
+                  merchantId:
+                    type: string
+                    description: Identificação do comerciante que criou este plano.
+                  isActive:
+                    type: boolean
+                    description: Define se o plano está ativo ou não.
+                  planItems:
+                    type: object
+                    x-original-type: '-'
+                    description: Os itens que irão compor o plano.
+                    properties:
+                      itemCode:
+                        type: string
+                        description: Código do item.
+                      description:
+                        type: string
+                        description: A descrição do item.
+                      value:
+                        type: integer
+                        format: int32
+                        description: O valor do item.
+                      quantity:
+                        type: integer
+                        format: int32
+                        description: A quantidade do item.
+                      categoryId:
+                        type: string
+                        description: A categoria que o item pertence.
+                  planFine:
+                    type: object
+                    x-original-type: '-'
+                    description: A multa que será aplicada ao plano caso não seja paga na data de vencimento.
+                    properties:
+                      value:
+                        type: integer
+                        format: int32
+                        description: O valor da multa.
+                      daysAfterDueDate:
+                        type: integer
+                        format: int32
+                        description: Dias após a data de vencimento.
+                      interest:
+                        type: number
+                        description: Os juros financeiros representam um valor em porcentagem que será calculado todos os dias após a data de vencimento.
+                  planDiscount:
+                    type: object
+                    x-original-type: '-'
+                    description: O desconto a ser aplicado ao plano.
+                    properties:
+                      percentual:
+                        type: number
+                        description: O valor do desconto em porcentagem.
+                      fixValue:
+                        type: number
+                        description: O valor do desconto, valor fixo.
+                      dailyValue:
+                        type: number
+                        description: Valor diário.
+                      dayBeforeTheDueDate:
+                        type: integer
+                        format: int32
+                        description: Dia antes da data de vencimento.
+                  closeInvoiceDay:
+                    type: integer
+                    format: int32
+                    description: O dia em que a fatura será fechada.
+                  bankSlipDueDateDay:
+                    type: integer
+                    format: int32
+                    description: O dia da data de vencimento do boleto bancário.
+                  paymentType:
+                    type: integer
+                    format: int32
+                    description: Tipo de transação.
+              success:
+                type: boolean
+                description: Se o endpoint processou a requisição com sucesso.
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    errorCode:
+                      type: integer
+                      format: int32
+                      description: Código do erro.
+                    message:
+                      type: string
+                      description: Mensagem para identificar qual foi o erro retornado.
+                description: 'Se success: false , esse array contem a descrição dos erros retornados.'
+              traceKey:
+                type: string
+                description: Identificador da operação.
+          example:
+            updatedPlan:
+              id: 990f19be-02b2-4b8e-b153-86715225aa5c
+              amount: 10000
+              frequency: Monthly
+              label: Academia
+              cycles: 12
+              isActive: true
+              paymentType: Credit
+            success: true
+            errors: []
+            traceKey: 501f7e09-2537-414b-9e97-d72cfea3d496
+    '400':
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '401':
+      description: Não autenticado / token inválido
+  security:
+  - bearerAuth: []
+delete:
+  tags:
+  - Recorrência e Planos
+  summary: DELETE /plan
+  operationId: delete_v2_plan
+  parameters:
+  - name: planId
+    in: query
+    required: true
+    schema:
+      type: string
+    description: O ID do plano.
+  responses:
+    '200':
+      description: Sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                description: Se o endpoint processou a requisição com sucesso.
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    errorCode:
+                      type: integer
+                      format: int32
+                      description: Código do erro.
+                    message:
+                      type: string
+                      description: Mensagem para identificar qual foi o erro retornado.
+                description: 'Se success: false , esse array contem a descrição dos erros retornados.'
+              traceKey:
+                type: string
+                description: Identificador da operação.
+          example:
+            success: true
+            errors: []
+            traceKey: 118e455d-20f9-4fce-afca-9c57d3df7f87
+    '400':
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '401':
+      description: Não autenticado / token inválido
+  security:
+  - bearerAuth: []

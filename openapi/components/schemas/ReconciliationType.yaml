@@ -1,0 +1,15 @@
+description: |-
+  Enumerador `ReconciliationType`. Aceita o valor inteiro ou a string equivalente.
+
+  * `1` — **Sale**: Tipo relacionado a conciliações com base na data de venda / transação.
+  * `2` — **Receivable**: Tipo relacionado a conciliações com base na data de pagamento.
+oneOf:
+- type: integer
+  format: int32
+  enum:
+  - 1
+  - 2
+- type: string
+  enum:
+  - Sale
+  - Receivable

@@ -1,0 +1,293 @@
+put:
+  tags:
+  - Pagamentos
+  summary: PUT /v2/charge/ecommerce
+  operationId: put_v2_charge_ecommerce
+  description: 'Endpoint compartilhado. Variações documentadas: Etapa 2. Inscrição (Enrollment), 1. Transação comum com 3DS.'
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            capture:
+              type: boolean
+              description: Indica se a cobrança foi capturada.
+            chargeId:
+              type: string
+              description: ID da cobrança.
+            transactions:
+              type: array
+              items:
+                type: object
+                properties:
+                  card:
+                    type: object
+                    properties:
+                      billingAddress:
+                        type: object
+                        description: Informações do endereço conectado ao cartão de crédito ou débito. As empresas usam o endereço de cobrança para verificar o uso autorizado de tal cartão. É também para onde as empresas enviam contas em papel e extratos bancários.
+                        properties:
+                          street:
+                            type: string
+                            description: Rua.
+                          number:
+                            type: string
+                            description: Número.
+                          neighborhood:
+                            type: string
+                            description: Bairro.
+                          city:
+                            type: string
+                            description: Cidade.
+                          state:
+                            type: string
+                            description: Estado.
+                          country:
+                            type: string
+                            description: País.
+                          zipCode:
+                            type: string
+                            description: CEP.
+                          complement:
+                            type: string
+                            description: Complemento.
+                        required:
+                        - street
+                        - number
+                        - neighborhood
+                        - city
+                        - state
+                        - country
+                        - zipCode
+                        - complement
+                      brand:
+                        $ref: ../components/schemas/CardBrand.yaml
+                        description: A bandeira do cartão à qual o imposto se aplica. .
+                      cardHolderDocument:
+                        type: string
+                        description: Número do documento do títular, CNPJ ou CPF.
+                      cardHolderName:
+                        type: string
+                        description: Nome do títular do cartão.
+                      cardId:
+                        type: string
+                        description: ID do cartão tokenizado.
+                      cardholderAuthenticationId:
+                        type: string
+                        description: ID de autenticação do cartão.
+                      cvv:
+                        type: string
+                        description: Card Verification Value (CVV), recurso de segurança para transações de cartão de pagamento com "ausência de cartão" instituídas para reduzir a incidência de fraude.
+                      expirationMonth:
+                        type: integer
+                        format: int32
+                        description: O Mês de expiração do cartão com 2 dígitos.
+                      expirationYear:
+                        type: integer
+                        format: int32
+                        description: O Ano de expiração do cartão com 4 dígitos.
+                      number:
+                        type: string
+                        description: Primary Account Number (PAN), o número impresso na frente do cartão.
+                    description: 'Cartão a ser criado no sistema. Payload completo: todos os campos de cartão são obrigatórios, exceto cardId/cardholderAuthenticationId. Payload mínimo: cardId, com cvv opcional (ver docs/safrapay/api/recorrencia.md).'
+                  installmentNumber:
+                    type: integer
+                    format: int32
+                    description: Total de parcelas.
+                  installmentType:
+                    type: integer
+                    format: int32
+                    description: Tipo de parcelamento da transação .
+                required:
+                - card
+                - installmentNumber
+                - installmentType
+          required:
+          - capture
+          - chargeId
+          - transactions
+        example:
+          chargeId: b5929032-6f3c-44a7-b865-004d1e240ba2
+          capture: true
+          transactions:
+          - installmentNumber: 1
+            installmentType: 1
+            card:
+              expirationMonth: 3
+              expirationYear: 2030
+              brand: 2
+              number: '5200000000001005'
+              cardHolderName: FERNANDO SILVA
+              cardHolderDocument: '95353507495'
+              cvv: '321'
+              billingAddress:
+                street: Rua Ibiapava
+                number: '144'
+                neighborhood: Vila Apiai
+                city: Santo André
+                state: SP
+                country: Brasil
+                zipCode: '09185360'
+                complement: ap 1702
+              cardholderAuthenticationId: '7110318850746425004953'
+  responses:
+    '200':
+      description: Sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              charge:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: ID da cobrança.
+                  nsu:
+                    type: string
+                    description: Identificador do pedido (Safrapay).
+                  customerId:
+                    type: string
+                    description: ID do cliente.
+                  chargeStatus:
+                    type: string
+                    description: Estado da cobrança.
+                  transactions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        isApproved:
+                          type: boolean
+                          description: Se a transação foi ou não aprovada.
+                        card:
+                          type: object
+                          description: Informações do cartão.
+                          properties:
+                            number:
+                              type: string
+                              description: Primary Account Number (PAN), o número impresso na frente do cartão.
+                            brand:
+                              type: string
+                              description: Bandeira do cartão.
+                        paymentType:
+                          type: string
+                          description: Tipo de pagamento.
+                        installmentType:
+                          type: string
+                          description: Tipo de parcelamento.
+                        installmentNumber:
+                          type: integer
+                          format: int32
+                          description: Total de parcelas.
+                        softDescriptor:
+                          type: string
+                          description: Breve descrição a ser apresentada na fatura bancária do cliente. Este campo aceita apenas letras, números e * ; sem espaços ; formato /^[a-zA-Z0-9*]+$/ . Se nulo, preenchido com rótulo padrão.
+                        amount:
+                          type: number
+                          format: double
+                          description: Valor total da transação.
+                        isCapture:
+                          type: boolean
+                          description: Se a transação foi ou não capturada.
+                        isRecurrency:
+                          type: boolean
+                          description: Se a transação é ou não recorrente.
+                        isCanceled:
+                          type: boolean
+                          description: Se a transação foi ou não cancelada.
+                        transactionId:
+                          type: string
+                          description: Número Sequencial Único (NSU) da autorização, caso o pagamento seja aprovado pelo Emissor.
+                        authorizationResponseCode:
+                          type: string
+                          description: Código de resposta do autorizador.
+                        authorizationCode:
+                          type: string
+                          description: Código do autorizador.
+                        transactionStatus:
+                          type: string
+                          description: Estado da transação.
+                        acquirer:
+                          type: string
+                          description: Adquirente.
+                        errorMessage:
+                          type: string
+                          description: Mensagem de erro.
+                        acquirerErrorMessage:
+                          type: string
+                          description: Mensagem de erro do adquirente.
+                        creationDateTime:
+                          type: string
+                          description: Data de criação da transação no formato UTC.
+                        captureDateTime:
+                          type: string
+                          description: Data de captura da transação no formato UTC.
+                        eci:
+                          type: string
+                          description: Eletronic Commerce Indicator .
+                    description: Informações da transação.
+              success:
+                type: boolean
+                description: Se o endpoint processou a requisição com sucesso.
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    errorCode:
+                      type: integer
+                      format: int32
+                      description: Código do erro.
+                    message:
+                      type: string
+                      description: Mensagem para identificar qual foi o erro retornado.
+                description: 'Se success: false , esse array contem a descrição dos erros retornados.'
+              traceKey:
+                type: string
+                description: Identificador da operação.
+          example:
+            charge:
+              id: b5929032-6f3c-44a7-b865-004d1e240ba2
+              nsu: '000002053'
+              customerId: b2344864-ae28-4399-a3c9-f3d28d682f85
+              chargeStatus: Authorized
+              transactions:
+              - isApproved: true
+                card:
+                  number: 520000******1096
+                  brand: MasterCard
+                paymentType: Credit
+                installmentType: None
+                installmentNumber: 1
+                softDescriptor: TASK*5333
+                amount: 1000
+                isCapture: true
+                isRecurrency: false
+                isCanceled: false
+                transactionId: '020015695836'
+                authorizationResponseCode: '00'
+                authorizationCode: '214530'
+                transactionStatus: Captured
+                acquirer: Safrapay
+                errorMessage: Aprovada
+                acquirerErrorMessage: Aprovada
+                creationDateTime: '2024-03-25T12:04:37.7548143-03:00'
+                captureDateTime: '2024-03-25T12:04:37.7552867-03:00'
+                eci: '05'
+            success: true
+            errors: []
+            traceKey: cebce70e-5e08-4e23-afbe-57866ede86cf
+    '400':
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '401':
+      description: Não autenticado / token inválido
+  security:
+  - bearerAuth: []

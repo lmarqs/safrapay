@@ -1,0 +1,21 @@
+description: |-
+  Enumerador `WebhookStatus`. Aceita o valor inteiro ou a string equivalente.
+
+  * `1` — **Pending**: Webhook pendente, ou seja, eventos não serão enviados para ele nesse momento.
+  * `2` — **Active**: Webhook está ativo, ou seja, os eventos configurados serão entregues.
+  * `3` — **Failed**: Limite máximo de falhas atingidos.
+  * `4` — **Canceled**: Webhook cancelado pelo usuário.
+oneOf:
+- type: integer
+  format: int32
+  enum:
+  - 1
+  - 2
+  - 3
+  - 4
+- type: string
+  enum:
+  - Pending
+  - Active
+  - Failed
+  - Canceled

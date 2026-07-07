@@ -1,0 +1,4 @@
+type: apiKey
+in: header
+name: Authorization
+description: partner_token do agente TEF local.

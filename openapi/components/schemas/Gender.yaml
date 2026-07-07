@@ -1,0 +1,21 @@
+description: |-
+  Enumerador `Gender`. Aceita o valor inteiro ou a string equivalente.
+
+  * `0` — **Undefined**: Não informado.
+  * `1` — **Female**: Mulher
+  * `2` — **Male**: Homem
+  * `3` — **Other**: Outro
+oneOf:
+- type: integer
+  format: int32
+  enum:
+  - 0
+  - 1
+  - 2
+  - 3
+- type: string
+  enum:
+  - Undefined
+  - Female
+  - Male
+  - Other

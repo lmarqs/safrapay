@@ -1,0 +1,45 @@
+description: |-
+  Enumerador `TransactionStatus`. Aceita o valor inteiro ou a string equivalente.
+
+  * `1` — **PreAuthorized**: Transação aprovada
+  * `2` — **Captured**: Transação aprovada e capturada
+  * `3` — **Denied**: Transação não aprovada ou rejeitada
+  * `4` — **Pending**: Transação ainda não processada pela adquirente
+  * `5` — **Canceled**: Transação cancelada
+  * `6` — **PendingCancel**: Transação com cancelamento pendente
+  * `7` — **PendingPayment**: Transação com pagamento pendente
+  * `8` — **Paid**: Transação paga
+  * `9` — **ErrorCreation**: Houve um erro com a transação
+  * `10` — **Expired**: Transação vencida
+  * `11` — **PendingNewDeadline**: Nova data de vencimento pendente
+  * `12` — **Timeout**: Transação não processada devido ao limite de tempo
+oneOf:
+- type: integer
+  format: int32
+  enum:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  - 6
+  - 7
+  - 8
+  - 9
+  - 10
+  - 11
+  - 12
+- type: string
+  enum:
+  - PreAuthorized
+  - Captured
+  - Denied
+  - Pending
+  - Canceled
+  - PendingCancel
+  - PendingPayment
+  - Paid
+  - ErrorCreation
+  - Expired
+  - PendingNewDeadline
+  - Timeout

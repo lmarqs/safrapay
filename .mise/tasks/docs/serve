@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+#MISE description="Serve the SafraPay docs site locally (http://localhost:4000)"
+#MISE dir="docs/safrapay"
+set -e
+bundle exec jekyll serve --livereload

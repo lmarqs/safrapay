@@ -1,0 +1,130 @@
+post:
+  tags:
+  - Cartão Protegido
+  summary: POST /card/validation/zerodollar
+  operationId: post_v2_card_validation_zerodollar
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            brand:
+              $ref: ../components/schemas/CardBrand.yaml
+              description: Identificação da marca do cartão. Opcional quando você tem cartão de identificação.
+            cardId:
+              type: string
+              description: ID do cartão obtido ao salvar o cartão na carteira SafraPay. Opcional se o cartão já estiver salvo no SafraPay.
+            customerId:
+              type: string
+              description: Identifica um cliente no sistema SafraPay.
+            cardNumber:
+              type: string
+              description: Número de conta primária do cartão (PAN), também conhecido como o número impresso na frente do cartão. Opcional quando você tem cartão de identificação.
+            cardholderName:
+              type: string
+              description: Nome do titular do cartão impresso na frente do cartão. Opcional quando você tem cartão de identificação.
+            cardholderDocument:
+              type: string
+              description: Identificação legal do titular do cartão, como CPF, RG ou CNPJ. Opcional quando você tem cartão de identificação.
+            expirationMonth:
+              type: integer
+              format: int32
+              description: Mês de vencimento do cartão com 2 dígitos. Formato MM. Opcional quando você tem cartão de identificação.
+            expirationYear:
+              type: integer
+              format: int32
+              description: Ano de expiração do cartão com 4 dígitos. Formato aaaa. Opcional quando você tem cartão de identificação.
+            cvv:
+              type: string
+              description: O Card Verification Value (CVV) é um recurso de segurança para transações com cartão de pagamento "cartão não presente" instituído para reduzir a incidência de fraudes de cartão de crédito. Consiste em um número de 3-4 dígitos impresso no cartão. Documentado como opcional quando você tem cartão de identificação, porém em teste ao vivo (hml) a API rejeitou a requisição com `cardId` sem `cvv` (\"Propriedade 'Cvv' está ausente\").
+            cardType:
+              type: integer
+              format: int32
+              description: Tipo do cartão como crédito, débito ou voucher. Opcional quando já se tem o ID do cartão.
+          required:
+          - customerId
+        example:
+          brand: 1
+          customerId: 0a273474-1755-4eaa-adb8-70e55cb014c2
+          cardId: 2d13a4f4-fae6-4c82-a45f-2c7458265312
+          cardNumber: '5152786439456756'
+          cardholderName: Renan Soarez
+          cardholderDocument: '01234567891'
+          expirationMonth: 12
+          expirationYear: 2026
+          cvv: '111'
+  responses:
+    '200':
+      description: Sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              authorization:
+                type: string
+                description: Código de autorização.
+              nsu:
+                type: string
+                description: Identificador do pedido (Safrapay).
+              acquirerErrorCode:
+                type: string
+                description: Código de erro da adquirente.
+              acquirerErrorMessage:
+                type: string
+                description: Mensagem proveniente da adquirente.
+              isValid:
+                type: boolean
+                description: Um booleano que sinaliza se o cartão tem permissão para processar a transação.
+              acquirer:
+                type: string
+                description: Nome da adquirente.
+              cardId:
+                type: string
+                description: Identificação do cartão.
+              cardToken:
+                type: string
+                description: Token do cartão.
+              success:
+                type: boolean
+                description: Se o endpoint processou a requisição com sucesso.
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    errorCode:
+                      type: integer
+                      format: int32
+                      description: Código do erro.
+                    message:
+                      type: string
+                      description: Mensagem para identificar qual foi o erro retornado.
+                description: 'Se success: false , esse array contem a descrição dos erros retornados.'
+              traceKey:
+                type: string
+                description: Identificador da operação.
+          example:
+            authorization: '007480'
+            nsu: '020006454677'
+            acquirerErrorCode: '00'
+            acquirerErrorMessage: 00 - Aprovada
+            isValid: true
+            acquirer: Safrapay
+            cardId: 25743acc-3aa1-470f-803d-0024c8d46bbc
+            cardToken: card_0CLtvaYy2UgPN2U4Mq8UQqYZnxdxnhVc
+            success: true
+            errors: []
+            traceKey: ddf2f808-2ce1-4d8a-88e4-1982b5ae7d8a
+    '400':
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '401':
+      description: Não autenticado / token inválido
+  security:
+  - bearerAuth: []

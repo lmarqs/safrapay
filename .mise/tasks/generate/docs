@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+#MISE description="Build the static OpenAPI HTML reference into generated/docs/index.html"
+set -e
+npm run docs:build

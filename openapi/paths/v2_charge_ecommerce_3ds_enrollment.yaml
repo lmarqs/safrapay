@@ -1,0 +1,314 @@
+put:
+  tags:
+  - Pagamentos
+  summary: PUT /v2/charge/ecommerce/3ds/enrollment
+  operationId: put_v2_charge_ecommerce_3ds_enrollment
+  description: 'Endpoint compartilhado. Variações documentadas: Etapa 2. Inscrição (Enrollment), 1. Transação comum com 3DS.'
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            browser:
+              type: object
+              properties:
+                HttpAcceptBrowserValue:
+                  type: string
+                  description: Valor de cabeçalho aceito do navegador/dispositivo de origem.
+                HttpAcceptContent:
+                  type: string
+                  description: Valor exato do cabeçalho de aceitação HTTP.
+                HttpBrowserColorDepth:
+                  type: string
+                  description: Número de bits usado para exibir imagens.
+                HttpBrowserJavaEnabled:
+                  type: boolean
+                  description: Se JAVA esta habilitado.
+                HttpBrowserJavaScriptEnabled:
+                  type: boolean
+                  description: Se JAVASCRIPT esta habilitado.
+                HttpBrowserLanguage:
+                  type: string
+                  description: Linguagem do navegador/dispositivo de origem.
+                HttpBrowserScreenHeight:
+                  type: string
+                  description: Altura da tela do navegador/dispositivo de origem.
+                HttpBrowserScreenWidth:
+                  type: string
+                  description: Largura da tela do navegador/dispositivo de origem.
+                HttpBrowserTimeDifference:
+                  type: string
+                  description: Diferença em minutos entre tempo GMT e o navegador/dispositivo de origem.
+                UserAgentBrowserValue:
+                  type: string
+                  description: O valor exato do User Agent do cabeçalho.
+              description: Dados do navegador/dispositivo de origem da requisição.
+            chargeId:
+              type: string
+              description: ID da cobrança.
+            customer:
+              type: object
+              properties:
+                customerId:
+                  type: string
+                  description: ID exclusivo de cliente. Deve corresponder a um comprador já cadastrado (ver `POST /v2/customer`).
+                name:
+                  type: string
+                  description: Nome completo do comprador.
+                email:
+                  type: string
+                  description: E-mail do comprador.
+                documentType:
+                  $ref: ../components/schemas/DocumentType.yaml
+                  description: Tipo do documento do comprador.
+                document:
+                  type: string
+                  description: Documento do comprador.
+              required:
+              - customerId
+              - name
+              - email
+              - documentType
+              - document
+              description: Dados do cliente. Obrigatório mesmo ao utilizar o payload mínimo (cardId) — ver Phase 4 live test findings.
+            recurring:
+              type: object
+              description: Objeto de recorrência (apenas fluxo Pass-Through). Ver seção Objeto recurring .
+            transactions:
+              type: array
+              items:
+                type: object
+                properties:
+                  amount:
+                    type: number
+                    format: double
+                    description: Valor total da transação.
+                  card:
+                    type: object
+                    properties:
+                      cardId:
+                        type: string
+                        description: ID do cartão tokenizado (payload mínimo).
+                      billingAddress:
+                        type: object
+                        description: Informações do endereço conectado ao cartão de crédito ou débito. As empresas usam o endereço de cobrança para verificar o uso autorizado de tal cartão. É também para onde as empresas enviam contas em papel e extratos bancários.
+                        properties:
+                          street:
+                            type: string
+                            description: Rua.
+                          number:
+                            type: string
+                            description: Número.
+                          neighborhood:
+                            type: string
+                            description: Bairro.
+                          city:
+                            type: string
+                            description: Cidade.
+                          state:
+                            type: string
+                            description: Estado.
+                          country:
+                            type: string
+                            description: País.
+                          zipCode:
+                            type: string
+                            description: CEP.
+                          complement:
+                            type: string
+                            description: Complemento.
+                      brand:
+                        $ref: ../components/schemas/CardBrand.yaml
+                        description: A bandeira do cartão à qual o imposto se aplica. .
+                      cardHolderDocument:
+                        type: string
+                        description: Número do documento do títular, CNPJ ou CPF.
+                      cardHolderName:
+                        type: string
+                        description: Nome do títular do cartão.
+                      cvv:
+                        type: string
+                        description: Card Verification Value (CVV), recurso de segurança para transações de cartão de pagamento com "ausência de cartão" instituídas para reduzir a incidência de fraude.
+                      expirationMonth:
+                        type: integer
+                        format: int32
+                        description: O Mês de expiração do cartão com 2 dígitos.
+                      expirationYear:
+                        type: integer
+                        format: int32
+                        description: O Ano de expiração do cartão com 4 dígitos.
+                      number:
+                        type: string
+                        description: Primary Account Number (PAN), o número impresso na frente do cartão.
+                    description: Cartão a ser criado no sistema.
+                required:
+                - amount
+                - card
+          required:
+          - browser
+          - chargeId
+          - customer
+          - transactions
+        examples:
+          Etapa_2_Inscri_o_Enrollment:
+            summary: Etapa 2. Inscrição (Enrollment)
+            value:
+              chargeId: string
+              customer:
+                customerId: string
+                name: string
+                email: string
+                documentType: Cpf
+                document: string
+              browser:
+                httpAcceptBrowserValue: string
+                httpAcceptContent: string
+                httpBrowserLanguage: string
+                httpBrowserJavaEnabled: true
+                httpBrowserJavaScriptEnabled: true
+                httpBrowserColorDepth: string
+                httpBrowserScreenHeight: string
+                httpBrowserScreenWidth: string
+                httpBrowserTimeDifference: string
+                userAgentBrowserValue: string
+              transactions:
+              - amount: 0
+                card:
+                  expirationMonth: 3
+                  expirationYear: 2030
+                  brand: 2
+                  number: '5200000000001005'
+                  cardholderName: FERNANDO SILVA
+                  cardholderDocument: '95353507495'
+                  cvv: '321'
+                  billingAddress:
+                    street: Rua Ibiapava
+                    number: '144'
+                    neighborhood: Vila Apiai
+                    city: Santo André
+                    state: SP
+                    country: Brasil
+                    zipCode: '09185360'
+                    complement: ap 1702
+          1_Transa_o_comum_com_3DS:
+            summary: 1. Transação comum com 3DS (payload mínimo)
+            value:
+              chargeId: 8cf35e58-f895-4a7a-8937-66a707f092a8
+              customer:
+                customerId: fd43eb2d-0034-4274-882e-afd27ff65192
+                name: Fernando Silva
+                email: fernando.silva@example.com
+                documentType: 1
+                document: '95353507495'
+              browser:
+                httpAcceptBrowserValue: text/html
+                httpAcceptContent: text/html
+                httpBrowserLanguage: pt-BR
+                httpBrowserJavaEnabled: false
+                httpBrowserJavaScriptEnabled: true
+                httpBrowserColorDepth: '24'
+                httpBrowserScreenHeight: '1080'
+                httpBrowserScreenWidth: '1920'
+                httpBrowserTimeDifference: '180'
+                userAgentBrowserValue: Mozilla/5.0...
+              transactions:
+              - amount: 5000
+                card:
+                  cardId: ed8dc20b-4674-4eaa-89a5-7ba4dbe3d8b5
+  responses:
+    '200':
+      description: Sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              chargeId:
+                type: string
+                description: ID da cobrança.
+              chargeStatus:
+                type: string
+                description: Estado da cobrança.
+              transactions:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    cardholderAuthenticationVersion:
+                      type: string
+                      description: Versão da autenticação do cartão.
+                    cardholderAuthenticationStatus:
+                      type: string
+                      description: Estado da autenticação do cartão.
+                    directoryServer:
+                      type: string
+                      description: Identificador do servidor de diretório (DS) usado na autenticação.
+                    stepUpUrl:
+                      type: string
+                      description: Endpoint retornado pelo ACS para utilização no iframe.
+                    needRunAntifraud:
+                      type: boolean
+                      description: Informa se há ou não a necessidade de enviar a transação para um antifraude.
+                    accessToken:
+                      type: string
+                      description: Token de acesso para efetuar o POST no iframe para a URL de step-up.
+                    heightChallenge:
+                      type: string
+                      description: Altura do iframe para demonstração da tela de desafio.
+                    widthChallenge:
+                      type: string
+                      description: Largura do iframe para demonstração da tela de desafio.
+                    pan:
+                      type: string
+                      description: Primary Account Number (PAN), o número impresso na frente do cartão.
+                    eci:
+                      type: string
+                      description: Eletronic Commerce Indicator
+                    authenticationTransactionId:
+                      type: string
+                      description: Identificador da transação de autenticação 3DS.
+                description: Informações da transação.
+              success:
+                type: boolean
+                description: Se o endpoint processou a requisição com sucesso.
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    errorCode:
+                      type: integer
+                      format: int32
+                      description: Código do erro.
+                    message:
+                      type: string
+                      description: Mensagem para identificar qual foi o erro retornado.
+                description: 'Se success: false , esse array contem a descrição dos erros retornados.'
+              traceKey:
+                type: string
+                description: Identificador da operação.
+          example:
+            chargeId: 8cf35e58-f895-4a7a-8937-66a707f092a8
+            chargeStatus: PreAuthorized
+            transactions:
+            - cardholderAuthenticationVersion: 2.1.0
+              cardholderAuthenticationStatus: Approved
+              directoryServer: a7e103f3-2e0f-4804-860d-e50e6259de4b
+              needRunAntifraud: false
+              pan: 400000******1000
+              eci: '05'
+            success: true
+            errors: []
+            traceKey: 7070c7f3-26e7-4b34-84ce-a89ad7a4e1be
+    '400':
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '401':
+      description: Não autenticado / token inválido
+  security:
+  - bearerAuth: []

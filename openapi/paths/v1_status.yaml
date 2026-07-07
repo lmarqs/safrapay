@@ -1,0 +1,123 @@
+get:
+  tags:
+  - TEF (Agente local)
+  summary: GET Status
+  operationId: get_v1_status
+  description: Verifique o status do serviço.
+  responses:
+    '200':
+      description: Sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    errorCode:
+                      type: string
+                      description: Código de erro.
+                    message:
+                      type: string
+                      description: Mensagem de erro.
+                description: Contém a lista de erros, se algum ocorreu.
+              hostInfo:
+                type: object
+                description: Informações do host onde a aplicação TEF está sendo executada.
+                properties:
+                  applicationVersion:
+                    type: string
+                    description: Versão da aplicação TEF.
+                  kernelType:
+                    type: string
+                    description: Tipo de sistema operacional.
+                  kernelVersion:
+                    type: string
+                    description: Versão do kernel do sistema operacional.
+                  machineUniqueId:
+                    type: string
+                    description: Identificador único da máquina.
+                  osType:
+                    type: string
+                    description: Tipo do sistema operacional.
+                  osVersion:
+                    type: string
+                    description: Versão do sistema operacional.
+              paymentInProgress:
+                type: boolean
+                description: Indica se há um pagamento em progresso.
+              production:
+                type: boolean
+                description: Indica se o ambiente é de produção.
+              status:
+                type: string
+                description: Status do serviço.
+              terminalInfo:
+                type: object
+                description: Informações sobre o terminal.
+                properties:
+                  connected:
+                    type: boolean
+                    description: Indica se o terminal está conectado.
+                  contactlessSupported:
+                    type: boolean
+                    description: Indica se terminal suporta cartão por aproximação.
+                  emvTableVersion:
+                    type: string
+                    description: Versão da tabela EMV carregada no terminal.
+                  manufacturerName:
+                    type: string
+                    description: Nome do fabricante.
+                  manufacturerVersion:
+                    type: string
+                    description: Versão definida pelo fabricante.
+                  model:
+                    type: string
+                    description: Modelo do terminal.
+                  osVersion:
+                    type: string
+                    description: Versão do sistema operacional do terminal.
+                  serialNumber:
+                    type: string
+                    description: Número serial do terminal.
+                  specVersion:
+                    type: string
+                    description: Versão da especificação da ABECS.
+          example:
+            errors: []
+            hostInfo:
+              applicationVersion: ''
+              kernelType: winnt
+              kernelVersion: 10.0.17134
+              machineUniqueId: 27c0bacc-4662-48da-b741-b0204d4c6b7a
+              osType: windows
+              osVersion: '10'
+            paymentInProgress: false
+            production: false
+            status: Ok
+            terminalInfo:
+              connected: false
+              contactlessSupported: true
+              emvTableVersion: '0000000000'
+              manufacturerName: GERTEC
+              manufacturerVersion: 001.12 160914
+              model: PPC-930
+              osVersion: '2.03'
+              serialNumber: '7200031908171323'
+              specVersion: '203'
+    '400':
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '401':
+      description: Não autenticado / token inválido
+  security:
+  - partnerToken: []
+  servers:
+  - url: http://localhost:4090
+    description: Agente TEF local (GerenciadorPadrãoTEF / INTPOS)

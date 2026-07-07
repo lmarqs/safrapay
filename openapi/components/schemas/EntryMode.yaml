@@ -1,0 +1,24 @@
+description: |-
+  Enumerador `EntryMode`. Aceita o valor inteiro ou a string equivalente.
+
+  * `1` — **MagneticStripe**: Fita Magnética
+  * `2` — **Emv**: EMV
+  * `3` — **ContactlessMagneticStripe**: Fita Magnética sem contato
+  * `4` — **ContactlessEmv**: EMV sem contato
+  * `5` — **Typed**: Digitado
+oneOf:
+- type: integer
+  format: int32
+  enum:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+- type: string
+  enum:
+  - MagneticStripe
+  - Emv
+  - ContactlessMagneticStripe
+  - ContactlessEmv
+  - Typed

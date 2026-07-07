@@ -1,0 +1,27 @@
+description: |-
+  Enumerador `EstablishmentStatusEnum`. Aceita o valor inteiro ou a string equivalente.
+
+  * `1` — **Pending**: Validação pendente e envio para registro.
+  * `2` — **Active**: Ativo no registro e com adquirentes ativos.
+  * `3` — **Inactive**: O estabelecimento não possui transações a serem pagas e não é capaz de efetuar transações no Gateway.
+  * `4` — **Canceled**: O estabelecimento foi cancelado pela matriz.
+  * `5` — **Suspended**: Estabelecimento foi desativado pela matriz e contém transações a serem pagas.
+  * `6` — **InactiveByRegister**: Estabelecimento foi enviado para registro e, em seguida, retornou erro.
+oneOf:
+- type: integer
+  format: int32
+  enum:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  - 6
+- type: string
+  enum:
+  - Pending
+  - Active
+  - Inactive
+  - Canceled
+  - Suspended
+  - InactiveByRegister

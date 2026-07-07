@@ -1,0 +1,15 @@
+description: |-
+  Enumerador `ChargeEventMode`. Aceita o valor inteiro ou a string equivalente.
+
+  * `0` — **Undefined**: Define como os eventos de cobrança são aplicados a uma determinada assinatura.
+  * `1` — **ApplyToFirstCharges**: O evento de cobrança será aplicado apenas nas primeiras N cobranças recorrentes. N também é definido ao criar ou atualizar um plano.
+oneOf:
+- type: integer
+  format: int32
+  enum:
+  - 0
+  - 1
+- type: string
+  enum:
+  - Undefined
+  - ApplyToFirstCharges

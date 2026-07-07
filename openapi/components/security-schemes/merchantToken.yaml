@@ -1,0 +1,4 @@
+type: apiKey
+in: header
+name: Authorization
+description: MerchantToken (chave de acesso do estabelecimento). Usado em POST /v2/merchant/auth (Gateway) e em POST /v1/merchant/auth (Chargeback, autenticação específica desta API).

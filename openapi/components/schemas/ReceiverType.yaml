@@ -1,0 +1,18 @@
+description: |-
+  Enumerador `ReceiverType`. Aceita o valor inteiro ou a string equivalente.
+
+  * `1` — **Distributor**: Distribuidor
+  * `2` — **Seller**: Vendedor
+  * `3` — **MerchantReceiver**: Comerciante Destinatário
+oneOf:
+- type: integer
+  format: int32
+  enum:
+  - 1
+  - 2
+  - 3
+- type: string
+  enum:
+  - Distributor
+  - Seller
+  - MerchantReceiver

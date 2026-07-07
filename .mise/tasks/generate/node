@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+#MISE description="Bundle the spec and generate the Node/TS client into generated/node/"
+set -e
+npm run generate:client

@@ -1,0 +1,25 @@
+description: |-
+  Enumerador `TefPollingStatus`. Etapa atual do fluxo de pagamento EMV no pinpad, retornada por polling em `POST /v1/charge/authorization` até que `errors` ou `charge` deixem de ser nulos.
+
+  * `STARTING_TRANSACTION` — Iniciando transação
+  * `CHARGING_TABLES` — Carregado parâmetros EMV no pinpad
+  * `CHECK_CARD_EVENT` — Aguardando inserção de cartão
+  * `WAITING_TYPED_CARD` — Aguardando entrada manual do cartão (venda digitada)
+  * `GETTING_PIN` — Aguardando inserção de PIN
+  * `PROCESSING_ONLINE` — Enviando transação ao gateway Safrapay
+  * `PROCESSING_REVERSION` — Transação negada pelo cartão, enviando reversão da transação
+  * `WAITING_REMOVE_CARD` — Aguardando remoção do cartão
+  * `FINISHING_TRANSACTION` — Encerrando fluxo transacional
+  * `FINISHED` — Fluxo completo (mesmo que não aprovado)
+type: string
+enum:
+- STARTING_TRANSACTION
+- CHARGING_TABLES
+- CHECK_CARD_EVENT
+- WAITING_TYPED_CARD
+- GETTING_PIN
+- PROCESSING_ONLINE
+- PROCESSING_REVERSION
+- WAITING_REMOVE_CARD
+- FINISHING_TRANSACTION
+- FINISHED

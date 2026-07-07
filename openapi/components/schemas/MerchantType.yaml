@@ -1,0 +1,18 @@
+description: |-
+  Enumerador `MerchantType`. Aceita o valor inteiro ou a string equivalente.
+
+  * `1` — **Upsell**: O comerciante que terá impostos predefinidos e fará upsell para um estabelecimento, também pode gerenciar o portal.
+  * `2` — **Establishment**: Comerciante que não pode vender, mas terá impostos definidos por um comerciante de upsell. Normalmente, esse tipo de comerciante vende produtos aos clientes e não adiciona novos comerciantes.
+  * `3` — **ISO**: Comerciante que é o parceiro que usa nossa plataforma e gerencia todos os impostos para seus parceiros.
+oneOf:
+- type: integer
+  format: int32
+  enum:
+  - 1
+  - 2
+  - 3
+- type: string
+  enum:
+  - Upsell
+  - Establishment
+  - ISO

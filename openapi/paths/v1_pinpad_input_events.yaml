@@ -1,0 +1,80 @@
+get:
+  tags:
+  - TEF (Agente local)
+  summary: GET WaitEvent
+  operationId: get_v1_pinpad_input_events
+  description: 'Endpoint responsável por aguardar um evento do pinpad. Os eventos suportados são enviados como query string. Nota: para melhorar a usabilidade, recomenda-se usar `/v1/pinpad/display` para exibir uma mensagem intuitiva antes.'
+  parameters:
+  - name: key
+    in: query
+    required: false
+    schema:
+      type: boolean
+    description: Se a API deve notificar quando uma tecla de controle for pressionada.
+  - name: magnetic_stripe
+    in: query
+    required: false
+    schema:
+      type: boolean
+    description: Se a API deve notificar quando um cartão de tarja magnética for passado.
+  - name: icc
+    in: query
+    required: false
+    schema:
+      type: boolean
+    description: Se a API deve notificar quando um cartão de chip for inserido.
+  - name: ctls
+    in: query
+    required: false
+    schema:
+      type: boolean
+    description: Se a API deve notificar quando um cartão de proximidade (contactless) for detectado.
+  responses:
+    '200':
+      description: Sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              event:
+                type: integer
+                format: int32
+                description: 'Tipo do evento retornado: 0 = Evento de tecla, 1 = Evento de tarja magnética, 2 = Evento de cartão de chip, 3 = Evento de cartão de proximidade (contactless).'
+              success:
+                type: boolean
+                description: Define se a operação foi executada com sucesso.
+              traceKey:
+                type: string
+                description: Identificador da operação.
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    errorCode:
+                      type: integer
+                      format: int32
+                      description: Código de erro.
+                    message:
+                      type: integer
+                      description: Mensagem de erro.
+                description: Contém a lista de erros, se algum ocorreu.
+          example:
+            errors: []
+            event: 2
+            success: true
+            traceKey: ''
+    '400':
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '401':
+      description: Não autenticado / token inválido
+  security:
+  - partnerToken: []
+  servers:
+  - url: http://localhost:4090
+    description: Agente TEF local (GerenciadorPadrãoTEF / INTPOS)

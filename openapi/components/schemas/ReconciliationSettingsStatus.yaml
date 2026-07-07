@@ -1,0 +1,21 @@
+description: |-
+  Enumerador `ReconciliationSettingsStatus`. Aceita o valor inteiro ou a string equivalente.
+
+  * `1` — **Enabled**: Quando EDI está disponível para obter registros.
+  * `2` — **Disabled**: O comerciante desativa as configurações de reconciliação ou o EDI não está habilitado.
+  * `3` — **PendingTerm**: O comerciante não enviou termo assinado para Safrapay.
+  * `4` — **WaitingActivation**: O termo foi enviado para o adquirente, mas o EDI ainda não estava habilitado.
+oneOf:
+- type: integer
+  format: int32
+  enum:
+  - 1
+  - 2
+  - 3
+  - 4
+- type: string
+  enum:
+  - Enabled
+  - Disabled
+  - PendingTerm
+  - WaitingActivation

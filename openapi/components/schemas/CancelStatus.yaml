@@ -1,0 +1,18 @@
+description: |-
+  Enumerador `CancelStatus`. Aceita o valor inteiro ou a string equivalente.
+
+  * `0` — **PendingCancel**: Cancelamento pendente.
+  * `1` — **Canceled**: Transação cancelada.
+  * `2` — **NotCanceled**: Transação não cancelada ou cancelamento não aprovado.
+oneOf:
+- type: integer
+  format: int32
+  enum:
+  - 0
+  - 1
+  - 2
+- type: string
+  enum:
+  - PendingCancel
+  - Canceled
+  - NotCanceled

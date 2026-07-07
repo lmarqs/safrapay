@@ -1,0 +1,15 @@
+description: |-
+  Enumerador `BankAccounts`. Aceita o valor inteiro ou a string equivalente.
+
+  * `1` — **CheckingAccount**: Ele está disponível para o proprietário da conta "sob demanda" e está disponível para acesso imediato pelo proprietário da conta ou a outros conforme o proprietário da conta pode direcionar. O acesso pode ser feito de várias maneiras, como saques em dinheiro, uso de cartões de débito, cheques (cheques) e transferência eletrônica. Em termos econômicos, os fundos detidos em um as contas de transações são consideradas como fundos líquidos. Em termos contábeis, eles são considerado como dinheiro.
+  * `2` — **SavingsAccount**: Uma conta de poupança é uma conta de depósito mantida em um banco de varejo que paga juros, mas não pode ser usado diretamente como dinheiro no sentido estrito de um meio de troca (pois exemplo, preenchendo um cheque). Essas contas permitem que os clientes reservem uma parte de seus ativos líquidos enquanto ganham um retorno monetário.
+oneOf:
+- type: integer
+  format: int32
+  enum:
+  - 1
+  - 2
+- type: string
+  enum:
+  - CheckingAccount
+  - SavingsAccount

@@ -1,0 +1,24 @@
+description: |-
+  Enumerador `Phone`. Aceita o valor inteiro ou a string equivalente.
+
+  * `1` — **Residencial**: Telefone Residencial
+  * `2` — **Commercial**: Telefone Comercial
+  * `3` — **Voicemail**: Correio de Voz
+  * `4` — **Temporary**: Telefone Temporário
+  * `5` — **Mobile**: Celular
+oneOf:
+- type: integer
+  format: int32
+  enum:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+- type: string
+  enum:
+  - Residencial
+  - Commercial
+  - Voicemail
+  - Temporary
+  - Mobile

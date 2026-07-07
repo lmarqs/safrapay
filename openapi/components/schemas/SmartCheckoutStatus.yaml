@@ -1,0 +1,27 @@
+description: |-
+  Enumerador `SmartCheckoutStatus`. Aceita o valor inteiro ou a string equivalente.
+
+  * `1` — **Pending**: Pendente de pagamento, nenhuma cobrança foi feita ainda.
+  * `2` — **Activated**: Alguma cobrança foi feita, porém não atingiu ainda o limite ou expiração.
+  * `3` — **Canceled**: Cancelado.
+  * `100` — **ExpiredByMaximumApprovals**: Expirado, porque o numero de cobranças atingiu o máximo.
+  * `101` — **ExpiredByDate**: Expirado, porque atingiu a data de expiração.
+  * `102` — **ExpiredByTooManyDenials**: Expirado / bloqueado, devido a muitas tentativas não aprovadas.
+oneOf:
+- type: integer
+  format: int32
+  enum:
+  - 1
+  - 2
+  - 3
+  - 100
+  - 101
+  - 102
+- type: string
+  enum:
+  - Pending
+  - Activated
+  - Canceled
+  - ExpiredByMaximumApprovals
+  - ExpiredByDate
+  - ExpiredByTooManyDenials

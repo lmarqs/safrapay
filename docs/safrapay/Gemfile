@@ -1,0 +1,11 @@
+# Dependencies for building the SafraPay API docs site.
+#   bundle install
+#   bundle exec jekyll serve
+source "https://rubygems.org"
+
+gem "jekyll", "~> 4.3"
+
+group :jekyll_plugins do
+  gem "jekyll-relative-links", "~> 0.7"
+  gem "jekyll-seo-tag", "~> 2.8"
+end

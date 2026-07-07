@@ -1,0 +1,18 @@
+description: |-
+  Enumerador `DiscountType`. Aceita o valor inteiro ou a string equivalente.
+
+  * `1` — **Percentual**: Aplicará desconto percentual com base em uma data de pagamento.
+  * `2` — **Fixed**: Aplicará um valor fixo em centavos com base na data de pagamento.
+  * `3` — **Daily**: Aplicará um valor diário em centavos com base na data de pagamento.
+oneOf:
+- type: integer
+  format: int32
+  enum:
+  - 1
+  - 2
+  - 3
+- type: string
+  enum:
+  - Percentual
+  - Fixed
+  - Daily

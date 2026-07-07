@@ -1,0 +1,302 @@
+put:
+  tags:
+  - Cobrança
+  summary: PUT /charge/cancelation/{{chargeId}}
+  operationId: put_v2_charge_cancelation_chargeId
+  parameters:
+  - name: chargeId
+    in: path
+    required: true
+    schema:
+      type: string
+    description: O id de uma cobrança.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            antifraudCancel:
+              type: boolean
+              description: Se a transação precisar ser cancelada, mas marcada como negada.
+            amount:
+              type: integer
+              format: int32
+              description: Valor parcial para cancelar.
+            source:
+              type: integer
+              format: int32
+              description: Origem da requisição.
+            receiverId:
+              type: string
+              description: ID do recebedor relacionado.
+  responses:
+    '200':
+      description: Sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              canceled:
+                type: boolean
+                description: Indica se a transação foi cancelada.
+              charge:
+                type: object
+                properties:
+                  merchantChargeId:
+                    type: string
+                    description: O ID de cobrança definido pelo sistema do comerciante.
+                  id:
+                    type: string
+                    description: O ID da cobrança.
+                  nsu:
+                    type: string
+                    description: O número da transação.
+                  customerId:
+                    type: string
+                    description: O ID do comprador.
+                  chargeStatus:
+                    type: string
+                    description: 'Indica o status da cobrança. Ex: Não autorizada.'
+                  transactions:
+                    type: array
+                    description: Uma ou várias transações a serem realizadas dentro da cobrança.
+                    items:
+                      type: object
+                      properties:
+                        card:
+                          type: object
+                          description: O cartão utilizado na transação.
+                          properties:
+                            id:
+                              type: string
+                              description: O ID do cartão.
+                            customerId:
+                              type: string
+                              description: O ID do comprador títular do cartão.
+                            cardNumber:
+                              type: string
+                              description: O número impresso na frente do cartão.
+                            brand:
+                              type: string
+                              description: A bandeira do cartão.
+                            cardholderName:
+                              type: string
+                              description: O nome do títular impresso na frente do cartão.
+                            cardholderDocument:
+                              type: string
+                              description: O documento do títular do cartão.
+                            billingAddress:
+                              type: object
+                              description: É o endereço conectado ao cartão de crédito ou débito. As empresas usam o endereço de cobrança para verificar o uso autorizado de tal cartão. É também para onde as empresas enviam contas em papel e extratos bancários.
+                              properties:
+                                street:
+                                  type: string
+                                  description: Rua.
+                                number:
+                                  type: string
+                                  description: Número.
+                                neighborhood:
+                                  type: string
+                                  description: Bairro.
+                                city:
+                                  type: string
+                                  description: Cidade.
+                                state:
+                                  type: string
+                                  description: Estado.
+                                country:
+                                  type: string
+                                  description: País.
+                                zipCode:
+                                  type: string
+                                  description: CEP.
+                            isPrivateLabel:
+                              type: boolean
+                              description: Indica se o cartão é um produto de whitelabel ou não. Whitelabel é um produto ou serviço que uma empresa produz e comercializa com outras empresas que tem interesse em utilizar o mesmo com sua marca estampada.
+                            expirationMonth:
+                              type: integer
+                              format: int32
+                              description: O Mês de expiração do cartão com 2 dígitos.
+                            expirationYear:
+                              type: integer
+                              format: int32
+                              description: O Ano de expiração do cartão com 4 dígitos.
+                            fallback:
+                              type: boolean
+                              description: Uma bandeira que informa se a cobrança necessária será feita como fita magnética substituta.
+                            brandName:
+                              type: string
+                              description: O nome da bandeira do cartão.
+                        isApproved:
+                          type: boolean
+                          description: Indica se a transação foi aprovada.
+                        paymentType:
+                          type: string
+                          description: Tipo de pagamento.
+                        installmentType:
+                          type: string
+                          description: Tipo de parcelamento da transação
+                        installmentNumber:
+                          type: integer
+                          format: int32
+                          description: Numero de parcelas da transação, sendo 1 o valor mínimo.
+                        softDescriptor:
+                          type: string
+                          description: Breve descrição a ser apresentada na fatura bancária do cliente. Este campo aceita apenas strings compostas por letras (maiúsculas ou minúsculas), números e o caractere asterisco (*), sem espaços ou símbolos especiais. Se nulo, ele será preenchido com um rótulo padrão definido pela Safrapay.
+                        amount:
+                          type: integer
+                          format: int32
+                          description: Valor a ser cobrado. Obrigatório se o checkout / link de pagamento não possui produto(s).
+                        isCapture:
+                          type: boolean
+                          description: Indica se a cobrança foi capturada.
+                        isRecurrency:
+                          type: boolean
+                          description: Indica se a cobrança é uma recorrência.
+                        isCanceled:
+                          type: boolean
+                          description: Indica se a cobrança foi cancelada.
+                        transactionId:
+                          type: string
+                          description: Número Sequencial Único (NSU) da autorização, caso o pagamento seja aprovado pelo Emissor.
+                        transactionStatus:
+                          type: string
+                          description: Indica qual o status da transação.
+                        merchantTransactionId:
+                          type: string
+                          description: O ID da transação do Lojista
+                        acquirer:
+                          type: string
+                          description: O nome da adquirente.
+                        errorCode:
+                          type: string
+                          description: Indica o erro que foi apresentado na transação.
+                        errorMessage:
+                          type: string
+                          description: A mensagem explicativa referente ao errorCode .
+                        acquirerErrorCode:
+                          type: string
+                          description: Código de erro retornado pela adquirente.
+                        acquirerErrorMessage:
+                          type: string
+                          description: Mensagem de erro retornada pela adquirente.
+                        creationDateTime:
+                          type: string
+                          description: A data de criação da transação.
+                        captureDateTime:
+                          type: string
+                          description: A data de captura da transação.
+                        canceledDateTime:
+                          type: string
+                          format: date-time
+                          description: Data de cancelamento da transação.
+                        acquirerTransactionId:
+                          type: string
+                          description: Identificador da transação na adquirente.
+                        bankSlipStatus:
+                          type: integer
+                          format: int32
+                          description: Status do boleto bancário.
+                        originalAmount:
+                          type: integer
+                          format: int32
+                          description: Valor original da transação em centavos, antes de eventuais ajustes.
+                        cancellations:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                                description: ID do cancelamento.
+                              amount:
+                                type: integer
+                                format: int32
+                                description: Valor cancelado em centavos.
+                              partial:
+                                type: boolean
+                                description: Indica se o cancelamento foi parcial.
+                              status:
+                                type: string
+                                description: Status do cancelamento.
+                              requestDateUtc:
+                                type: string
+                                format: date-time
+                                description: Data de solicitação do cancelamento em UTC.
+                              effectiveDateUtc:
+                                type: string
+                                format: date-time
+                                description: Data de efetivação do cancelamento em UTC.
+                              failedCode:
+                                type: string
+                                description: Código de falha do cancelamento, se houver.
+                              failedMessage:
+                                type: string
+                                description: Mensagem de falha do cancelamento, se houver.
+                          description: Cancelamentos realizados na transação, se houver.
+                        issuerInstallment:
+                          type: object
+                          additionalProperties: true
+                          description: Dados de parcelamento informados pelo emissor.
+                  receivers:
+                    type: array
+                    items:
+                      type: object
+                      additionalProperties: true
+                    description: Informações dos recebedores, caso tenha cadastrado algum na cobrança.
+                  metadata:
+                    type: object
+                    additionalProperties: true
+                    description: Metadados definidos pelo comerciante.
+              success:
+                type: boolean
+                description: Se o endpoint processou a requisição com sucesso.
+              errors:
+                type: array
+                items:
+                  type: object
+                  additionalProperties: true
+                description: 'Se success: false , esse array contem a descrição dos erros retornados.'
+              traceKey:
+                type: string
+                description: Identificador da operação.
+          example:
+            canceled: true
+            charge:
+              merchantChargeId: TASK5333
+              id: abcc2428-eb4e-4470-9d55-72edca459daf
+              nsu: '000005044'
+              customerId: ffede3ee-37ab-47bb-9981-d3d14697d67z
+              chargeStatus: Canceled
+              transactions:
+              - isApproved: true
+                paymentType: Credit
+                installmentType: None
+                installmentNumber: 1
+                amount: 1000
+                isCapture: true
+                isRecurrency: false
+                isCanceled: true
+                transactionId: '1623967391659'
+                transactionStatus: Canceled
+                merchantTransactionId: TASK5333
+                acquirer: Simulator
+                creationDateTime: '2021-06-17T19:03:11.683'
+              metadata:
+                key_Sample: Value_Sample
+            success: true
+            errors: []
+            traceKey: 84272215-cfdd-42df-bfcd-4669ed40b269
+    '400':
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '401':
+      description: Não autenticado / token inválido
+  security:
+  - bearerAuth: []

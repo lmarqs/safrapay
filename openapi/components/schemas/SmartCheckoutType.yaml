@@ -1,0 +1,15 @@
+description: |-
+  Enumerador `SmartCheckoutType`. Aceita o valor inteiro ou a string equivalente.
+
+  * `1` — **PaymentLink**: SmartCheckout do tipo Link de Pagamento, criado via endpoint /paymentlink.
+  * `2` — **Checkout**: SmartCheckout do tipo Checkout, criado via endpoint /smartcheckout.
+oneOf:
+- type: integer
+  format: int32
+  enum:
+  - 1
+  - 2
+- type: string
+  enum:
+  - PaymentLink
+  - Checkout

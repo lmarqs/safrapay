@@ -1,0 +1,24 @@
+description: |-
+  Enumerador `SafrapayProduct`. Aceita o valor inteiro ou a string equivalente.
+
+  * `1` — **Ecommerce**: Representa o produto de comércio eletrônico
+  * `2` — **Pos**: Representa o produto PDV
+  * `3` — **Tef**: Representa o produto TEF
+  * `4` — **BankSlip**: Representa o produto Boleto Bancário
+  * `5` — **Voucher**: Representa processo de transações VAN, integrando-se diretamente com as bandeiras e adquirentes de cartões voucher.
+oneOf:
+- type: integer
+  format: int32
+  enum:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+- type: string
+  enum:
+  - Ecommerce
+  - Pos
+  - Tef
+  - BankSlip
+  - Voucher

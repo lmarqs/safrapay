@@ -1,0 +1,153 @@
+get:
+  tags:
+  - Chargeback
+  summary: Detalhes da Disputa
+  operationId: get_v1_disputes_disputeId
+  description: |-
+    Descrição: Retorna os detalhes de uma disputa pelo identificador informado.
+
+    Endpoint: {{gatewayAPI}}/v1/disputes/{{disputeId}}
+  parameters:
+  - name: disputeId
+    in: path
+    required: true
+    schema:
+      type: string
+  responses:
+    '200':
+      description: Sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  aging:
+                    type: integer
+                    format: int32
+                  deadline:
+                    type: integer
+                    format: int32
+                  cycle:
+                    type: string
+                  status:
+                    type: string
+                  createdDate:
+                    type: string
+                  arn:
+                    type: string
+                  category:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        format: int32
+                      description:
+                        type: string
+                  merchant:
+                    type: object
+                    properties:
+                      merchantCode:
+                        type: integer
+                        format: int32
+                      corporateName:
+                        type: string
+                  transaction:
+                    type: object
+                    properties:
+                      nsu:
+                        type: string
+                      authorization:
+                        type: string
+                      brandCode:
+                        type: string
+                      transactionPaymentMethodCode:
+                        type: string
+                      cardPan:
+                        type: string
+                      date:
+                        type: string
+                      valor:
+                        type: number
+                        format: float
+                  reasonCode:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                      description:
+                        type: string
+                  steps:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        sequence:
+                          type: integer
+                          format: int32
+                        description:
+                          type: string
+                        startDate:
+                          type: string
+                        endDate:
+                          type: string
+                        comment:
+                          type: string
+          example:
+            data:
+              aging: 2
+              cycle: 1º Chargeback
+              status: Completed
+              createdDate: '2026-03-16T00:00:00'
+              arn: '10000000511520400014195'
+              category:
+                id: 4
+                description: Fraude
+              merchant:
+                merchantCode: 1000471
+                corporateName: TESTE PAC EMP2
+              transaction:
+                nsu: '020018678955'
+                authorization: '502538'
+                brandCode: AMEX
+                transactionPaymentMethodCode: CP07
+                cardPan: 374245*****1005
+                date: '2025-07-23T00:00:00'
+                valor: 10.0
+              reasonCode:
+                code: '4755'
+                description: Autorizacao solicitada nao foi obtida ou nao aprovada
+              steps:
+              - sequence: 3
+                description: Concluido
+                startDate: '2026-03-18T00:00:00'
+                endDate: '2026-03-18T00:00:00'
+                comment: Teste API Cliente
+              - sequence: 2
+                description: Pendente - Em análise Safrapay
+                startDate: '2026-03-16T00:00:00'
+                endDate: '2026-03-16T00:00:00'
+                comment: ''
+    '400':
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '401':
+      description: Não autenticado / token inválido
+    '404':
+      description: Disputa não encontrada.
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+  security:
+  - bearerAuth: []
+  servers:
+  - url: https://payment.safrapay.com.br/chargeback
+    description: Produção
+  - url: https://payment-hml.safrapay.com.br/chargeback
+    description: Homologação (sandbox)

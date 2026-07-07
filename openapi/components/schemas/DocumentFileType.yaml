@@ -1,0 +1,24 @@
+description: |-
+  Enumerador `DocumentFileType`. Aceita o valor inteiro ou a string equivalente.
+
+  * `1` — **Cnpj**: Principal documento jurídico da empresa.
+  * `2` — **OwnerLegalDocument**: Documento jurídico principal do proprietário da empresa.
+  * `3` — **ProofOfAddress**: Documento que comprova o endereço da empresa.
+  * `4` — **CompanyActivity**: Documento que especifica quais produtos ou serviços uma determinada empresa vende.
+  * `5` — **ReconciliationAgreement**: Documento que especifica que contém permissão para acessar EDI.
+oneOf:
+- type: integer
+  format: int32
+  enum:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+- type: string
+  enum:
+  - Cnpj
+  - OwnerLegalDocument
+  - ProofOfAddress
+  - CompanyActivity
+  - ReconciliationAgreement

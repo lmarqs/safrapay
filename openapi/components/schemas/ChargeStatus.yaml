@@ -1,0 +1,30 @@
+description: |-
+  Enumerador `ChargeStatus`. Aceita o valor inteiro ou a string equivalente.
+
+  * `1` — **Authorized**: Todas as transações da cobrança foram aprovadas.
+  * `2` — **PreAuthorized**: Todas as transações da cobrança foram pré-autorizadas.
+  * `4` — **Canceled**: Todas as transações da cobrança foram canceladas.
+  * `5` — **Partial**: As transações da cobrança diferem em status. Verificar o status de cada transação individualmente.
+  * `6` — **NotAuthorized**: Todas as transações da cobrança foram negadas.
+  * `7` — **PendingCancel**: Todas as transações da cobrança estão com cancelamento pendente.
+  * `8` — **Expired**: Cobrança vencida.
+oneOf:
+- type: integer
+  format: int32
+  enum:
+  - 1
+  - 2
+  - 4
+  - 5
+  - 6
+  - 7
+  - 8
+- type: string
+  enum:
+  - Authorized
+  - PreAuthorized
+  - Canceled
+  - Partial
+  - NotAuthorized
+  - PendingCancel
+  - Expired

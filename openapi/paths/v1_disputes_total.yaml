@@ -1,0 +1,101 @@
+get:
+  tags:
+  - Chargeback
+  summary: Totais de Disputas
+  operationId: get_v1_disputes_total
+  description: |-
+    Descrição: Recupera os totais de disputas por status.
+
+    Endpoint:
+  parameters:
+  - name: RequestDate.gte
+    in: query
+    required: true
+    schema:
+      type: string
+      format: date
+    description: Data inicial. Retorna registros com data >= informada.
+  - name: RequestDate.lte
+    in: query
+    required: true
+    schema:
+      type: string
+      format: date
+    description: Data final. Retorna registros com data <= informada.
+  responses:
+    '200':
+      description: Sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  opened:
+                    $ref: ../components/schemas/DisputeTotalsGroup.yaml
+                  completed:
+                    $ref: ../components/schemas/DisputeTotalsGroup.yaml
+              success:
+                type: boolean
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    errorCode:
+                      type: integer
+                      format: int32
+                    message:
+                      type: string
+                    field:
+                      type: string
+              traceKey:
+                type: string
+          example:
+            data:
+              opened:
+                total:
+                  quantity: 0
+                  value: 0.0
+                underAnalysis:
+                  quantity: 0
+                  value: 0.0
+                awaitingDocument:
+                  quantity: 0
+                  value: 0.0
+                inContestation:
+                  quantity: 0
+                  value: 0.0
+              completed:
+                total:
+                  quantity: 0
+                  value: 0.0
+                gain:
+                  quantity: 0
+                  value: 0.0
+                due:
+                  quantity: 0
+                  value: 0.0
+                contested:
+                  quantity: 0
+                  value: 0.0
+            success: true
+            errors: []
+            traceKey: fd4472c1-1b2d-4718-8210-7a578a683c4f
+    '400':
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '401':
+      description: Não autenticado / token inválido
+  security:
+  - bearerAuth: []
+  servers:
+  - url: https://payment.safrapay.com.br/chargeback
+    description: Produção
+  - url: https://payment-hml.safrapay.com.br/chargeback
+    description: Homologação (sandbox)

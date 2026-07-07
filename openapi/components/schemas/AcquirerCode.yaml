@@ -1,0 +1,49 @@
+description: |-
+  Enumerador `AcquirerCode`. Aceita o valor inteiro ou a string equivalente.
+
+  * `1` — **Cielo**: Cielo
+  * `2` — **Rede**: Rede
+  * `3` — **Stone**: Stone
+  * `4` — **VBI**: VBI
+  * `5` — **Granito**: Granito
+  * `6` — **InfinitePay**: InfinitePay
+  * `7` — **Safrapay**: SafraPay
+  * `8` — **Adiq (e-commerce)**: Adiq
+  * `9` — **PagSeguro**: PagSeguro
+  * `10` — **Adiq (TEF)**: Adiq
+  * `11` — **SafrapayTef**: SafrapayTef
+  * `12` — **VrBenefits**: VR
+  * `999` — **Simulador**: Simulador (some hml responses spell this "Simulator" — both are accepted here).
+oneOf:
+- type: integer
+  format: int32
+  enum:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  - 6
+  - 7
+  - 8
+  - 9
+  - 10
+  - 11
+  - 12
+  - 999
+- type: string
+  enum:
+  - Cielo
+  - Rede
+  - Stone
+  - VBI
+  - Granito
+  - InfinitePay
+  - Safrapay
+  - Adiq (e-commerce)
+  - PagSeguro
+  - Adiq (TEF)
+  - SafrapayTef
+  - VrBenefits
+  - Simulador
+  - Simulator

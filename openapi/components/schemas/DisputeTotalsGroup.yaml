@@ -1,0 +1,16 @@
+type: object
+properties:
+  total:
+    $ref: ./DisputeTotalsBucket.yaml
+  underAnalysis:
+    $ref: ./DisputeTotalsBucket.yaml
+  awaitingDocument:
+    $ref: ./DisputeTotalsBucket.yaml
+  inContestation:
+    $ref: ./DisputeTotalsBucket.yaml
+  gain:
+    $ref: ./DisputeTotalsBucket.yaml
+  due:
+    $ref: ./DisputeTotalsBucket.yaml
+  contested:
+    $ref: ./DisputeTotalsBucket.yaml

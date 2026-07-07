@@ -1,0 +1,27 @@
+description: |-
+  Enumerador `RolesEnum`. Aceita o valor inteiro ou a string equivalente.
+
+  * `1` — **Master**: Usuário com nível absoluto de permissões.
+  * `2` — **Administrator**: Usuário pode gerenciar e criar outros usuários. Deve ser capaz de cancelar e capturar cobranças.
+  * `3` — **Operator**: Usuário com permissões básicas, como visualização de cobranças. Não é possível gerenciar outros usuários nem criar novos usuários.
+  * `4` — **Affiliator**: Usuário com permissão apenas para adicionar comerciante dentro de um comerciante pai e ver comerciantes que adicionaram comerciante.
+  * `5` — **Manager**: Usuário com permissão para gerenciar apenas seu comerciante, sem adquirente ou qualquer capacidade para adicionar novo comerciante.
+  * `6` — **Attendant**: Usuário com permissão para visualizar informações no portal mas não pode executar nenhuma ação, como cancelar, criar ou atualizar.
+oneOf:
+- type: integer
+  format: int32
+  enum:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  - 6
+- type: string
+  enum:
+  - Master
+  - Administrator
+  - Operator
+  - Affiliator
+  - Manager
+  - Attendant

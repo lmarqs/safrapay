@@ -1,0 +1,77 @@
+post:
+  tags:
+  - TEF (Agente local)
+  summary: POST DataPicker
+  operationId: post_v1_pinpad_input_datapicker
+  description: Endpoint responsável por obter, através do teclado do pinpad, um input genérico. Um menu é mostrado no display do pinpad; a primeira linha tem o título (caixa alta, centralizado e fixo) e a navegação entre itens é feita pelas teclas de cima/baixo, cada item mostrado na segunda linha do display.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            menu:
+              type: object
+              description: Informações do menu.
+              properties:
+                title:
+                  type: string
+                  description: Titulo do menu. Pode ter até 16 caracteres.
+                options:
+                  type: array
+                  items:
+                    type: string
+                  description: Opções do menu. Cada opção pode ter até 12 caracteres.
+          required:
+          - menu
+        example:
+          menu:
+            title: SELECIONE O ITEM
+            options:
+            - 1.COCA-COLA
+            - 2.CERVEJA
+            - 3.SUCO
+            - 4.WISKY
+            - 5.AGUA DE COCO
+  responses:
+    '200':
+      description: Sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              selected:
+                type: integer
+                format: int32
+                description: Indice do item selecionado, começando em 1.
+              success:
+                type: boolean
+                description: Define se a operação foi executada com sucesso.
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    errorCode:
+                      type: integer
+                      format: int32
+                      description: Código de erro.
+                    message:
+                      type: integer
+                      description: Mensagem de erro.
+                description: Contém a lista de erros, se algum ocorreu.
+    '400':
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '401':
+      description: Não autenticado / token inválido
+  security:
+  - partnerToken: []
+  servers:
+  - url: http://localhost:4090
+    description: Agente TEF local (GerenciadorPadrãoTEF / INTPOS)

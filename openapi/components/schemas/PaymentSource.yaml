@@ -1,0 +1,51 @@
+description: |-
+  Enumerador `PaymentSource`. Aceita o valor inteiro ou a string equivalente.
+
+  * `1` — **Gateway**: Gateway
+  * `2` — **Pos**: POS
+  * `3` — **Pinpad**: Pinpad
+  * `4` — **Recurrency**: Recorrência
+  * `5` — **PaymentLink**: Link de Pagamento
+  * `6` — **MobilePos**: POS Móvel
+  * `8` — **ThirdPartyEcommerce**: Comércio eletrônico de terceiros
+  * `10` — **Checkout**: Checkout
+  * `11` — **RecurrencyCheckout**: Recorrência Checkout
+  * `12` — **VtexPaymentProvider**: Provedor de Pagamento VTEX
+  * `13` — **SmartPos**: POS Inteligente
+  * `1001` — **SafrapayCheckout**: Checkout Safrapay
+  * `1002` — **SafrapayPaymentLink**: Link de Pagamento Safrapay
+  * `1003` — **SafrapayCatalogPaymentLink**: Link de pagamento do catálogo Safrapay
+oneOf:
+- type: integer
+  format: int32
+  enum:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  - 6
+  - 8
+  - 10
+  - 11
+  - 12
+  - 13
+  - 1001
+  - 1002
+  - 1003
+- type: string
+  enum:
+  - Gateway
+  - Pos
+  - Pinpad
+  - Recurrency
+  - PaymentLink
+  - MobilePos
+  - ThirdPartyEcommerce
+  - Checkout
+  - RecurrencyCheckout
+  - VtexPaymentProvider
+  - SmartPos
+  - SafrapayCheckout
+  - SafrapayPaymentLink
+  - SafrapayCatalogPaymentLink

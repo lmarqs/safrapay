@@ -1,0 +1,53 @@
+get:
+  tags:
+  - TEF (Agente local)
+  summary: GET Display
+  operationId: get_v1_pinpad_display
+  description: Exibe no display do pinpad uma mensagem de texto. O display possui 2 linhas de 16 caracteres, portanto a mensagem deve ter no máximo 32 caracteres; se maior, é truncada no tamanho máximo permitido.
+  parameters:
+  - name: message
+    in: query
+    required: true
+    schema:
+      type: string
+    description: Mensagem de texto a ser exibida no display do pinpad (máximo 32 caracteres).
+  responses:
+    '200':
+      description: Sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                description: Define se a operação foi executada com sucesso.
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    errorCode:
+                      type: integer
+                      format: int32
+                      description: Código de erro.
+                    message:
+                      type: integer
+                      description: Mensagem de erro.
+                description: Contém a lista de erros, se algum ocorreu.
+          example:
+            errors: []
+            success: true
+    '400':
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '401':
+      description: Não autenticado / token inválido
+  security:
+  - partnerToken: []
+  servers:
+  - url: http://localhost:4090
+    description: Agente TEF local (GerenciadorPadrãoTEF / INTPOS)

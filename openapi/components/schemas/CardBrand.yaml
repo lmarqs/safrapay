@@ -1,0 +1,24 @@
+description: |-
+  Enumerador `CardBrand`. Aceita o valor inteiro ou a string equivalente.
+
+  * `1` — **Visa**
+  * `2` — **MasterCard**
+  * `3` — **Amex**
+  * `4` — **Elo**
+  * `9` — **Hipercard**
+oneOf:
+- type: integer
+  format: int32
+  enum:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 9
+- type: string
+  enum:
+  - Visa
+  - MasterCard
+  - Amex
+  - Elo
+  - Hipercard

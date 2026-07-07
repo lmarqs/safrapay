@@ -1,0 +1,15 @@
+description: |-
+  Enumerador `ReceivableMode`. Aceita o valor inteiro ou a string equivalente.
+
+  * `1` — **Default**: Usado para recebíveis comuns. D + 30.
+  * `2` — **NextDay**: Usado para recebíveis do dia seguinte. D + 1.
+oneOf:
+- type: integer
+  format: int32
+  enum:
+  - 1
+  - 2
+- type: string
+  enum:
+  - Default
+  - NextDay

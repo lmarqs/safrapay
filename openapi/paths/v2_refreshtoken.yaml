@@ -1,0 +1,68 @@
+post:
+  tags:
+  - Autenticação
+  summary: POST /refreshtoken
+  operationId: post_v2_refreshtoken
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            accessToken:
+              type: string
+              description: Token JWT que deve ser utilizado no Authorization das próximas requisições. Esse token expira em 30 minutos e pode ser atualizado com o refreshToken .
+            refreshToken:
+              type: string
+              description: Token utilizado para gerar outros JWT sem precisar enviar o merchantToken .
+          required:
+          - accessToken
+          - refreshToken
+  responses:
+    '200':
+      description: Sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              accessToken:
+                type: string
+                description: Token JWT que deve ser utilizado no Authorization das próximas requisições. Esse token expira em 30 minutos e pode ser atualizado com o refreshToken .
+              refreshToken:
+                type: string
+                description: Token utilizado para gerar outros JWT sem precisar enviar o merchantToken .
+              success:
+                type: boolean
+                description: Se o endpoint processou a requisição com sucesso.
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    errorCode:
+                      type: integer
+                      format: int32
+                    message:
+                      type: string
+                description: 'Se success: false , esse array contem a descrição dos erros retornados.'
+              traceKey:
+                type: string
+                description: Identificador da operação.
+          example:
+            accessToken: eyJhbHciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Im1rX2c1RHJLQ0RzRGt1RjFpTFBuRFdvbUEiLCJuYW1laWQiOiJta19nNURyS0NEc0RrdUYxaUxQbkRXb21BIiwibmJmIjoxNjI0MDI4MTE2LCJleHAiOjE2MjUyMzc3MTYsImlhdCI6MTYyNDAyODExNiwiaXNzIjoiQWRpdHVtIiwiYXVkIjoiQWRpdHVtIn0.Vzt387BFC1amWYPdbm0vf2wPYwwak1Gj7dmyGWJhpgzIfX9QET1sQTE7YJdFmN6JPKcTnArPzx80wY68hte9_AyDYkSa_P-Jeg6x3NxOyvCxcMPfnv1Qv-gtrfWyA7mnPm2nXXfavzeTZZ7ZQjfMvYBR15a2QVvKLyU3MYFLLo3swW5fsKzxmkn7RaqSFLwS4XI8rNXqLN_zKjGCBu7F4gV-3G2YGivaabZ8nqB1ODo5LDqNieFBnuVAMUiU5s-eORVeEhB-j40LDPICG5poeXYPw7L4VXMhNH8ivY5mCtxbfvk9jWIVBQkWAGrSjRWvOIU35h2-Ym2A8O4-hdqUjw
+            refreshToken: 612179235e914cba90a9743803ba397f
+            success: true
+            errors: []
+            traceKey: 498c960d-8b70-4658-9d13-fac92eaec6b8
+    '400':
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '401':
+      description: Não autenticado / token inválido
+  security:
+  - bearerAuth: []

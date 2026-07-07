@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+#MISE description="Install Python dependencies into the project venv"
+set -e
+pip install --quiet -r requirements.txt

@@ -1,0 +1,641 @@
+post:
+  tags:
+  - Cartão Protegido
+  summary: POST /card
+  operationId: post_v2_card
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            customerId:
+              type: string
+              description: ID exclusivo de cliente.
+            card:
+              type: object
+              description: Cartão a ser criado no sistema.
+              properties:
+                id:
+                  type: string
+                  description: ID do cartão.
+                customerId:
+                  type: string
+                  description: ID do cliente relacionado ao cartão.
+                cardNumber:
+                  type: string
+                  description: Primary Account Number (PAN), o número impresso na frente do cartão.
+                cvv:
+                  type: string
+                  description: Card Verification Value (CVV), recurso de segurança para transações de cartão de pagamento com "ausência de cartão" instituídas para reduzir a incidência de fraude.
+                cvvMissingReason:
+                  type: string
+                  description: Razão pela qual o CVV possa estar faltando na transação, se necessário. Obrigatório apenas para PagSeguro.
+                brand:
+                  $ref: ../components/schemas/CardBrand.yaml
+                  description: A bandeira do cartão à qual o imposto se aplica. .
+                cardHolderName:
+                  type: string
+                  description: Nome do títular do cartão.
+                cardHolderDocument:
+                  type: string
+                  description: Número do documento do títular, CNPJ ou CPF.
+                cardToken:
+                  type: string
+                  description: Token do cartão
+                billingAddress:
+                  type: object
+                  description: Informações do endereço conectado ao cartão de crédito ou débito. As empresas usam o endereço de cobrança para verificar o uso autorizado de tal cartão. É também para onde as empresas enviam contas em papel e extratos bancários.
+                  properties:
+                    street:
+                      type: string
+                      description: Rua.
+                    number:
+                      type: string
+                      description: Número.
+                    neighborhood:
+                      type: string
+                      description: Bairro.
+                    city:
+                      type: string
+                      description: Cidade.
+                    state:
+                      type: string
+                      description: Estado.
+                    country:
+                      type: string
+                      description: País.
+                    zipCode:
+                      type: string
+                      description: CEP.
+                    complement:
+                      type: string
+                      description: Complemento.
+                isPrivateLabel:
+                  type: boolean
+                  description: Indica se o cartão é um produto de whitelabel ou não. Whitelabel é um produto ou serviço que uma empresa produz e comercializa com outras empresas que tem interesse em utilizar o mesmo com sua marca estampada.
+                expirationMonth:
+                  type: integer
+                  format: int32
+                  description: O Mês de expiração do cartão com 2 dígitos.
+                expirationYear:
+                  type: integer
+                  format: int32
+                  description: O Ano de expiração do cartão com 4 dígitos.
+                brandName:
+                  type: string
+                  description: Nome da bandeira do cartão.
+                eci:
+                  type: string
+                  description: Código de autenticação ECI (Retornado apenas quando a transação passa pelo fluxo do 3DS).
+                cavv:
+                  type: string
+                  description: Criptorgrama de autenticação (Retornado apenas quando a transação passa pelo fluxo do 3DS).
+                xid:
+                  type: string
+                  description: Identificador MPI da transação autenticada.
+                cardholderAuthenticationVersion:
+                  type: string
+                  description: Versão da autentificação retornada pelo provedor.
+                metadata:
+                  type: object
+                  description: Armazena todas as credenciais relacionadas a bandeira.
+                  properties:
+                    additionalProp1:
+                      type: string
+                      description: Propriedade adicional.
+                    additionalProp2:
+                      type: string
+                      description: Propriedade adicional.
+                    additionalProp3:
+                      type: string
+                      description: Propriedade adicional.
+                cardTransactionId:
+                  type: string
+                  description: ID para a requisição da transação do cartão.
+                cof:
+                  type: boolean
+                  description: indica se a transação é COF (Credentials On File).
+              required:
+              - cardNumber
+              - cvv
+              - brand
+              - cardHolderName
+              - cardHolderDocument
+              - expirationMonth
+              - expirationYear
+          required:
+          - customerId
+          - card
+        example:
+          customerId: ffede3ee-37ab-47bb-9981-d3d14697d69g
+          card:
+            cardNumber: '4444585001234562'
+            cvv: '111'
+            brand: 1
+            cardholderName: Renan Soarez
+            cardholderDocument: '01234567891'
+            expirationMonth: 12
+            expirationYear: 2026
+  responses:
+    '200':
+      description: Sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              card:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: Número de identificação(ID) do cartão.
+                  customerId:
+                    type: string
+                    description: ID do cliente.
+                  cardNumber:
+                    type: string
+                    description: Número do cartão com criptografia, mostrando apenas os 6 primeiros e os 4 últimos dígitos.
+                  brand:
+                    type: string
+                    description: Bandeira do cartão.
+                  cardHolderName:
+                    type: string
+                    description: Nome do títular do cartão.
+                  cardHolderDocument:
+                    type: string
+                    description: Número do documento do títular, CNPJ ou CPF.
+                  cardToken:
+                    type: string
+                    description: Não
+                  billingAddress:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        street:
+                          type: string
+                          description: Rua.
+                        number:
+                          type: string
+                          description: Número.
+                        neighborhood:
+                          type: string
+                          description: Bairro.
+                        city:
+                          type: string
+                          description: Cidade.
+                        state:
+                          type: string
+                          description: Estado.
+                        country:
+                          type: string
+                          description: País.
+                        zipCode:
+                          type: string
+                          description: CEP.
+                        complement:
+                          type: string
+                          description: Complemento.
+                    description: É o endereço conectado ao cartão de crédito ou débito. As empresas usam o endereço de cobrança para verificar o uso autorizado de tal cartão. É também para onde as empresas enviam contas em papel e extratos bancários.
+                  isPrivateLabel:
+                    type: boolean
+                    description: Indica se o cartão é um produto de whitelabel ou não. Whitelabel é um produto ou serviço que uma empresa produz e comercializa com outras empresas que tem interesse em utilizar o mesmo com sua marca estampada.
+                  expirationMonth:
+                    type: integer
+                    format: int32
+                    description: O Mês de expiração do cartão com 2 dígitos.
+                  expirationYear:
+                    type: integer
+                    format: int32
+                    description: O Ano de expiração do cartão com 4 dígitos.
+                  fallback:
+                    type: boolean
+                    description: Uma bandeira que informa se a cobrança necessária será feita como fita magnética substituta.
+                  brandName:
+                    type: string
+                    description: O nome da bandeira do cartão.
+                  cof:
+                    type: boolean
+                    description: Indica se a transação é COF (Credentials On File).
+                  recurrencyId:
+                    type: string
+                    description: ID de recorrência associado ao cartão.
+              success:
+                type: boolean
+                description: Se o endpoint processou a requisição com sucesso.
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    errorCode:
+                      type: integer
+                      format: int32
+                      description: Código do erro.
+                    message:
+                      type: string
+                      description: Mensagem para identificar qual foi o erro retornado.
+                description: 'Se success: false , esse array contem a descrição dos erros retornados.'
+              traceKey:
+                type: string
+                description: Identificador da operação.
+          example:
+            card:
+              id: 7903ef10-81c3-458d-ad39-9ea9e736e59z
+              customerId: ffede3ee-37ab-47bb-9981-d3d14697d69g
+              cardNumber: 444458******4562
+              brand: Visa
+              cardholderName: Renan Soarez
+              cardholderDocument: '01234567891'
+              isPrivateLabel: false
+              expirationMonth: 12
+              expirationYear: 2026
+              brandName: Visa
+            success: true
+            errors: []
+            traceKey: 48347500-d312-4d3b-aebe-c52f379e0386
+    '400':
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '401':
+      description: Não autenticado / token inválido
+  security:
+  - bearerAuth: []
+put:
+  tags:
+  - Cartão Protegido
+  summary: PUT /card
+  operationId: put_v2_card
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            customerId:
+              type: string
+              description: ID exclusivo de cliente.
+            card:
+              type: object
+              description: Cartão a ser criado no sistema.
+              properties:
+                id:
+                  type: string
+                  description: Número de identificação(ID) do cartão.
+                customerId:
+                  type: string
+                  description: ID do cliente.
+                cardNumber:
+                  type: string
+                  description: Primary Account Number (PAN), o número impresso na frente do cartão.
+                cvv:
+                  type: string
+                  description: Card Verification Value (CVV), recurso de segurança para transações de cartão de pagamento com "ausência de cartão" instituídas para reduzir a incidência de fraude.
+                brand:
+                  $ref: ../components/schemas/CardBrand.yaml
+                  description: A bandeira do cartão à qual o imposto se aplica. .
+                cardHolderName:
+                  type: string
+                  description: Nome do títular do cartão.
+                cardHolderDocument:
+                  type: string
+                  description: Número do documento do títular, CNPJ ou CPF.
+                cardToken:
+                  type: string
+                  description: Token do cartão
+                billingAddress:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      street:
+                        type: string
+                        description: Rua.
+                      number:
+                        type: string
+                        description: Número.
+                      neighborhood:
+                        type: string
+                        description: Bairro.
+                      city:
+                        type: string
+                        description: Cidade.
+                      state:
+                        type: string
+                        description: Estado.
+                      country:
+                        type: string
+                        description: País.
+                      zipCode:
+                        type: string
+                        description: CEP.
+                      complement:
+                        type: string
+                        description: Complemento.
+                  description: É o endereço conectado ao cartão de crédito ou débito. As empresas usam o endereço de cobrança para verificar o uso autorizado de tal cartão. É também para onde as empresas enviam contas em papel e extratos bancários.
+                isPrivateLabel:
+                  type: boolean
+                  description: Indica se o cartão é um produto de whitelabel ou não. Whitelabel é um produto ou serviço que uma empresa produz e comercializa com outras.
+                expirationMonth:
+                  type: integer
+                  format: int32
+                  description: O Mês de expiração do cartão com 2 dígitos.
+                expirationYear:
+                  type: integer
+                  format: int32
+                  description: O Ano de expiração do cartão com 4 dígitos.
+              required:
+              - customerId
+              - cardNumber
+              - cvv
+              - brand
+              - cardHolderName
+              - cardHolderDocument
+              - isPrivateLabel
+              - expirationMonth
+              - expirationYear
+          required:
+          - customerId
+          - card
+        example:
+          card:
+            id: 7903ef09-83c3-458d-ad39-9ea9e736e59z
+            customerId: ffede3ee-37ab-47bb-9981-d3d14697d69g
+            cardNumber: '4444585001234562'
+            cvv: '111'
+            brand: Visa
+            cardholderName: Renan Soarez
+            cardholderDocument: '01234567891'
+            isPrivateLabel: false
+            expirationMonth: 12
+            expirationYear: 2026
+            brandName: Visa
+  responses:
+    '200':
+      description: Sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              updatedCard:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: Número de identificação(ID) do cartão.
+                  customerId:
+                    type: string
+                    description: ID do cliente.
+                  cardNumber:
+                    type: string
+                    description: Número do cartão com criptografia, mostrando apenas os 6 primeiros e os 4 últimos dígitos.
+                  brand:
+                    type: string
+                    description: Bandeira do cartão.
+                  cardHolderName:
+                    type: string
+                    description: Nome do títular do cartão.
+                  cardHolderDocument:
+                    type: string
+                    description: Número do documento do títular, CNPJ ou CPF.
+                  cardToken:
+                    type: string
+                    description: Não
+                  billingAddress:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        street:
+                          type: string
+                          description: Rua.
+                        number:
+                          type: string
+                          description: Número.
+                        neighborhood:
+                          type: string
+                          description: Bairro.
+                        city:
+                          type: string
+                          description: Cidade.
+                        state:
+                          type: string
+                          description: Estado.
+                        country:
+                          type: string
+                          description: País.
+                        zipCode:
+                          type: string
+                          description: CEP.
+                        complement:
+                          type: string
+                          description: Complemento.
+                    description: É o endereço conectado ao cartão de crédito ou débito. As empresas usam o endereço de cobrança para verificar o uso autorizado de tal cartão. É também para onde as empresas enviam contas em papel e extratos bancários.
+                  isPrivateLabel:
+                    type: boolean
+                    description: Indica se o cartão é um produto de whitelabel ou não. Whitelabel é um produto ou serviço que uma empresa produz e comercializa com outras empresas que tem interesse em utilizar o mesmo com sua marca estampada.
+                  expirationMonth:
+                    type: integer
+                    format: int32
+                    description: O Mês de expiração do cartão com 2 dígitos.
+                  expirationYear:
+                    type: integer
+                    format: int32
+                    description: O Ano de expiração do cartão com 4 dígitos.
+                  fallback:
+                    type: boolean
+                    description: Uma bandeira que informa se a cobrança necessária será feita como fita magnética substituta.
+                  brandName:
+                    type: string
+                    description: O nome da bandeira do cartão.
+                  cof:
+                    type: boolean
+                    description: Indica se a transação é COF (Credentials On File).
+                  recurrencyId:
+                    type: string
+                    description: ID de recorrência associado ao cartão.
+              success:
+                type: boolean
+                description: Se o endpoint processou a requisição com sucesso.
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    errorCode:
+                      type: integer
+                      format: int32
+                      description: Código do erro.
+                    message:
+                      type: string
+                      description: Mensagem para identificar qual foi o erro retornado.
+                description: 'Se success: false , esse array contem a descrição dos erros retornados.'
+              traceKey:
+                type: string
+                description: Identificador da operação.
+          example:
+            updatedCard:
+              id: 7903ef09-83c3-458d-ad39-9ea9e736e59z
+              customerId: ffede3ee-37ab-47bb-9981-d3d14697d69g
+              cardNumber: 444458******4562
+              isPrivateLabel: false
+              expirationMonth: 12
+              expirationYear: 2026
+            success: true
+            errors: []
+            traceKey: 7ab17f07-8bcb-4634-b3f5-fca35bcb81c6
+    '400':
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '401':
+      description: Não autenticado / token inválido
+  security:
+  - bearerAuth: []
+get:
+  tags:
+  - Cartão Protegido
+  summary: GET /card
+  operationId: get_v2_card
+  parameters:
+  - name: id
+    in: query
+    required: true
+    schema:
+      type: string
+    description: ID do cartão.
+  responses:
+    '200':
+      description: Sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              card:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: Número de identificação(ID) do cartão.
+                  customerId:
+                    type: string
+                    description: ID do cliente.
+                  cardNumber:
+                    type: string
+                    description: Número do cartão com criptografia, mostrando apenas os 6 primeiros e os 4 últimos dígitos.
+                  brand:
+                    type: string
+                    description: Bandeira do cartão.
+                  cardHolderName:
+                    type: string
+                    description: Nome do títular do cartão.
+                  cardHolderDocument:
+                    type: string
+                    description: Número do documento do títular, CNPJ ou CPF.
+                  cardToken:
+                    type: string
+                    description: Token de cartão.
+                  billingAddress:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        street:
+                          type: string
+                          description: Rua.
+                        number:
+                          type: string
+                          description: Número.
+                        neighborhood:
+                          type: string
+                          description: Bairro.
+                        city:
+                          type: string
+                          description: Cidade.
+                        state:
+                          type: string
+                          description: Estado.
+                        country:
+                          type: string
+                          description: País.
+                        zipCode:
+                          type: string
+                          description: CEP.
+                        complement:
+                          type: string
+                          description: Complemento.
+                    description: É o endereço conectado ao cartão de crédito ou débito. As empresas usam o endereço de cobrança para verificar o uso autorizado de tal cartão. É também para onde as empresas enviam contas em papel e extratos bancários.
+                  isPrivateLabel:
+                    type: boolean
+                    description: Indica se o cartão é um produto de whitelabel ou não. Whitelabel é um produto ou serviço que uma empresa produz e comercializa com outras empresas que tem interesse em utilizar o mesmo com sua marca estampada.
+                  expirationMonth:
+                    type: integer
+                    format: int32
+                    description: O Mês de expiração do cartão com 2 dígitos.
+                  expirationYear:
+                    type: integer
+                    format: int32
+                    description: O Ano de expiração do cartão com 4 dígitos.
+                  fallback:
+                    type: boolean
+                    description: Uma bandeira que informa se a cobrança necessária será feita como fita magnética substituta.
+                  brandName:
+                    type: string
+                    description: O nome da bandeira do cartão.
+                  cof:
+                    type: boolean
+                    description: Indica se a transação é COF (Credentials On File).
+                  recurrencyId:
+                    type: string
+                    description: ID de recorrência associado ao cartão.
+              success:
+                type: boolean
+                description: Se o endpoint processou a requisição com sucesso.
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    errorCode:
+                      type: integer
+                      format: int32
+                      description: Código do erro.
+                    message:
+                      type: string
+                      description: Mensagem para identificar qual foi o erro retornado.
+                description: 'Se success: false , esse array contem a descrição dos erros retornados.'
+              traceKey:
+                type: string
+                description: Identificador da operação.
+          example:
+            card:
+              id: 7903ef09-83c3-458d-ad39-9ea9e736e59z
+              customerId: ffede3ee-37ab-47bb-9981-d3d14697d69a
+              cardNumber: 444458******4562
+              isPrivateLabel: false
+              expirationMonth: 12
+              expirationYear: 2026
+            success: true
+            errors: []
+            traceKey: 929bc149-4d64-4450-b5d1-800d5a4f5449
+    '400':
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '401':
+      description: Não autenticado / token inválido
+  security:
+  - bearerAuth: []

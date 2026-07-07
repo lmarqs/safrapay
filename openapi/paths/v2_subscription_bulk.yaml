@@ -1,0 +1,334 @@
+post:
+  tags:
+  - Recorrência e Planos
+  summary: POST /subscription/bulk
+  operationId: post_v2_subscription_bulk
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            customerIds:
+              type: array
+              items:
+                type: string
+              description: Os IDs de clientes por meio do qual a assinatura será anexada.
+            sessionId:
+              type: string
+              description: ID da sessão criada pelo servidor do site do cliente e usada durante a visita de um determinado usuário. Obrigatório se o Antifraude estiver ativo. Deve corresponder ao mesmo identificador único utilizado no Device Fingerprint da página de checkout, porém sem o prefixo safrapay_br .
+            remoteIp:
+              type: string
+              description: '[OBRIGATÓRIO quando antifraude ativo] O endereço IP do comprador. Utilizado em verificações de risco e prevenção de fraudes. Exemplo: 192.168.1.100'
+            subscription:
+              type: object
+              properties:
+                id:
+                  type: string
+                  description: O ID da assinatura.
+                planId:
+                  type: string
+                  description: Consulta um plano criado anteriormente, que representa o modelo de assinatura. Este ID é único.
+                cardId:
+                  type: string
+                  description: Consulta um cartão criado anteriormente. Este ID é único.
+                cardCvv:
+                  type: string
+                  description: Código de segurança do cartão.
+                capture:
+                  type: boolean
+                  description: 'Indica se a transação deve ser capturada ou apenas pré-autorizadora. True para capturar a transação; False para pré-autorizar, deixando a captura pendente da transação. Valor padrão: verdadeiro.'
+                lateCapture:
+                  type: boolean
+                  description: 'Informe verdadeiro para realizar uma autorização com captura atrasada. Valor padrão: falso.'
+                merchantSubscriptionId:
+                  type: string
+                  description: ID de assinatura, de preferência único, definido pelo estabelecimento.
+                quantity:
+                  type: integer
+                  format: int32
+                  description: Quantidade de planos dentro da assinatura.
+                customAmount:
+                  type: integer
+                  format: int32
+                  description: Novo valor da assinatura a ser cobrado, valor de substituição definido pelo plano.
+                isActive:
+                  type: boolean
+                  description: Define se a assinatura estará ativa ou não.
+                nextExecution:
+                  type: string
+                  description: Na próxima vez, a assinatura será cobrada.
+                failedAttempts:
+                  type: integer
+                  format: int32
+                  description: Número de cobranças com falha consecutivas.
+                charges:
+                  type: array
+                  items:
+                    type: string
+                  description: Lista de IDs de cobrança, bem-sucedidos ou não.
+                acquirerCode:
+                  type: integer
+                  format: int32
+                  description: O ID da adquirente. .
+                cycles:
+                  type: integer
+                  format: int32
+                  description: Número de ciclos que a assinatura cobrará do cliente.
+                jobs:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      createAt:
+                        type: string
+                        description: Data de criação.
+                      id:
+                        type: string
+                        description: O ID da tarefa da assinatura.
+                      exception:
+                        type: object
+                        description: '-'
+                        properties:
+                          typeName:
+                            type: string
+                            description: '-'
+                          message:
+                            type: string
+                            description: '-'
+                          stackTrace:
+                            type: string
+                            description: '-'
+                          source:
+                            type: string
+                            description: '-'
+                      exceptionHandled:
+                        type: boolean
+                        description: '-'
+                      result:
+                        type: string
+                        description: '-'
+                      arguments:
+                        type: array
+                        items:
+                          type: string
+                        description: '-'
+                      classMethodName:
+                        type: string
+                        description: '-'
+                      classTypeName:
+                        type: string
+                        description: '-'
+                    required:
+                    - createAt
+                    - exceptionHandled
+                  description: Tarefas recorrentes executadas no ciclo de vida da assinatura.
+                subscriptionItems:
+                  type: object
+                  description: Itens da assinatura que irão compor a assinatura.
+                  properties:
+                    numberofExecutions:
+                      type: integer
+                      format: int32
+                      description: Número de execuções efetuadas.
+                    itemCode:
+                      type: string
+                      description: O código do item.
+                    description:
+                      type: string
+                      description: Descrição do item.
+                    value:
+                      type: integer
+                      format: int32
+                      description: Valor do item.
+                    quantity:
+                      type: integer
+                      format: int32
+                      description: Quantidade do item.
+                    categoryId:
+                      type: string
+                      description: O ID da categoria do item.
+                smartcheckoutId:
+                  type: string
+                  description: ID de Link de Pagamento ou Checkout.
+                frequency:
+                  type: integer
+                  format: int32
+                  description: A frequência com que uma assinatura deve ser cobrada.
+              required:
+              - planId
+            lateCapture:
+              type: boolean
+              description: 'Informar valor "true" para uma autorização com captura tardia. Valor padrão: false.'
+            capture:
+              type: boolean
+              description: Se a cobrança deve ou não ser capturada.
+            templateId:
+              type: string
+              description: TemplateId que será usado para enviar o recibo ao cliente.
+            primaryColor:
+              type: string
+              description: A cor primária da configuração do comerciante.
+            secondaryColor:
+              type: string
+              description: A cor secundária da configuração do comerciante.
+            hostname:
+              type: string
+              description: O hostname da configuração do comerciante.
+          required:
+          - customerIds
+          - capture
+        example:
+          customerIds:
+          - 1980bc04-4c3c-4cdd-a7d5-b3b5771644b4
+          - ffede3ee-37ab-47bb-9981-d3d14697d67a
+          subscription:
+            planId: 11b10c11-56be-49d7-936b-e93a74ed2487
+            capture: true
+  responses:
+    '200':
+      description: Sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              subscriptions:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      description: O ID da assinatura.
+                    planId:
+                      type: string
+                      description: O ID do plano.
+                    cardId:
+                      type: string
+                      description: O ID do cartão.
+                    capture:
+                      type: boolean
+                      description: 'Indica se a transação deve ser capturada ou apenas pré-autorizadora. True para capturar a transação; False para pré-autorizar, deixando a captura pendente da transação. Valor padrão: verdadeiro.'
+                    lateCapture:
+                      type: boolean
+                      description: 'Informe verdadeiro para realizar uma autorização com captura atrasada. Valor padrão: falso.'
+                    merchantSubscriptionId:
+                      type: string
+                      description: ID de assinatura, de preferência único, definido pelo estabelecimento.
+                    quantity:
+                      type: integer
+                      format: int32
+                      description: Quantidade de planos dentro da assinatura
+                    customAmount:
+                      type: integer
+                      format: int32
+                      description: Novo valor da assinatura a ser cobrado, valor de substituição definido pelo plano.
+                    isActive:
+                      type: boolean
+                      description: Indica se a assinatura está ativa ou não.
+                    nextExecution:
+                      type: string
+                      description: Na próxima vez, a assinatura será cobrada.
+                    failedAttempts:
+                      type: integer
+                      format: int32
+                      description: Quantidade de tentativas que falharam.
+                    charge:
+                      type: array
+                      items:
+                        type: object
+                        additionalProperties: true
+                      description: Lista de IDs de cobrança, bem-sucedidos ou não.
+                    acquirerCode:
+                      type: string
+                      description: Nome da adquirente.
+                    subscriptionItems:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          numberofExecutions:
+                            type: integer
+                            format: int32
+                            description: Número de execuções efetuadas.
+                          itemCode:
+                            type: string
+                            description: O código do item.
+                          description:
+                            type: string
+                            description: Descrição do item.
+                          value:
+                            type: integer
+                            format: int32
+                            description: Valor do item.
+                          quantity:
+                            type: integer
+                            format: int32
+                            description: Quantidade do item.
+                          categoryId:
+                            type: string
+                            description: O ID da categoria do item.
+              success:
+                type: boolean
+                description: Se o endpoint processou a requisição com sucesso.
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    errorCode:
+                      type: integer
+                      format: int32
+                      description: Código do erro.
+                    message:
+                      type: string
+                      description: Mensagem para identificar qual foi o erro retornado.
+                description: 'Se success: false , esse array contem a descrição dos erros retornados.'
+              traceKey:
+                type: string
+                description: Identificador da operação.
+          example:
+            subscriptions:
+            - id: 1f15e647-7447-47b8-8b98-c1fc5a02dfe6
+              planId: 13b10c28-56be-49d7-936b-e93a74ed2487
+              cardId: 00000000-0000-0000-0000-000000000000
+              capture: true
+              quantity: 1
+              isActive: true
+              nextExecution: '2021-06-22T17:37:44.5810808-03:00'
+              failedAttempts: 0
+              charges: []
+              acquirerCode: Undefined
+              subscriptionItems:
+              - description: Matricula
+                value: 1000
+                quantity: 1
+            - id: 180a64a9-e4bd-4ee2-863d-4677beafbbe7
+              planId: 13b10c28-56be-49d7-936b-e93a74ed2487
+              cardId: 00000000-0000-0000-0000-000000000000
+              capture: true
+              quantity: 1
+              isActive: true
+              nextExecution: '2021-06-22T17:37:44.5811087-03:00'
+              failedAttempts: 0
+              charges: []
+              acquirerCode: Undefined
+              subscriptionItems:
+              - description: Matricula
+                value: 1000
+                quantity: 1
+            success: true
+            errors: []
+            traceKey: bfabd6f7-616a-48c9-bc7f-0105cfe52dc5
+    '400':
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '401':
+      description: Não autenticado / token inválido
+  security:
+  - bearerAuth: []

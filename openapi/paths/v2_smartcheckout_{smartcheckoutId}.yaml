@@ -1,0 +1,58 @@
+delete:
+  tags:
+  - Link de Pagamentos
+  summary: DELETE /smartcheckout/{smartcheckoutId}
+  operationId: delete_v2_smartcheckout_smartcheckoutId
+  parameters:
+  - name: smartcheckoutId
+    in: path
+    required: true
+    schema:
+      type: string
+  - name: MerchantId
+    in: header
+    required: true
+    schema:
+      type: string
+    description: Número de identificação da loja.
+  responses:
+    '200':
+      description: Sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                description: Se o endpoint processou a requisição com sucesso.
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    errorCode:
+                      type: integer
+                      format: int32
+                      description: Código do erro.
+                    message:
+                      type: string
+                      description: Mensagem para identificar qual foi o erro retornado.
+                description: 'Se success: false , esse array contem a descrição dos erros retornados.'
+              traceKey:
+                type: string
+                description: Identificador da operação.
+          example:
+            success: true
+            errors: []
+            traceKey: 587c72cf-a761-599f-989b-7e46b21204fa
+    '400':
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '401':
+      description: Não autenticado / token inválido
+  security:
+  - bearerAuth: []

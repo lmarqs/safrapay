@@ -1,0 +1,21 @@
+type: object
+description: Pagador da cobrança (apenas Pix).
+properties:
+  document:
+    type: string
+    description: Documento de identificação do pagador (CPF ou CNPJ).
+  name:
+    type: string
+    description: Nome do pagador
+  ispbCode:
+    type: string
+    description: Código ISPB (Identificador do Sistema de Pagamentos Brasileiros) do banco do pagador.
+  bankCode:
+    type: string
+    description: Código numérico do banco do pagador, conforme o padrão do Banco Central.
+  branch:
+    type: string
+    description: Código da agência bancária onde a conta do pagador está registrada.
+  account:
+    type: string
+    description: Número da conta bancária do pagador.

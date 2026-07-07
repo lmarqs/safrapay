@@ -1,0 +1,810 @@
+post:
+  tags:
+  - Pagamentos
+  summary: POST /customer
+  operationId: post_v2_customer
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            customer:
+              type: object
+              description: Dados do comprador.
+              properties:
+                name:
+                  type: string
+                  description: Nome completo do comprador.
+                email:
+                  type: string
+                  description: E-mail do comprador.
+                entityType:
+                  $ref: ../components/schemas/EntityType.yaml
+                  description: Se é pessoa física ou jurídica
+                documentType:
+                  $ref: ../components/schemas/DocumentType.yaml
+                  description: Tipo do documento do comprador.
+                document:
+                  type: string
+                  description: Documento do comprador.
+                birthday:
+                  type: string
+                  format: date
+                  description: Data de nascimento do comprador.
+                gender:
+                  $ref: ../components/schemas/Gender.yaml
+                  description: Gênero do comprador.
+                phone:
+                  type: object
+                  description: Telefone do comprador.
+                  properties:
+                    countryCode:
+                      type: string
+                      description: Código do país.
+                    areaCode:
+                      type: string
+                      description: Código de área.
+                    number:
+                      type: string
+                      description: Número do Telefone.
+                    type:
+                      $ref: ../components/schemas/Phone.yaml
+                      description: Tipo do telefone.
+                  required:
+                  - countryCode
+                  - areaCode
+                  - number
+                  - type
+                address:
+                  type: object
+                  description: Endereço do comprador.
+                  properties:
+                    street:
+                      type: string
+                      description: Rua.
+                    number:
+                      type: string
+                      description: Número.
+                    neighborhood:
+                      type: string
+                      description: Bairro.
+                    city:
+                      type: string
+                      description: Cidade.
+                    state:
+                      type: string
+                      description: Estado.
+                    country:
+                      type: string
+                      description: País.
+                    zipCode:
+                      type: string
+                      description: CEP.
+                    complement:
+                      type: string
+                      description: Complemento.
+                  required:
+                  - street
+                  - number
+                  - neighborhood
+                  - city
+                  - state
+                  - country
+                  - zipCode
+                  - complement
+                bankAccounts:
+                  type: object
+                  description: Contas do comprador.
+                  properties:
+                    bankCode:
+                      type: string
+                      description: Código do banco.
+                    bankName:
+                      type: string
+                      description: Nome do banco.
+                    branch:
+                      type: string
+                      description: Filial.
+                    branchCheckDigit:
+                      type: string
+                      description: Dígito de verificação da filial.
+                    account:
+                      type: string
+                      description: Conta bancária.
+                    accountCheckDigit:
+                      type: string
+                      description: Dígito de verificação da conta bancária.
+                    type:
+                      type: integer
+                      format: int32
+                      description: Tipo de conta.
+                    isActive:
+                      type: boolean
+                      description: Se a conta está ativa ou não.
+                  required:
+                  - bankCode
+                  - type
+                  - isActive
+                isActive:
+                  type: boolean
+                  description: Se o usuário é ativo ou não.
+              required:
+              - name
+              - email
+              - entityType
+              - documentType
+              - document
+              - phone
+          required:
+          - customer
+        example:
+          customer:
+            name: Yago Sebastião Lima
+            email: yagosebastiaolima@archosolutions.com.br
+            entityType: 1
+            documentType: 1
+            document: '78112482802'
+            phone:
+              countryCode: '55'
+              areaCode: '21'
+              number: '999999999'
+              type: 5
+  responses:
+    '200':
+      description: Sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              customer:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: O ID do comprador
+                  name:
+                    type: string
+                    description: Nome completo do comprador.
+                  email:
+                    type: string
+                    description: E-mail do comprador.
+                  entityType:
+                    $ref: ../components/schemas/EntityType.yaml
+                    description: Se é pessoa física ou jurídica.
+                  documentType:
+                    $ref: ../components/schemas/DocumentType.yaml
+                    description: Tipo do documento do comprador.
+                  document:
+                    type: string
+                    description: Documento do comprador.
+                  birthday:
+                    type: string
+                    format: date
+                    description: Data de nascimento do comprador.
+                  gender:
+                    $ref: ../components/schemas/Gender.yaml
+                    description: Gênero do comprador.
+                  phone:
+                    type: object
+                    description: Telefone do comprador.
+                    properties:
+                      countryCode:
+                        type: string
+                        description: Código do país.
+                      areaCode:
+                        type: string
+                        description: Código de área.
+                      number:
+                        type: string
+                        description: Número do Telefone.
+                      type:
+                        $ref: ../components/schemas/Phone.yaml
+                        description: Tipo do telefone
+                  isActive:
+                    type: boolean
+                    description: Se o usuário é ativo ou não.
+                  address:
+                    type: object
+                    description: Endereço do comprador.
+                    properties:
+                      street:
+                        type: string
+                        description: Rua.
+                      number:
+                        type: string
+                        description: Número.
+                      neighborhood:
+                        type: string
+                        description: Bairro.
+                      city:
+                        type: string
+                        description: Cidade.
+                      state:
+                        type: string
+                        description: Estado.
+                      country:
+                        type: string
+                        description: País.
+                      zipCode:
+                        type: string
+                        description: CEP.
+                      complement:
+                        type: string
+                        description: Complemento.
+                  bankAccounts:
+                    type: object
+                    description: Contas do comprador.
+                    properties:
+                      bankCode:
+                        type: string
+                        description: Código do banco.
+                      bankName:
+                        type: string
+                        description: Nome do banco.
+                      branch:
+                        type: string
+                        description: Filial.
+                      branchCheckDigit:
+                        type: string
+                        description: Dígito de verificação da filial.
+                      account:
+                        type: string
+                        description: Conta bancária.
+                      accountCheckDigit:
+                        type: string
+                        description: Dígito de verificação da conta bancária.
+                      type:
+                        type: integer
+                        format: int32
+                        description: Tipo de conta.
+                      isActive:
+                        type: boolean
+                        description: Se a conta está ativa ou não.
+              success:
+                type: boolean
+                description: Se o endpoint processou a requisição com sucesso.
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    errorCode:
+                      type: integer
+                      format: int32
+                      description: Código do erro.
+                    message:
+                      type: string
+                      description: Mensagem para identificar qual foi o erro retornado.
+                    field:
+                      type: string
+                      description: Qual campo da requisição está com erro.
+                description: 'Se success: false , esse array contem a descrição dos erros retornados.'
+              traceKey:
+                type: string
+                description: Identificador da operação.
+          example:
+            customer:
+              id: ffede3ee-37ab-47bb-9981-d4d14697d67a
+              name: Yago Sebastião Lima
+              email: yagosebastiaolima@archosolutions.com.br
+              entityType: IndividualMerchant
+              documentType: Cpf
+              document: '78112482802'
+              gender: Undefined
+              phone:
+                countryCode: '55'
+                areaCode: '21'
+                number: '999999999'
+                type: Mobile
+            success: true
+            errors: []
+            traceKey: 496e22bd-0690-489c-a88f-9c1fd4e64d62
+    '400':
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '401':
+      description: Não autenticado / token inválido
+  security:
+  - bearerAuth: []
+put:
+  tags:
+  - Pagamentos
+  summary: PUT /customer
+  operationId: put_v2_customer
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            customer:
+              type: object
+              description: Dados do comprador.
+              properties:
+                id:
+                  type: string
+                name:
+                  type: string
+                  description: Nome completo do comprador.
+                email:
+                  type: string
+                  description: E-mail do comprador.
+                entityType:
+                  $ref: ../components/schemas/EntityType.yaml
+                  description: Se é pessoa física ou jurídica.
+                documentType:
+                  $ref: ../components/schemas/DocumentType.yaml
+                  description: Tipo do documento do comprador.
+                document:
+                  type: string
+                  description: Documento do comprador.
+                birthday:
+                  type: string
+                  format: date
+                  description: Data de nascimento do comprador.
+                gender:
+                  $ref: ../components/schemas/Gender.yaml
+                  description: Gênero do comprador.
+                phone:
+                  type: object
+                  description: Telefone do comprador.
+                  properties:
+                    countryCode:
+                      type: string
+                      description: Código do país.
+                    areaCode:
+                      type: string
+                      description: Código de área.
+                    number:
+                      type: string
+                      description: Número do Telefone.
+                    type:
+                      $ref: ../components/schemas/Phone.yaml
+                      description: Tipo do telefone.
+                  required:
+                  - countryCode
+                  - areaCode
+                  - number
+                  - type
+                address:
+                  type: object
+                  description: Endereço do comprador.
+                  properties:
+                    street:
+                      type: string
+                      description: Rua.
+                    number:
+                      type: string
+                      description: Número.
+                    neighborhood:
+                      type: string
+                      description: Bairro.
+                    city:
+                      type: string
+                      description: Cidade.
+                    state:
+                      type: string
+                      description: Estado.
+                    country:
+                      type: string
+                      description: País.
+                    zipCode:
+                      type: string
+                      description: CEP.
+                    complement:
+                      type: string
+                      description: Complemento.
+                  required:
+                  - street
+                  - number
+                  - neighborhood
+                  - city
+                  - state
+                  - country
+                  - zipCode
+                  - complement
+                bankAccounts:
+                  type: object
+                  description: Contas do comprador.
+                  properties:
+                    bankCode:
+                      type: string
+                      description: Código do banco.
+                    bankName:
+                      type: string
+                      description: Nome do banco.
+                    branch:
+                      type: string
+                      description: Filial.
+                    branchCheckDigit:
+                      type: string
+                      description: Dígito de verificação da filial.
+                    account:
+                      type: string
+                      description: Conta bancária.
+                    accountCheckDigit:
+                      type: string
+                      description: Dígito de verificação da conta bancária.
+                    type:
+                      type: integer
+                      format: int32
+                      description: Tipo de conta.
+                    isActive:
+                      type: boolean
+                      description: Se a conta está ativa ou não.
+                  required:
+                  - bankCode
+                  - type
+                  - isActive
+                isActive:
+                  type: boolean
+                  description: Se o usuário é ativo ou não.
+              required:
+              - name
+              - email
+              - entityType
+              - documentType
+              - document
+              - phone
+          required:
+          - customer
+        example:
+          customer:
+            id: ffede3ee-37ab-47bb-9981-d3d14697d67z
+            name: Yago Sebastião Lima
+            email: yagosebastiaolima@archosolutions.com.br
+            entityType: 1
+            documentType: 1
+            document: '38000266350'
+            phone:
+              countryCode: '55'
+              areaCode: '21'
+              number: '999999999'
+              type: 5
+  responses:
+    '200':
+      description: Sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              updatedCustomer:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: O ID do comprador.
+                  name:
+                    type: string
+                    description: Nome completo do comprador.
+                  email:
+                    type: string
+                    description: E-mail do comprador.
+                  entityType:
+                    $ref: ../components/schemas/EntityType.yaml
+                    description: Se é pessoa física ou jurídica.
+                  documentType:
+                    $ref: ../components/schemas/DocumentType.yaml
+                    description: Tipo do documento do comprador.
+                  document:
+                    type: string
+                    description: Documento do comprador.
+                  birthday:
+                    type: string
+                    format: date
+                    description: Data de nascimento do comprador.
+                  gender:
+                    $ref: ../components/schemas/Gender.yaml
+                    description: Gênero do comprador.
+                  phone:
+                    type: object
+                    description: Telefone do comprador.
+                    properties:
+                      countryCode:
+                        type: string
+                        description: Código do país.
+                      areaCode:
+                        type: string
+                        description: Código de área.
+                      number:
+                        type: string
+                        description: Número do Telefone.
+                      type:
+                        $ref: ../components/schemas/Phone.yaml
+                        description: Tipo do telefone.
+                  isActive:
+                    type: boolean
+                    description: Se o usuário é ativo ou não.
+                  address:
+                    type: object
+                    description: Endereço do comprador.
+                    properties:
+                      street:
+                        type: string
+                        description: Rua.
+                      number:
+                        type: string
+                        description: Número.
+                      neighborhood:
+                        type: string
+                        description: Bairro.
+                      city:
+                        type: string
+                        description: Cidade.
+                      state:
+                        type: string
+                        description: Estado.
+                      country:
+                        type: string
+                        description: País.
+                      zipCode:
+                        type: string
+                        description: CEP.
+                      complement:
+                        type: string
+                        description: Complemento.
+                  bankAccounts:
+                    type: object
+                    description: Contas do comprador.
+                    properties:
+                      bankCode:
+                        type: string
+                        description: Código do banco.
+                      bankName:
+                        type: string
+                        description: Nome do banco.
+                      branch:
+                        type: string
+                        description: Filial.
+                      branchCheckDigit:
+                        type: string
+                        description: Dígito de verificação da filial.
+                      account:
+                        type: string
+                        description: Conta bancária.
+                      accountCheckDigit:
+                        type: string
+                        description: Dígito de verificação da conta bancária.
+                      type:
+                        type: integer
+                        format: int32
+                        description: Tipo de conta.
+                      isActive:
+                        type: boolean
+                        description: Se a conta está ativa ou não.
+              success:
+                type: boolean
+                description: Se o endpoint processou a requisição com sucesso.
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    errorCode:
+                      type: integer
+                      format: int32
+                      description: Código do erro.
+                    message:
+                      type: string
+                      description: Mensagem para identificar qual foi o erro retornado.
+                    field:
+                      type: string
+                      description: Qual campo da requisição está com erro.
+                description: 'Se success: false , esse array contem a descrição dos erros retornados.'
+              traceKey:
+                type: string
+                description: Identificador da operação.
+          example:
+            updatedCustomer:
+              id: ffede3ee-37ab-47bb-9981-d3d14697d67z
+              name: Yago Sebastião Lima
+              email: yagosebastiaolima@archosolutions.com.br
+              entityType: IndividualMerchant
+              documentType: Cpf
+              document: '78112482802'
+              gender: Undefined
+              phone:
+                countryCode: '55'
+                areaCode: '21'
+                number: '999999999'
+                type: Mobile
+            success: true
+            errors: []
+            traceKey: 33d8aa2b-5b89-4f5f-a1ca-74b759658edf
+    '400':
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '401':
+      description: Não autenticado / token inválido
+  security:
+  - bearerAuth: []
+get:
+  tags:
+  - Pagamentos
+  summary: GET /customer
+  operationId: get_v2_customer
+  parameters:
+  - name: id
+    in: query
+    required: true
+    schema:
+      type: string
+    description: O ID do comprador.
+  - name: document
+    in: query
+    required: false
+    schema:
+      type: string
+    description: O documento do comprador.
+  responses:
+    '200':
+      description: Sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              customer:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: O ID do comprador.
+                  name:
+                    type: string
+                    description: Nome completo do comprador.
+                  email:
+                    type: string
+                    description: E-mail do comprador.
+                  entityType:
+                    $ref: ../components/schemas/EntityType.yaml
+                    description: Se é pessoa física ou jurídica.
+                  documentType:
+                    $ref: ../components/schemas/DocumentType.yaml
+                    description: Tipo do documento do comprador.
+                  document:
+                    type: string
+                    description: Documento do comprador.
+                  birthday:
+                    type: string
+                    format: date
+                    description: Data de nascimento do comprador.
+                  gender:
+                    $ref: ../components/schemas/Gender.yaml
+                    description: Gênero do comprador.
+                  phone:
+                    type: object
+                    description: Telefone do comprador.
+                    properties:
+                      countryCode:
+                        type: string
+                        description: Código do país.
+                      areaCode:
+                        type: string
+                        description: Código de área.
+                      number:
+                        type: string
+                        description: Número do Telefone.
+                      type:
+                        $ref: ../components/schemas/Phone.yaml
+                        description: Tipo do telefone.
+                  isActive:
+                    type: boolean
+                    description: Se o usuário é ativo ou não.
+                  address:
+                    type: object
+                    description: Endereço do comprador.
+                    properties:
+                      street:
+                        type: string
+                        description: Rua.
+                      number:
+                        type: string
+                        description: Número.
+                      neighborhood:
+                        type: string
+                        description: Bairro.
+                      city:
+                        type: string
+                        description: Cidade.
+                      state:
+                        type: string
+                        description: Estado.
+                      country:
+                        type: string
+                        description: País.
+                      zipCode:
+                        type: string
+                        description: CEP.
+                      complement:
+                        type: string
+                        description: Complemento.
+                  bankAccounts:
+                    type: object
+                    description: Contas do comprador.
+                    properties:
+                      bankCode:
+                        type: string
+                        description: Código do banco.
+                      bankName:
+                        type: string
+                        description: Nome do banco.
+                      branch:
+                        type: string
+                        description: Filial.
+                      branchCheckDigit:
+                        type: string
+                        description: Dígito de verificação da filial.
+                      account:
+                        type: string
+                        description: Conta bancária.
+                      accountCheckDigit:
+                        type: string
+                        description: Dígito de verificação da conta bancária.
+                      type:
+                        type: integer
+                        format: int32
+                        description: Tipo de conta.
+                      isActive:
+                        type: boolean
+                        description: Se a conta está ativa ou não.
+              success:
+                type: boolean
+                description: Se o endpoint processou a requisição com sucesso.
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    errorCode:
+                      type: integer
+                      format: int32
+                      description: Código do erro.
+                    message:
+                      type: string
+                      description: Mensagem para identificar qual foi o erro retornado.
+                    field:
+                      type: string
+                      description: Qual campo da requisição está com erro.
+                description: 'Se success: false , esse array contem a descrição dos erros retornados.'
+              traceKey:
+                type: string
+                description: Identificador da operação.
+          example:
+            customer:
+              id: ffede3ee-37ab-47bb-9981-d3d14697d67z
+              name: Yago Sebastião Lima
+              email: yagosebastiaolima@archosolutions.com.br
+              entityType: IndividualMerchant
+              documentType: Cpf
+              document: '38000266350'
+              gender: Undefined
+              phone:
+                countryCode: '55'
+                areaCode: '21'
+                number: '999999999'
+                type: Mobile
+            success: true
+            errors: []
+            traceKey: 660ba190-188c-4da9-8655-7aa61cef7d59
+    '400':
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '401':
+      description: Não autenticado / token inválido
+  security:
+  - bearerAuth: []

@@ -1,0 +1,149 @@
+post:
+  tags:
+  - Webhook
+  summary: POST /webhook/bulk
+  operationId: post_v1_webhook_bulk
+  description: O endpoint responsável por criar uma notificação webhook.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            email:
+              type: string
+              description: Email para contingência de entrega do webhook.
+            webhooks:
+              type: array
+              items:
+                type: object
+                properties:
+                  targetUrl:
+                    type: string
+                    description: URL onde a solicitação foi feita. Verificar Requisitos da URL .
+                  eventType:
+                    $ref: ../components/schemas/EventType.yaml
+                required:
+                - targetUrl
+                - eventType
+              description: Representa um evento de interesse para acionar as notificações.
+            webhook:
+              type: object
+              properties:
+                customHeaders:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      param:
+                        type: string
+                        description: Nome do cabeçalho a ser definido no cabeçalho da solicitação.
+                      value:
+                        type: string
+                        description: Valor do cabeçalho para definir no parâmetro de solicitação.
+                  description: Lista de objetos contendo parâmetros e valores a serem enviados nos cabeçalhos do Webhook.
+          required:
+          - email
+          - webhooks
+        example:
+          email: ggabriellyalinemartins@webin.com.br
+          webhooks:
+          - targetUrl: https://typedwebhook.tools/webhook/1ffe334f-d284-4f48-bee7-4598c1cda210
+            eventType: 1
+          - targetUrl: https://typedwebhook.tools/webhook/1ffe334f-d284-4f48-bee7-4598c1cda210
+            eventType: 2
+  responses:
+    '200':
+      description: Sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              webhooks:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    eventType:
+                      type: string
+                      description: Representa o tipo de evento.
+                    webhookId:
+                      type: string
+                      description: O ID único do Webhook.
+                    status:
+                      $ref: ../components/schemas/WebhookStatus.yaml
+                    targetUrl:
+                      type: string
+                      description: URL onde a solicitação foi feita.
+                    creationDate:
+                      type: string
+                      description: Data de criação do Webhook.
+                    email:
+                      type: string
+                      description: Email para contato.
+                    customHeaders:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          param:
+                            type: string
+                            description: Nome do cabeçalho definido no cabeçalho da solicitação.
+                          value:
+                            type: string
+                            description: Valor do cabeçalho definido no parâmetro da solicitação.
+                      description: Lista de objetos contendo parâmetros e valores que foram enviados nos cabeçalhos do Webhook.
+                description: Representa um evento de interesse acionando as notificações.
+              success:
+                type: boolean
+                description: Se o endpoint processou a requisição com sucesso.
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    errorCode:
+                      type: integer
+                      format: int32
+                      description: Não
+                    message:
+                      type: string
+                      description: Não
+                description: 'Se success: false , esse array contem a descrição dos erros retornados.'
+              traceKey:
+                type: string
+                description: Identificador da operação.
+          example:
+            webhooks:
+            - eventType: ChargeCreated
+              webhookId: df007e3d-ebb5-46d1-80bc-a9815b1f32e6
+              status: Active
+              targetUrl: https://typedwebhook.tools/webhook/1ffe334f-d284-4f48-bee7-4598c1cda210
+              creationDate: '2021-06-14 22:19:32Z'
+              email: ggabriellyalinemartins@webin.com.br
+            - eventType: ChargeUpdated
+              webhookId: 9deffbef-0a79-456c-8a41-f60dd9f125ba
+              status: Active
+              targetUrl: https://typedwebhook.tools/webhook/1ffe334f-d284-4f48-bee7-4598c1cda210
+              creationDate: '2021-06-14 22:19:32Z'
+              email: ggabriellyalinemartins@webin.com.br
+            success: true
+            errors: []
+            traceKey: 202415f4-1e6f-4c74-b47d-eb5020adfcc2
+    '400':
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '401':
+      description: Não autenticado / token inválido
+  security:
+  - bearerAuth: []
+  servers:
+  - url: https://webhook.safrapay.com.br
+    description: Produção
+  - url: https://webhook-hml.safrapay.com.br
+    description: Homologação (sandbox)

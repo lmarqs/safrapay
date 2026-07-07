@@ -1,0 +1,276 @@
+get:
+  tags:
+  - Link de Pagamentos
+  summary: GET /smartcheckout/{smartcheckoutId}/detail
+  operationId: get_v2_smartcheckout_smartcheckoutId_detail
+  description: Endpoint compartilhado entre Checkout e Link de Pagamentos.
+  parameters:
+  - name: smartcheckoutId
+    in: path
+    required: true
+    schema:
+      type: string
+  - name: MerchantId
+    in: header
+    required: true
+    schema:
+      type: string
+    description: Número de identificação da loja.
+  responses:
+    '200':
+      description: Sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              smartCheckout:
+                type: object
+                properties:
+                  creationDate:
+                    type: string
+                    description: Data de criação do smartCheckout.
+                  id:
+                    type: string
+                    description: ID do smartCheckout.
+                  amount:
+                    type: integer
+                    format: int32
+                    description: O valor do smartCheckout.
+                  description:
+                    type: string
+                    description: A descrição do smartCheckout.
+                  paymentSupportedTypes:
+                    type: array
+                    items:
+                      $ref: ../components/schemas/PaymentType.yaml
+                    description: Lista dos tipos de pagamento suportados; os valores correspondem ao enum PaymentType ( guia de acesso ).
+                  discount:
+                    type: integer
+                    format: int32
+                    description: O valor do disconto.
+                  shippingAmount:
+                    type: integer
+                    format: int32
+                    description: O valor do frete.
+                  maxInstallmentNumber:
+                    type: integer
+                    format: int32
+                    description: O número máximo de prestações.
+                  expiration:
+                    type: string
+                    description: Data de expiração do smartCheckout.
+                  shippingAddress:
+                    type: object
+                    description: Endereço de entrega dos produtos.
+                    properties:
+                      street:
+                        type: string
+                        description: Rua.
+                      number:
+                        type: string
+                        description: Número.
+                      neighborhood:
+                        type: string
+                        description: Bairro.
+                      city:
+                        type: string
+                        description: Cidade.
+                      state:
+                        type: string
+                        description: Estado.
+                      country:
+                        type: string
+                        description: País.
+                      zipCode:
+                        type: string
+                        description: CEP.
+                      complement:
+                        type: string
+                        description: Complemento.
+                  limitApprovedCharges:
+                    type: integer
+                    format: int32
+                    description: O limite de cobranças aprovadas.
+                  productsDetail:
+                    type: object
+                    description: Detalhes dos produtos.
+                    properties:
+                      amount:
+                        type: integer
+                        format: int32
+                        description: O valor do produto.
+                      name:
+                        type: string
+                        description: Nome do produto.
+                      quantity:
+                        type: integer
+                        format: int32
+                        description: A quantidade de produtos.
+                      id:
+                        type: integer
+                        format: int32
+                        description: ID do produto.
+                      sku:
+                        type: string
+                        description: É um código identificador do produto que pode ser usado pela loja pra identificar em seu próprio sistema.
+                  type:
+                    type: integer
+                    format: int32
+                    description: Tipo de smartCheckout.
+                  status:
+                    type: integer
+                    format: int32
+                    description: Status do smartCheckout.
+                  limitDeniedCharges:
+                    type: integer
+                    format: int32
+                    description: O limite de cobranças negadas.
+                  orderCode:
+                    type: string
+                    description: Código ou descrição enviado pelo lojista pra identificar o link de pagamento/checkout.
+                  charges:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          description: O ID da cobrança.
+                        addedAtUtc:
+                          type: string
+                          description: A data de adição da cobrança.
+                        nsu:
+                          type: string
+                          description: Identificador do pedido (Safrapay).
+                        chargeStatus:
+                          type: integer
+                          format: int32
+                          description: Indica o status da cobrança.
+                        transactions:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              card:
+                                type: array
+                                items:
+                                  type: object
+                                  properties:
+                                    firstSixDigits:
+                                      type: string
+                                      description: Os 6 primeiros dígitos do cartão.
+                                    lasFourDigits:
+                                      type: string
+                                      description: Os 4 últimos dígitos do cartão.
+                                    brandName:
+                                      type: string
+                                      description: O nome da bandeira do cartão.
+                                    cardHolderName:
+                                      type: string
+                                      description: O nome do títular impresso na frente do cartão.
+                                    cardHolderDocument:
+                                      type: string
+                                      description: O documento do títular do cartão.
+                                description: O cartão utilizado na transação.
+                              amount:
+                                type: integer
+                                format: int32
+                                description: O valor da transação.
+                              transactionId:
+                                type: string
+                                description: Número Sequencial Único (NSU) da autorização, caso o pagamento seja aprovado pelo Emissor.
+                              transactionsStatus:
+                                type: integer
+                                format: int32
+                                description: Indica o status da transação.
+                              paymentType:
+                                type: integer
+                                format: int32
+                                description: Indica o tipo de pagamento da transação.
+                              installmentNumber:
+                                type: integer
+                                format: int32
+                                description: Quantidade de parcelas. Só pode ser maior que 1 se o tipo de transação for crédito.
+                              acquirerId:
+                                type: integer
+                                format: int32
+                                description: O ID da adquirente.
+                              bankIssuerId:
+                                type: integer
+                                format: int32
+                                description: O ID do banco.
+                              creationDateTime:
+                                type: string
+                                description: A data de criação da transação.
+                              captureDateTime:
+                                type: string
+                                description: A data de captura da transação.
+                          description: Transações da cobrança.
+                    description: Cobranças do smartCheckout.
+                  customer:
+                    type: object
+                    description: O cliente do smartCheckout.
+                    properties:
+                      id:
+                        type: string
+                        description: ID do cliente.
+                      name:
+                        type: string
+                        description: O nome do cliente.
+                      email:
+                        type: string
+                        description: O e-mail do cliente.
+                      document:
+                        type: string
+                        description: O documento do cliente.
+                      documentType:
+                        type: string
+                        description: O tipo do documento.
+              success:
+                type: boolean
+                description: Se o endpoint processou a requisição com sucesso.
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    errorCode:
+                      type: integer
+                      format: int32
+                      description: Código do erro.
+                    message:
+                      type: string
+                      description: Mensagem para identificar qual foi o erro retornado.
+                description: 'Se success: false , esse array contem a descrição dos erros retornados.'
+              traceKey:
+                type: string
+                description: Identificador da operação.
+          example:
+            smartCheckout:
+              creationDate: '2021-06-18T16:16:25.956'
+              id: 5c233e94-ea21-438b-95e5-ed38df758534
+              amount: 1000
+              description: Descrição do Link
+              paymentSupportedTypes:
+              - Credit
+              discount: 0
+              expiration: '2021-06-19T16:16:25.956'
+              limitApprovedCharges: 1
+              type: 1
+              status: 1
+              limitDeniedCharges: 5
+              charges: []
+            success: true
+            errors: []
+            traceKey: 77a5ce37-fb8e-46c8-92e9-761b1964af3b
+    '400':
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '401':
+      description: Não autenticado / token inválido
+  security:
+  - bearerAuth: []

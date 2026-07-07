@@ -1,0 +1,45 @@
+get:
+  tags:
+  - TEF (Agente local)
+  summary: GET RemoveCard
+  operationId: get_v1_pinpad_removecard
+  description: Exibe mensagem na tela alertando o usuário para remover o cartão, se algum estiver presente, e espera até que o cartão seja removido.
+  responses:
+    '200':
+      description: Sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                description: Define se a operação foi executada com sucesso.
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    errorCode:
+                      type: string
+                      description: Código de erro.
+                    message:
+                      type: string
+                      description: Mensagem de erro.
+                description: Contém a lista de erros, se algum ocorreu.
+          example:
+            errors: []
+            success: true
+    '400':
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '401':
+      description: Não autenticado / token inválido
+  security:
+  - partnerToken: []
+  servers:
+  - url: http://localhost:4090
+    description: Agente TEF local (GerenciadorPadrãoTEF / INTPOS)

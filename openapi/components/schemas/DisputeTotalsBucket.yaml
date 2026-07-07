@@ -1,0 +1,8 @@
+type: object
+properties:
+  quantity:
+    type: integer
+    format: int32
+  value:
+    type: number
+    format: float

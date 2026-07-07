@@ -1,0 +1,18 @@
+description: |-
+  Enumerador `DocumentType`. Aceita o valor inteiro ou a string equivalente.
+
+  * `1` — **Cpf**: CPF
+  * `2` — **Cnpj**: CNPJ
+  * `3` — **Passport**: Passaporte
+oneOf:
+- type: integer
+  format: int32
+  enum:
+  - 1
+  - 2
+  - 3
+- type: string
+  enum:
+  - Cpf
+  - Cnpj
+  - Passport

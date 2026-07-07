@@ -1,0 +1,17 @@
+{
+  "name": "safrapay-doc",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "spec:bundle": "redocly bundle openapi/openapi.yaml -o generated/openapi.bundled.yaml",
+    "docs:build": "redocly build-docs openapi/openapi.yaml --output generated/docs/index.html",
+    "docs:preview": "redocly preview --product redoc",
+    "lint": "redocly lint",
+    "generate:client": "npm run spec:bundle && orval --config orval.config.ts"
+  },
+  "devDependencies": {
+    "@redocly/cli": "^1",
+    "orval": "^7",
+    "tsx": "^4"
+  }
+}

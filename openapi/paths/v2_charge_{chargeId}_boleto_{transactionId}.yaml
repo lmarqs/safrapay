@@ -1,0 +1,36 @@
+get:
+  tags:
+  - Boletos
+  summary: GET /charge/{{chargeId}}/boleto/{{transactionId}}
+  operationId: get_v2_charge_chargeId_boleto_transactionId
+  parameters:
+  - name: chargeId
+    in: path
+    required: true
+    schema:
+      type: string
+    description: O id de uma cobrança.
+  - name: transactionId
+    in: path
+    required: true
+    schema:
+      type: string
+    description: Número Sequencial Único (NSU) da autorização, caso o pagamento seja aprovado pelo Emissor.
+  responses:
+    '200':
+      description: Resposta retorna um boleto em .pdf.
+      content:
+        application/pdf:
+          schema:
+            type: string
+            format: binary
+    '400':
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '401':
+      description: Não autenticado / token inválido
+  security:
+  - bearerAuth: []

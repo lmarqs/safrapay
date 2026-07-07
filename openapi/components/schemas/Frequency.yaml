@@ -1,0 +1,21 @@
+description: |-
+  Enumerador `Frequency`. Aceita o valor inteiro ou a string equivalente.
+
+  * `1` — **Daily**: Diário
+  * `2` — **Weekly**: Semanal
+  * `3` — **Monthly**: Mensal
+  * `6` — **Annual**: Anual
+oneOf:
+- type: integer
+  format: int32
+  enum:
+  - 1
+  - 2
+  - 3
+  - 6
+- type: string
+  enum:
+  - Daily
+  - Weekly
+  - Monthly
+  - Annual

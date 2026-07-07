@@ -1,0 +1,213 @@
+post:
+  tags:
+  - TEF (Agente local)
+  summary: POST Init
+  operationId: post_v1_pinpad_init
+  description: Inicializa a conexão com o pinpad. Deve ser executado sempre que a aplicação cliente for iniciada; qualquer outro método chamado antes retorna o erro -1000 ("Not initialized").
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            applicationName:
+              type: string
+              description: Nome da aplicação do parceiro Safrapay.
+            applicationVersion:
+              type: string
+              description: Versão da aplicação do parceiro Safrapay.
+            activationCode:
+              type: string
+              description: Código de ativação composto por 9 dígitos.
+            pinpadMessages:
+              type: object
+              description: Mensagens padrão para ser exibida na tela do pinpad.
+              properties:
+                initializationMessage:
+                  type: string
+                  description: Mensagens padrão na inicialização do pinpad. Padrão "Inicializando...".
+                processingMessage:
+                  type: string
+                  description: Mensagens padrão para transação em processamento. Padrão "Processando...".
+                mainMessage:
+                  type: string
+                  description: Mensagens padrão para transação aprovada. Padrão primeira palavra do nome fantasia do lojista.
+          required:
+          - applicationName
+          - applicationVersion
+          - activationCode
+        example:
+          applicationName: PDV do Mercadinho
+          applicationVersion: 9.9.9
+          activationCode: '999999999'
+          pinpadMessages:
+            initializationMessage: Iniciando...
+            mainMessage: Mercadinho
+            processingMessage: Enviando...
+  responses:
+    '200':
+      description: Sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              availableBrands:
+                type: array
+                items:
+                  type: string
+                description: Bandeiras de cartão suportadas pelo pinpad.
+              hostInfo:
+                type: object
+                description: Informações do host onde a aplicação TEF está sendo executada.
+                properties:
+                  applicationVersion:
+                    type: string
+                    description: Versão da aplicação TEF.
+                  kernelType:
+                    type: string
+                    description: Tipo de sistema operacional.
+                  kernelVersion:
+                    type: string
+                    description: Versão do kernel do sistema operacional.
+                  machineUniqueId:
+                    type: string
+                    description: Identificador único da máquina.
+                  osType:
+                    type: string
+                    description: Tipo do sistema operacional.
+                  osVersion:
+                    type: string
+                    description: Versão do sistema operacional.
+              merchantInfo:
+                type: object
+                description: Dados do lojista.
+                properties:
+                  acquirerSettings:
+                    type: array
+                    description: Dados do lojista em adquirentes.
+                    items:
+                      type: object
+                      properties:
+                        acquirer:
+                          type: string
+                          description: Nome da adquirente.
+                        isActive:
+                          type: boolean
+                          description: Indica se lojista está ativo na adquirente.
+                        merchantIdOnAcquirer:
+                          type: string
+                          description: Identificação do lojista na adquirente.
+                  cnpj:
+                    type: string
+                    description: CNPJ do lojista.
+                  email:
+                    type: string
+                    description: Email do lojista.
+                  fantasyName:
+                    type: string
+                    description: Nome fantasia do lojista.
+                  id:
+                    type: string
+                    description: Codigo do lojista.
+                  isActive:
+                    type: boolean
+                    description: Indica se o lojista está ativo.
+                  socialName:
+                    type: string
+                    description: Razão social do lojista.
+              terminalInfo:
+                type: object
+                description: Informações sobre o terminal.
+                properties:
+                  contactlessSupported:
+                    type: boolean
+                    description: Indica se terminal suporta cartão por aproximação.
+                  manufacturer:
+                    type: string
+                    description: Nome do fabricante.
+                  manufacturerVersion:
+                    type: string
+                    description: Versão definida pelo fabricante.
+                  model:
+                    type: string
+                    description: Modelo do terminal.
+                  osVersion:
+                    type: string
+                    description: Versão do sistema operacional do terminal.
+                  serialNumber:
+                    type: string
+                    description: Número serial do terminal.
+                  specVersion:
+                    type: string
+                    description: Versão da especificação da ABECS.
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    errorCode:
+                      type: string
+                      description: Código de erro.
+                    message:
+                      type: string
+                      description: Mensagem de erro.
+                description: Contém a lista de erros, se algum ocorreu.
+              success:
+                type: boolean
+                description: Indica se inicialização foi executada com sucesso.
+          example:
+            availableBrands:
+            - Elo
+            - Cabal
+            - Visa
+            - Amex
+            - MasterCard
+            - Sorocred
+            - Sodexo
+            - Ticket
+            - Alelo
+            - Vr
+            - Hipercard
+            hostInfo:
+              applicationVersion: 1.2.6
+              kernelType: winnt
+              kernelVersion: 10.0.19042
+              machineUniqueId: 917b770b-0e73-4a01-vcd1-900931bf2f1a
+              osType: windows
+              osVersion: '10'
+            merchantInfo:
+              acquirerSettings:
+              - acquirer: Simulator
+                isActive: true
+                merchantIdOnAcquirer: '123'
+              cnpj: '88951985000181'
+              email: isabellamaitedarosa-81@mktec.com.br
+              fantasyName: MK TEC TESTE
+              id: 4d156d03-6133-9e38-85b1-48cc76954a12
+              isActive: true
+              socialName: MK TEC TESTE
+            terminalInfo:
+              contactlessSupported: true
+              manufacturer: GERTEC
+              manufacturerVersion: 001.12 160914
+              model: PPC-930
+              osVersion: 1202.11403.VR0012  @
+              serialNumber: '7200031908171323'
+              specVersion: '2.03'
+            errors: []
+            success: true
+    '400':
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '401':
+      description: Não autenticado / token inválido
+  security:
+  - partnerToken: []
+  servers:
+  - url: http://localhost:4090
+    description: Agente TEF local (GerenciadorPadrãoTEF / INTPOS)

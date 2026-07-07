@@ -1,0 +1,53 @@
+put:
+  tags:
+  - Recorrência e Planos
+  summary: PUT /subscription/cancelation/{subscriptionId}
+  operationId: put_v2_subscription_cancelation_subscriptionId
+  parameters:
+  - name: subscriptionId
+    in: path
+    required: true
+    schema:
+      type: string
+    description: O id da assinatura.
+  responses:
+    '200':
+      description: Sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                description: Se o endpoint processou a requisição com sucesso.
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    errorCode:
+                      type: integer
+                      format: int32
+                      description: Não
+                    message:
+                      type: string
+                      description: Não
+                description: 'Se success: false , esse array contem a descrição dos erros retornados.'
+              traceKey:
+                type: string
+                description: Identificador da operação.
+          example:
+            success: true
+            errors: []
+            traceKey: b33677d9-6ce2-4d59-bb25-e4a2898671b7
+    '400':
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '401':
+      description: Não autenticado / token inválido
+  security:
+  - bearerAuth: []

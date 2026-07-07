@@ -1,0 +1,587 @@
+post:
+  tags:
+  - Taxas
+  summary: POST /tax
+  operationId: post_v2_tax
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            acquirer:
+              $ref: ../components/schemas/AcquirerCode.yaml
+            name:
+              type: string
+              description: O nome da adquirente.
+            parentTax:
+              type: string
+              description: O ID de uma outra taxa, usado para venda.
+            taxes:
+              type: array
+              items:
+                type: object
+                properties:
+                  paymentType:
+                    $ref: ../components/schemas/PaymentType.yaml
+                  isInInstallment:
+                    type: boolean
+                    description: Se a estratégia está relacionada a um tipo de transação instalado ou não.
+                  installmentRange:
+                    type: object
+                    description: Informalções da faixa de parcelamento, em um crédito tributário, de 2 a 6x ou de 7 a 12x.
+                    properties:
+                      minimum:
+                        type: integer
+                        format: int32
+                        description: Parcela mínima.
+                      maximum:
+                        type: integer
+                        format: int32
+                        description: Parcela máxima.
+                    required:
+                    - minimum
+                    - maximum
+                  taxPercentage:
+                    type: number
+                    format: float
+                    description: Percentual de taxa definido pelo adquirente. Pode ser nulo se o plano de taxas tiver taxa pai.
+                  anticipationTax:
+                    type: number
+                    format: float
+                    description: Define a percentagem a cobrar quando o valor é antecipado. Pode ser nulo se o plano de taxas tiver taxa parental.
+                  upsellAnticipationTax:
+                    type: number
+                    format: float
+                    description: Upsell antecipado, usado para cobrança do parceiro e recebimento do valor pela antecipação da transação. Precisa ser preenchido quando houver ParentTax.
+                  upsellTax:
+                    type: number
+                    description: A porcentagem do parceiro a ser cobrada e somará ParentTax.TaxPercentage ou ParentTax.UpsellTax se parenttax tiver pai.
+                  cardBrand:
+                    $ref: ../components/schemas/CardBrand.yaml
+                    description: A bandeira do cartão à qual o imposto se aplica. .
+                  priority:
+                    type: integer
+                    format: int32
+                    description: É um número inteiro positivo, cujo valor mais alto é 1.
+                required:
+                - paymentType
+                - isInInstallment
+                - cardBrand
+                - priority
+              description: Lista de taxas para o comerciante, definida por cada adquirente.
+            virtualAcquirerId:
+              type: string
+              description: Campo opcional referent ao adquirente virtual. Usado em casos onde o comércio age como sub comércio.
+            aditumProduct:
+              type: integer
+              format: int32
+              description: É produto relacionado ao plano de taxas.
+            receivableMode:
+              type: integer
+              format: int32
+              description: Modo de recebimento configurado para o plano de taxa.
+            mccs:
+              type: array
+              items:
+                type: string
+              description: Código de Categoria do comerciante (MCC) é um número de 4 dígitos listado na ISO 18245 para serviços financeiro de varejo. MCC é usado para classificar o negócio pelo tipo de bens ou serviços que é ofertado.
+          required:
+          - acquirer
+          - name
+          - taxes
+          - aditumProduct
+        example:
+          acquirer: 999
+          name: Plano de Taxa
+          parentTax: b265018d-b935-5de5-85cf-d805be8ba5cf
+          taxes:
+          - paymentType: 2
+            isInInstallment: false
+            upsellAnticipationTax: 1.0
+            upsellTax: 1.0
+            cardBrand: 2
+            priority: 1
+          - paymentType: 2
+            isInInstallment: true
+            installmentRange:
+              minimum: 2
+              maximum: 6
+            upsellAnticipationTax: 1.0
+            upsellTax: 1.0
+            cardBrand: 2
+            priority: 1
+          - paymentType: 2
+            isInInstallment: true
+            installmentRange:
+              minimum: 7
+              maximum: 12
+            upsellAnticipationTax: 1.0
+            upsellTax: 1.0
+            cardBrand: 2
+            priority: 1
+          aditumProduct: 1
+  responses:
+    '200':
+      description: Sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              taxes:
+                type: object
+                description: O plano de taxas criado.
+                properties:
+                  id:
+                    type: string
+                    description: O ID do plano de taxas.
+                  isActive:
+                    type: boolean
+                    description: Se o plano de taxas está ativo.
+                  acquirer:
+                    $ref: ../components/schemas/AcquirerCode.yaml
+                  name:
+                    type: string
+                    description: O nome da adquirente.
+                  parentTax:
+                    type: string
+                    description: O ID de uma outra taxa, usado para venda.
+                  taxes:
+                    type: array
+                    description: Lista de taxas para o comerciante, definida por cada adquirente.
+                    items:
+                      type: object
+                      properties:
+                        paymentType:
+                          $ref: ../components/schemas/PaymentType.yaml
+                        isInInstallment:
+                          type: boolean
+                          description: Se a estratégia está relacionada a um tipo de transação instalado ou não.
+                        installmentRange:
+                          type: object
+                          description: Define faixa de parcelamento, em um crédito tributário, de 2 a 6x ou de 7 a 12x.
+                          properties:
+                            minimum:
+                              type: integer
+                              format: int32
+                              description: Parcela mínima.
+                            maximum:
+                              type: integer
+                              format: int32
+                              description: Parcela máxima.
+                        taxPercentage:
+                          type: number
+                          description: Percentual de taxa definido pelo adquirente. Pode ser nulo se o plano de taxas tiver taxa pai.
+                        anticipationTax:
+                          type: number
+                          description: Define a percentagem a cobrar quando o valor é antecipado. Pode ser nulo se o plano de taxas tiver taxa parental
+                        upsellAnticipationTax:
+                          type: number
+                          description: Upsell antecipado, usado para cobrança do parceiro e recebimento do valor pela antecipação da transação.
+                        upsellTax:
+                          type: number
+                          description: A porcentagem do parceiro a ser cobrada e somará ParentTax.TaxPercentage ou ParentTax.UpsellTax se parenttax tiver pai.
+                        cardBrand:
+                          $ref: ../components/schemas/CardBrand.yaml
+                          description: A bandeira do cartão à qual o imposto se aplica.
+                        priority:
+                          type: integer
+                          format: int32
+                          description: É um número inteiro positivo, cujo valor mais alto é 1.
+                  aditumProduct:
+                    $ref: ../components/schemas/SafrapayProduct.yaml
+                    description: É produto relacionado ao plano de taxas.
+                  receivableMode:
+                    $ref: ../components/schemas/ReceivableMode.yaml
+                    description: Modo de recebimento configurado para o plano de taxa.
+                  mccs:
+                    type: array
+                    items:
+                      type: string
+                    description: Código de Categoria do comerciante (MCC).
+              success:
+                type: boolean
+                description: Se o endpoint processou a requisição com sucesso.
+              errors:
+                type: array
+                items:
+                  type: object
+                  additionalProperties: true
+                description: 'Se success: false , esse array contem a descrição dos erros retornados.'
+              traceKey:
+                type: string
+                description: Identificador da operação.
+          example:
+            taxes:
+              id: 27dcaa67-ec5e-4975-97fe-6396534506a4
+              isActive: true
+              acquirer: Simulator
+              name: Plano de Taxa
+              parentTax: b265018d-b935-4de6-75cf-d805be8ba5cf
+              taxes:
+              - paymentType: Credit
+                isInInstallment: false
+                upsellAnticipationTax: 1.0
+                upsellTax: 1.0
+                cardBrand: MasterCard
+                priority: 1
+              aditumProduct: Ecommerce
+              receivableMode: Default
+              mccs:
+              - '763'
+            success: true
+            errors: []
+            traceKey: 427c9a57-3225-4f6f-9590-b60f13f57d02
+    '400':
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '401':
+      description: Não autenticado / token inválido
+  security:
+  - bearerAuth: []
+get:
+  tags:
+  - Taxas
+  summary: GET /tax
+  operationId: get_v2_tax
+  responses:
+    '200':
+      description: Sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              taxes:
+                type: array
+                description: Planos de taxas cadastrados para o comerciante.
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      description: O ID da taxa.
+                    isActive:
+                      type: boolean
+                      description: Se a taxa está ativa ou não.
+                    acquirer:
+                      $ref: ../components/schemas/AcquirerCode.yaml
+                    name:
+                      type: string
+                      description: O nome da adquirente.
+                    parentTax:
+                      type: string
+                      description: O ID de uma outra taxa, usado para venda.
+                    taxes:
+                      type: array
+                      description: Lista de taxas para o comerciante, definida por cada adquirente.
+                      items:
+                        type: object
+                        properties:
+                          paymentType:
+                            $ref: ../components/schemas/PaymentType.yaml
+                          isInInstallment:
+                            type: boolean
+                            description: Se a estratégia está relacionada a um tipo de transação instalado ou não.
+                          installmentRange:
+                            type: object
+                            description: Define faixa de parcelamento, em um crédito tributário, de 2 a 6x ou de 7 a 12x.
+                            properties:
+                              minimum:
+                                type: integer
+                                format: int32
+                                description: Parcela mínima.
+                              maximum:
+                                type: integer
+                                format: int32
+                                description: Parcela máxima.
+                          upsellAnticipationTax:
+                            type: number
+                            description: Upsell antecipado, usado para cobrança do parceiro e recebimento do valor pela antecipação da transação.
+                          upsellTax:
+                            type: number
+                            description: A porcentagem do parceiro a ser cobrada e somará ParentTax.TaxPercentage ou ParentTax.UpsellTax se parenttax tiver pai.
+                          cardBrand:
+                            $ref: ../components/schemas/CardBrand.yaml
+                            description: A bandeira do cartão à qual o imposto se aplica.
+                          priority:
+                            type: integer
+                            format: int32
+                            description: É um número inteiro positivo, cujo valor mais alto é 1.
+                    aditumProduct:
+                      $ref: ../components/schemas/SafrapayProduct.yaml
+                      description: É produto relacionado ao plano de taxas.
+                    receivableMode:
+                      $ref: ../components/schemas/ReceivableMode.yaml
+                      description: Modo de recebimento configurado para o plano de taxa.
+              success:
+                type: boolean
+                description: Se o endpoint processou a requisição com sucesso.
+              errors:
+                type: array
+                items:
+                  type: object
+                  additionalProperties: true
+                description: 'Se success: false , esse array contem a descrição dos erros retornados.'
+              traceKey:
+                type: string
+                description: Identificador da operação.
+          example:
+            taxes:
+            - id: f7b04a26-1cd8-4bc0-ae89-e9b7254817eb
+              isActive: true
+              acquirer: Simulator
+              name: Plano de Taxa Teste
+              parentTax: 7833d91f-57f5-4ee6-8862-f390b698fdc2
+              taxes:
+              - paymentType: Credit
+                isInInstallment: false
+                upsellAnticipationTax: 1.0
+                upsellTax: 1.0
+                cardBrand: MasterCard
+                priority: 1
+              aditumProduct: Ecommerce
+              receivableMode: Default
+            success: true
+            errors: []
+            traceKey: 6aa471e4-dc69-4c1a-a64d-749a9791eaf3
+    '400':
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '401':
+      description: Não autenticado / token inválido
+  security:
+  - bearerAuth: []
+put:
+  tags:
+  - Taxas
+  summary: PUT /tax
+  operationId: put_v2_tax
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            taxes:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: O ID da taxa.
+                  isActive:
+                    type: boolean
+                    description: Se a taxa está ativa ou não.
+                  acquirer:
+                    $ref: ../components/schemas/AcquirerCode.yaml
+                  name:
+                    type: string
+                    description: O nome da adquirente.
+                  parentTax:
+                    type: string
+                    description: O ID de uma outra taxa, usado para venda.
+                  taxes:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        paymentType:
+                          $ref: ../components/schemas/PaymentType.yaml
+                        isInInstallment:
+                          type: boolean
+                          description: Se a estratégia está relacionada a um tipo de transação instalado ou não.
+                        installmentRange:
+                          type: object
+                          description: Define faixa de parcelamento, em um crédito tributário, de 2 a 6x ou de 7 a 12x.
+                          properties:
+                            minimum:
+                              type: integer
+                              format: int32
+                              description: Parcela mínima.
+                            maximum:
+                              type: integer
+                              format: int32
+                              description: Parcela máxima.
+                          required:
+                          - minimum
+                          - maximum
+                        upsellAnticipationTax:
+                          type: number
+                          description: Upsell antecipado, usado para cobrança do parceiro e recebimento do valor pela antecipação da transação.
+                        upsellTax:
+                          type: number
+                          description: A porcentagem do parceiro a ser cobrada e somará ParentTax.TaxPercentage ou ParentTax.UpsellTax se parenttax tiver pai.
+                        cardBrand:
+                          $ref: ../components/schemas/CardBrand.yaml
+                          description: A bandeira do cartão à qual o imposto se aplica.
+                        priority:
+                          type: integer
+                          format: int32
+                          description: É um número inteiro positivo, cujo valor mais alto é 1.
+                      required:
+                      - paymentType
+                      - isInInstallment
+                      - cardBrand
+                      - priority
+                    description: Lista de taxas para o comerciante, definida por cada adquirente.
+                  virtualAcquirerId:
+                    type: string
+                    description: Campo opcional referent ao adquirente virtual. Usado em casos onde o comércio é age como sub comércio.
+                  aditumProduct:
+                    $ref: ../components/schemas/SafrapayProduct.yaml
+                    description: É produto relacionado ao plano de taxas.
+                  receivableMode:
+                    $ref: ../components/schemas/ReceivableMode.yaml
+                    description: Modo de recebimento configurado para o plano de taxa.
+                  mccs:
+                    type: array
+                    items:
+                      type: string
+                    description: Código de Categoria do comerciante (MCC) é um número de 4 dígitos listado na ISO 18245 para serviços financeiro de varejo. MCC é usado para classificar o negócio pelo tipo de bens ou serviços que é ofertado.
+                required:
+                - id
+                - isActive
+                - acquirer
+                - name
+                - taxes
+              description: Dados de taxas a serem atualizadas.
+          required:
+          - taxes
+        example:
+          taxes:
+          - id: f7b04a26-1cd0-4bc9-ae89-e9b7254817eb
+            isActive: true
+            acquirer: 999
+            name: Plano de Taxa
+            parentTax: 7833d91f-47f5-5ee7-8862-f390b698fdc2
+            taxes:
+            - paymentType: 2
+              isInInstallment: false
+              upsellAnticipationTax: 1.0
+              upsellTax: 1.0
+              cardBrand: 2
+              priority: 1
+            aditumProduct: 1
+            receivableMode: 1
+  responses:
+    '200':
+      description: Sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              taxes:
+                type: array
+                description: Planos de taxas atualizados.
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      description: O ID da taxa.
+                    isActive:
+                      type: boolean
+                      description: Se a taxa está ativa ou não.
+                    acquirer:
+                      $ref: ../components/schemas/AcquirerCode.yaml
+                    name:
+                      type: string
+                      description: O nome da adquirente.
+                    parentTax:
+                      type: string
+                      description: O ID de uma outra taxa, usado para venda.
+                    taxes:
+                      type: array
+                      description: Lista de taxas para o comerciante, definida por cada adquirente.
+                      items:
+                        type: object
+                        properties:
+                          paymentType:
+                            $ref: ../components/schemas/PaymentType.yaml
+                          isInInstallment:
+                            type: boolean
+                            description: Se a estratégia está relacionada a um tipo de transação instalado ou não.
+                          installmentRange:
+                            type: object
+                            description: Define faixa de parcelamento, em um crédito tributário, de 2 a 6x ou de 7 a 12x.
+                            properties:
+                              minimum:
+                                type: integer
+                                format: int32
+                                description: Parcela mínima.
+                              maximum:
+                                type: integer
+                                format: int32
+                                description: Parcela máxima.
+                          upsellAnticipationTax:
+                            type: number
+                            description: Upsell antecipado, usado para cobrança do parceiro e recebimento do valor pela antecipação da transação.
+                          upsellTax:
+                            type: number
+                            description: A porcentagem do parceiro a ser cobrada e somará ParentTax.TaxPercentage ou ParentTax.UpsellTax se parenttax tiver pai.
+                          cardBrand:
+                            $ref: ../components/schemas/CardBrand.yaml
+                            description: A bandeira do cartão à qual o imposto se aplica.
+                          priority:
+                            type: integer
+                            format: int32
+                            description: É um número inteiro positivo, cujo valor mais alto é 1.
+                    aditumProduct:
+                      $ref: ../components/schemas/SafrapayProduct.yaml
+                      description: É produto relacionado ao plano de taxas.
+                    receivableMode:
+                      $ref: ../components/schemas/ReceivableMode.yaml
+                      description: Modo de recebimento configurado para o plano de taxa.
+              success:
+                type: boolean
+                description: Se o endpoint processou a requisição com sucesso.
+              errors:
+                type: array
+                items:
+                  type: object
+                  additionalProperties: true
+                description: 'Se success: false , esse array contem a descrição dos erros retornados.'
+              traceKey:
+                type: string
+                description: Identificador da operação.
+          example:
+            taxes:
+            - id: f7b04a26-1cd0-4bc9-ae89-e9b7254817eb
+              isActive: true
+              acquirer: Simulator
+              name: Plano de Taxa
+              parentTax: 7833d91f-47f5-5ee7-8862-f390b698fdc2
+              taxes:
+              - paymentType: Credit
+                isInInstallment: false
+                upsellAnticipationTax: 1.0
+                upsellTax: 1.0
+                cardBrand: MasterCard
+                priority: 1
+              aditumProduct: Ecommerce
+              receivableMode: Default
+            success: true
+            errors: []
+            traceKey: ac17ebe6-3f8f-4a2f-ad54-d2d13a173dee
+    '400':
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '401':
+      description: Não autenticado / token inválido
+  security:
+  - bearerAuth: []

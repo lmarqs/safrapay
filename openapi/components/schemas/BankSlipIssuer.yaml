@@ -1,0 +1,18 @@
+description: |-
+  Enumerador `BankSlipIssuer`. Aceita o valor inteiro ou a string equivalente.
+
+  * `1` — **Bs2**: Banco Bs2.
+  * `2` — **Safra**: Banco Safra.
+  * `3` — **Santander**: Banco Santander.
+oneOf:
+- type: integer
+  format: int32
+  enum:
+  - 1
+  - 2
+  - 3
+- type: string
+  enum:
+  - Bs2
+  - Safra
+  - Santander

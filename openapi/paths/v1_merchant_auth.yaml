@@ -1,0 +1,41 @@
+post:
+  tags:
+  - Chargeback
+  summary: Autenticação
+  operationId: post_v1_merchant_auth
+  description: |-
+    Gera um par de tokens — acesso ( access_token ) e atualização ( refresh_token ) — a partir do token de comerciante fornecido pelo Safrapay.
+
+    Renovação: Utilize o refresh_token para obter um novo access_token sem necessidade de reautenticação completa.
+
+    Nota: distinto do POST /v2/merchant/auth do Gateway — esta é a autenticação
+    específica da Chargeback API, com campos em snake_case.
+  responses:
+    '200':
+      description: Sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              access_token:
+                type: string
+                description: Token de acesso.
+              refresh_token:
+                type: string
+                description: Token utilizado para renovar o access_token.
+    '400':
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '401':
+      description: Não autenticado / token inválido
+  security:
+  - merchantToken: []
+  servers:
+  - url: https://payment.safrapay.com.br/chargeback
+    description: Produção
+  - url: https://payment-hml.safrapay.com.br/chargeback
+    description: Homologação (sandbox)

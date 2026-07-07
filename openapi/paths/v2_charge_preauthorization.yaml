@@ -1,0 +1,933 @@
+post:
+  tags:
+  - Pagamentos
+  summary: POST /charge/preauthorization
+  operationId: post_v2_charge_preauthorization
+  description: 'Endpoint compartilhado. Variações documentadas: Pré-Autorização, Captura Tardia, Pré-Autorização Incremental (via query param nsu), 2. Recorrência Pass-Through com 3DS + 3RI (MIT).'
+  parameters:
+  - name: nsu
+    in: query
+    required: false
+    schema:
+      type: string
+    description: Se informado, incrementa a pré-autorização identificada pelo nsu; se ausente, cria uma nova pré-autorização.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            capture:
+              type: boolean
+              description: Se a cobrança deve ou não ser capturada.
+            charge:
+              type: object
+              properties:
+                chargeStatus:
+                  type: integer
+                  format: int32
+                  description: Status atual da cobrança, indicando em qual estágio do processo de autorização a cobrança está. Ele reflete diretamente todos os status de transação dentro da cobrança.
+                customer:
+                  type: object
+                  properties:
+                    address:
+                      type: object
+                      properties:
+                        city:
+                          type: string
+                          description: Cidade.
+                        complement:
+                          type: string
+                          description: Complemento.
+                        country:
+                          type: string
+                          description: País.
+                        neighborhood:
+                          type: string
+                          description: Bairro.
+                        number:
+                          type: string
+                          description: Número.
+                        state:
+                          type: string
+                          description: Estado.
+                        street:
+                          type: string
+                          description: Rua.
+                        zipCode:
+                          type: string
+                          description: CEP.
+                      required:
+                      - city
+                      - complement
+                      - country
+                      - neighborhood
+                      - number
+                      - state
+                      - street
+                      - zipCode
+                      description: Endereço do comprador. Obrigatório caso utilize antifraude.
+                    bankAccounts:
+                      type: object
+                      properties:
+                        account:
+                          type: string
+                          description: Conta bancária.
+                        accountCheckDigit:
+                          type: string
+                          description: Dígito de verificação da conta bancária.
+                        bankCode:
+                          type: string
+                          description: Código do banco.
+                        bankName:
+                          type: string
+                          description: Nome do banco.
+                        branch:
+                          type: string
+                          description: Filial.
+                        branchCheckDigit:
+                          type: string
+                          description: Dígito de verificação da filial.
+                        isActive:
+                          type: boolean
+                          description: Se a conta está ativa ou não.
+                        type:
+                          type: integer
+                          format: int32
+                          description: Tipo de conta.
+                      required:
+                      - account
+                      - accountCheckDigit
+                      - bankCode
+                      - bankName
+                      - branch
+                      - branchCheckDigit
+                      - isActive
+                      - type
+                      description: Contas do comprador.
+                    birthday:
+                      type: string
+                      format: date
+                      description: Data de nascimento do comprador.
+                    document:
+                      type: string
+                      description: Documento do comprador.
+                    documentType:
+                      $ref: ../components/schemas/DocumentType.yaml
+                      description: Tipo do documento do comprador.
+                    email:
+                      type: string
+                      description: E-mail do comprador.
+                    entityType:
+                      $ref: ../components/schemas/EntityType.yaml
+                      description: Se é pessoa física ou jurídica.
+                    gender:
+                      $ref: ../components/schemas/Gender.yaml
+                      description: Gênero do comprador.
+                    id:
+                      type: string
+                      description: O ID do comprador.
+                    isActive:
+                      type: boolean
+                      description: Se o comprador está ativo ou não.
+                    name:
+                      type: string
+                      description: Nome completo do comprador.
+                    phone:
+                      type: object
+                      properties:
+                        areaCode:
+                          type: string
+                          description: Código de área.
+                        countryCode:
+                          type: string
+                          description: Código do país.
+                        number:
+                          type: string
+                          description: Número do Telefone.
+                        type:
+                          $ref: ../components/schemas/Phone.yaml
+                          description: Tipo do telefone.
+                      required:
+                      - areaCode
+                      - countryCode
+                      - number
+                      - type
+                      description: Telefone do comprador.
+                  required:
+                  - id
+                  description: Dados do comprador.
+                gatewayId:
+                  type: string
+                  description: Gateway ID criado para o cliente para uso de autorização do Safra.
+                id:
+                  type: string
+                  description: O ID da cobrança.
+                macAddress:
+                  type: string
+                  description: Endereço MAC (Media Access Control) do dispositivo de origem usado para identificar exclusivamente um controlador de interface de rede.
+                merchantChargeId:
+                  type: string
+                  description: 'O ID de cobrança definido pelo sistema do comerciante. Não utilize espaços no meio do identificador (ex.: TASK5333 ). Campos obrigatórios da estrutura não podem ser enviados vazios nem como string vazia "" .'
+                metadata:
+                  type: object
+                  properties:
+                    key:
+                      type: string
+                      description: O nome da chave (campo)
+                    value:
+                      type: string
+                      description: O valor da chave.
+                  description: Entradas coletadas para iniciação do evento.
+                origin:
+                  type: string
+                  description: Uma propriedade que o cliente pode usar para identificar a origem da cobrança, como nome do fornecedor ou identificador.
+                products:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      amount:
+                        type: integer
+                        format: int32
+                        description: Valor do produto.
+                      description:
+                        type: string
+                        description: Descrição do produto.
+                      id:
+                        type: string
+                        description: UUID do produto.
+                      imagesRef:
+                        type: array
+                        items:
+                          type: string
+                      isActive:
+                        type: boolean
+                        description: Define se o produto está ativo ou não.
+                      membershipFee:
+                        type: integer
+                        format: int32
+                        description: Taxa que o cliente paga para ter o produto.
+                      name:
+                        type: integer
+                        format: int32
+                        description: Nome do produto.
+                      quantity:
+                        type: integer
+                        format: int32
+                        description: Quantidade do produto no carrinho.
+                      sku:
+                        type: string
+                        description: ID único definido pelo comércio para identificar o produto na nossa base de dados (Stock Keeping Unit).
+                receivers:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      amount:
+                        type: number
+                        format: float
+                        description: Valor.
+                      chargeRemainder:
+                        type: boolean
+                        description: Após processar os valores divididos para cada parte, se houver centavos que sobraram da divisão, este campo indica qual destinatário deverá receber os centavos restantes. Também pode ser definido para divisão de centavos (exemplo 100/3) ou para quando o destinatário não tiver regra especifica.
+                      fixedAmountComission:
+                        type: number
+                        format: float
+                        description: Valor fixo que o destinatário deve receber.
+                      id:
+                        type: string
+                        description: Documento identificador.
+                      mdrComission:
+                        type: number
+                        format: float
+                        description: Porcentagem relativa ao MDR calculado na liquidação.
+                      mdrDiscount:
+                        type: boolean
+                        description: Define se terá desconto MDR.
+                      membershipComission:
+                        type: number
+                        format: float
+                        description: Comissão percentual para transações de associação.
+                      percentageComission:
+                        type: number
+                        format: float
+                        description: Esta comissão é calculada no topo do valor da transação.
+                    required:
+                    - id
+                sessionId:
+                  type: string
+                  description: ID da sessão criada pelo servidor do site do cliente e usada durante a visita de um determinado usuário. Obrigatório caso utilize antifraude.
+                shippingAddress:
+                  type: object
+                  properties:
+                    city:
+                      type: string
+                      description: Cidade.
+                    complement:
+                      type: string
+                      description: Complemento.
+                    country:
+                      type: string
+                      description: Código do  país.
+                    neighborhood:
+                      type: string
+                      description: Bairro.
+                    number:
+                      type: string
+                      description: Número.
+                    postalCode:
+                      type: string
+                      description: Código postal.
+                    state:
+                      type: string
+                      description: Estado.
+                    street:
+                      type: string
+                      description: Rua.
+                  description: Representa as informações do endereço de envio.
+                shippingSettings:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      amount:
+                        type: integer
+                        format: int32
+                        description: Valor do envio.
+                      merchantId:
+                        type: string
+                        description: ID único do estabelecimento relacionado à configuração de envio.
+                smartCheckoutId:
+                  type: string
+                  description: O ID do smartCheckout.
+                source:
+                  type: integer
+                  format: int32
+                  description: Define a fonte de cobrança, por exemplo, um POS, pinpad, site de comércio eletrônico.
+                subMerchant:
+                  type: object
+                  properties:
+                    address:
+                      type: object
+                      properties:
+                        city:
+                          type: string
+                          description: Cidade.
+                        complement:
+                          type: string
+                          description: Complemento.
+                        country:
+                          type: string
+                          description: País.
+                        neighborhood:
+                          type: string
+                          description: Bairro.
+                        number:
+                          type: string
+                          description: Número.
+                        state:
+                          type: string
+                          description: Estado.
+                        street:
+                          type: string
+                          description: Rua.
+                        zipCode:
+                          type: string
+                          description: CEP.
+                      required:
+                      - city
+                      - country
+                      - neighborhood
+                      - number
+                      - state
+                      - street
+                      - zipCode
+                      description: Endereço do submerchant.
+                    document:
+                      type: string
+                      description: Documento do submerchant.
+                    id:
+                      type: string
+                      description: ID do submerchant.
+                    socialName:
+                      type: string
+                      description: Razão social do submerchant.
+                  required:
+                  - address
+                  - document
+                  - id
+                  - socialName
+                  description: Objeto com dados referente ao submerchant (Caso exista submerchant).
+                subscriptionId:
+                  type: string
+                  description: GUID único relacionado ao subscription.
+                transactions:
+                  type: array
+                  description: Uma ou várias transações a serem realizadas dentro da cobrança.
+                  items:
+                    type: object
+                    properties:
+                      card:
+                        type: object
+                        description: O Cartão a ser utilizado na transação. Envie apenas id para um cartão já tokenizado, ou os campos completos do cartão (cardNumber, cvv, brand, cardholderName, cardholderDocument, expirationMonth, expirationYear) para um cartão novo - não é necessário enviar ambos.
+                        properties:
+                          id:
+                            type: string
+                            description: ID do cartão tokenizado.
+                          recurrencyId:
+                            type: string
+                            description: TID da 1ª cobrança (sobrescreve valor armazenado).
+                          customerId:
+                            type: string
+                            description: O ID do comprador.
+                          cardNumber:
+                            type: string
+                            description: O número impresso na frente do cartão.
+                          cvv:
+                            type: string
+                            description: Card Verification Value (CVV), número de 3-4 dígitos impresso no cartão.
+                          brand:
+                            $ref: ../components/schemas/CardBrand.yaml
+                            description: A bandeira do cartão.
+                          cardholderName:
+                            type: string
+                            description: O nome do títular do cartão.
+                          cardholderDocument:
+                            type: string
+                            description: O documento do títular do cartão.
+                          expirationMonth:
+                            type: integer
+                            format: int32
+                            description: O Mês de expiração do cartão com 2 dígitos.
+                          expirationYear:
+                            type: integer
+                            format: int32
+                            description: O Ano de expiração do cartão com 4 dígitos.
+                          billingAddress:
+                            type: object
+                            description: É o endereço conectado ao cartão de crédito ou débito. Obrigatório caso utilize antifraude.
+                            properties:
+                              street:
+                                type: string
+                              number:
+                                type: string
+                              neighborhood:
+                                type: string
+                              city:
+                                type: string
+                              state:
+                                type: string
+                              country:
+                                type: string
+                              zipCode:
+                                type: string
+                              complement:
+                                type: string
+                          isPrivateLabel:
+                            type: boolean
+                          brandName:
+                            type: string
+                      isRecurrency:
+                        type: boolean
+                        description: true para MIT recorrente.
+                      paymentType:
+                        type: integer
+                        format: int32
+                        description: Tipo de pagamento.
+                      amount:
+                        type: integer
+                        format: int32
+                        description: Valor em centavos.
+                      installmentNumber:
+                        type: integer
+                        format: int32
+                        description: Quantidade de parcelas. Só pode ser maior que 1 se o tipo de transação for crédito.
+                      softDescriptor:
+                        type: string
+                        description: Breve descrição a ser apresentada na fatura bancária do cliente.
+                      merchantTransactionId:
+                        type: string
+                        description: Identificador de pedido definido pelo sistema do estabelecimento comercial.
+                      acquirer:
+                        type: integer
+                        format: int32
+                        description: O ID da adquirente.
+              required:
+              - customer
+              - source
+              - transactions
+              description: Dados da transação.
+            hostname:
+              type: string
+              description: O hostname da configuração do comerciante.
+            lateCapture:
+              type: boolean
+              description: 'Informar valor "true" para uma autorização com captura tardia. Valor padrão: false.'
+            merchantCode:
+              type: string
+              description: Código do estabelecimento definido pelo integrador.
+            primaryColor:
+              type: string
+              description: A cor primária da configuração do comerciante.
+            remoteIp:
+              type: string
+              description: '[OBRIGATÓRIO quando antifraude ativo] O endereço IP do comprador. Este dado é utilizado em diversas verificações de risco (número de tentativas de pagamento, verificações baseadas em localização, detecção de uso de VPN/proxy). Suporta IPv4. Exemplo: 192.168.1.100 . Este campo complementa a implementação do Device Fingerprint. Consulte documentação completa .'
+            secondaryColor:
+              type: string
+              description: A cor secundária da configuração do comerciante.
+            templateId:
+              type: string
+              description: TemplateId que será usado para enviar o recibo ao cliente.
+          required:
+          - charge
+        examples:
+          Pr_Autoriza_o:
+            summary: Pré-Autorização
+            value:
+              charge:
+                merchantChargeId: TASK5333
+                customer:
+                  name: Yago Sebastião Lima
+                  email: yagosebastiaolima@archosolutions.com.br
+                  document: '78112482802'
+                  documentType: 1
+                  phone:
+                    number: '999999999'
+                    countryCode: '55'
+                    areaCode: '21'
+                    type: 5
+                transactions:
+                - card:
+                    cardNumber: '4444585001234562'
+                    cvv: '111'
+                    brand: 1
+                    cardholderName: Yago Sebastião Lima
+                    cardholderDocument: '78112482802'
+                    billingAddress:
+                      street: Rua 51
+                      number: '99'
+                      neighborhood: Parque Residencial Nova Fronteira
+                      city: Gurupi
+                      state: BA
+                      country: BR
+                      zipCode: '77415340'
+                    expirationMonth: 12
+                    expirationYear: 2026
+                  paymentType: 2
+                  amount: 1000
+                  installmentNumber: 0
+                  softDescriptor: TASK*5333
+                source: 8
+          2_Recorr_ncia_Pass_Through_com_3DS_3RI_M:
+            summary: 2. Recorrência Pass-Through com 3DS + 3RI (MIT)
+            value:
+              charge:
+                chargeStatus: PreAuthorized
+                transactions:
+                - isApproved: true
+                  isRecurrency: true
+                  amount: 10000
+                  card:
+                    id: ed8dc20b-4674-4eaa-89a5-7ba4dbe3d8b5
+                    number: 400000******1000
+                    brand: Visa
+                    recurrencyId: '020019048898123'
+                  transactionStatus: PreAuthorized
+              success: true
+              errors: []
+  responses:
+    '200':
+      description: Sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              charge:
+                type: object
+                properties:
+                  merchantChargeId:
+                    type: string
+                    description: O ID de cobrança definido pelo sistema do comerciante.
+                  id:
+                    type: string
+                    description: O ID da cobrança.
+                  nsu:
+                    type: string
+                    description: Identificador do pedido (Safrapay).
+                  gatewayId:
+                    type: string
+                    description: Identificação do gateway ou plataforma.
+                  customerId:
+                    type: string
+                    description: O ID do comprador.
+                  chargeStatus:
+                    type: string
+                    description: Status atual da cobrança, indicando em qual estágio do processo de autorização a cobrança está. Ele reflete diretamente todos os status de transação dentro da cobrança.
+                  transactions:
+                    type: array
+                    description: Uma ou várias transações realizadas dentro da cobrança.
+                    items:
+                      type: object
+                      properties:
+                        card:
+                          type: object
+                          description: O Cartão a ser utilizado na transação.
+                          properties:
+                            id:
+                              type: string
+                              description: O ID do cartão.
+                            customerId:
+                              type: string
+                              description: O ID do comprador.
+                            cardNumber:
+                              type: string
+                              description: O número impresso na frente do cartão.
+                            brand:
+                              $ref: ../components/schemas/CardBrand.yaml
+                              description: A bandeira do cartão à qual o imposto se aplica.
+                            cardholderName:
+                              type: string
+                              description: O nome do títular do cartão.
+                            cardholderDocument:
+                              type: string
+                              description: O documento do títular do cartão.
+                            billingAddress:
+                              type: object
+                              properties:
+                                street:
+                                  type: string
+                                  description: Rua.
+                                number:
+                                  type: string
+                                  description: Número.
+                                neighborhood:
+                                  type: string
+                                  description: Bairro.
+                                city:
+                                  type: string
+                                  description: Cidade.
+                                state:
+                                  type: string
+                                  description: Estado.
+                                country:
+                                  type: string
+                                  description: País.
+                                zipCode:
+                                  type: string
+                                  description: CEP.
+                                complement:
+                                  type: string
+                                  description: Complemento.
+                              description: É o endereço conectado ao cartão de crédito ou débito. As empresas usam o endereço de cobrança para verificar o uso autorizado de tal cartão. É também para onde as empresas enviam contas em papel e extratos bancários.
+                            isPrivateLabel:
+                              type: boolean
+                              description: Indica se o cartão é um produto de whitelabel ou não. Whitelabel é um produto ou serviço que uma empresa produz e comercializa com outras empresas que tem interesse em utilizar o mesmo com sua marca estampada.
+                            expirationMonth:
+                              type: integer
+                              format: int32
+                              description: O Mês de expiração do cartão com 2 dígitos.
+                            expirationYear:
+                              type: integer
+                              format: int32
+                              description: O Ano de expiração do cartão com 4 dígitos.
+                            fallback:
+                              type: boolean
+                              description: Uma bandeira que informa se a cobrança necessária será feita como fita magnética substituta.
+                            brandName:
+                              type: string
+                              description: O nome da bandeira do cartão.
+                            recurrencyId:
+                              type: string
+                              description: TID da 1ª cobrança (sobrescreve valor armazenado).
+                        isApproved:
+                          type: boolean
+                          description: Indica se a cobrança está aprovada.
+                        paymentType:
+                          type: string
+                          description: Tipo de transação.
+                        installmentType:
+                          type: string
+                          description: Tipo de parcelamento da transação
+                        installmentNumber:
+                          type: integer
+                          format: int32
+                          description: Quantidade de parcelas. Só pode ser maior que 1 se o tipo de transação for crédito.
+                        softDescriptor:
+                          type: string
+                          description: Breve descrição a ser apresentada na fatura bancária do cliente. Apenas letras, números e * ; sem espaços ; formato /^[a-zA-Z0-9*]+$/ . Se nulo, preenchido com rótulo padrão pela Safrapay.
+                        amount:
+                          type: integer
+                          format: int32
+                          description: O valor do pagamento em centavos.
+                        isCapture:
+                          type: boolean
+                          description: Indica se a cobrança foi capturada.
+                        isRecurrency:
+                          type: boolean
+                          description: Indica se a cobrança é uma recorrência.
+                        isCanceled:
+                          type: boolean
+                          description: Indica se a cobrança foi cancelada.
+                        transactionId:
+                          type: string
+                          description: Número Sequencial Único (NSU) da autorização, caso o pagamento seja aprovado pelo Emissor.
+                        transactionStatus:
+                          type: string
+                          description: Indica qual o status da transação.
+                        merchantTransactionId:
+                          type: string
+                          description: O ID da transação do Lojista
+                        acquirer:
+                          type: string
+                          description: O nome da adquirente.
+                        creationDateTime:
+                          type: string
+                          description: A data de criação da transação.
+                        captureDateTime:
+                          type: string
+                          description: A data de captura da transação.
+                        authorizationResponseCode:
+                          type: string
+                          description: Código de resposta da autorização retornado pelo emissor/adquirente.
+                        authorizationCode:
+                          type: string
+                          description: Código de autorização retornado pelo emissor/adquirente.
+                        merchantAdviceCode:
+                          type: string
+                          description: Código consultivo retornado pela bandeira/adquirente.
+                        acquirerTransactionId:
+                          type: string
+                          description: Identificador da transação na adquirente.
+                        bankSlipStatus:
+                          type: integer
+                          format: int32
+                          description: Status do boleto bancário.
+                  metadata:
+                    type: object
+                    description: Lista de informações personalizados.
+                    properties:
+                      key:
+                        type: string
+                        description: O nome da chave (campo)
+                      value:
+                        type: string
+                        description: O valor da chave passada no campo metadata.key .
+              receivers:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      description: O ID do recebedor.
+                    name:
+                      type: string
+                      description: O nome do recebedor.
+                    email:
+                      type: string
+                      description: O e-mail do recebedor.
+                    entityType:
+                      type: string
+                      description: Se é pessoa física ou jurídica.
+                    documentType:
+                      type: string
+                      description: Se o documento usado é CPF ou CNPJ.
+                    document:
+                      type: string
+                      description: O documento do recebedor.
+                    birthday:
+                      type: string
+                      description: A data de nascimento do recebedor.
+                    transferDay:
+                      type: integer
+                      format: int32
+                      description: O dia de transferência.
+                    transferEnabled:
+                      type: boolean
+                      description: Indica se a transferencia está habilitada.
+                    transferInterval:
+                      type: string
+                      description: 'Indica o intervalo da transferencia, Ex: Dia, Semana, Mês e Ano.'
+                    anticipatablePercentage:
+                      type: number
+                      description: Porcentagem da antecipação do recebdor.
+                    automaticAnticipation:
+                      type: boolean
+                      description: Indica se a antecipação automática está habilitada ou não.
+                    address:
+                      type: object
+                      description: Endereço do comprador.
+                      properties:
+                        street:
+                          type: string
+                          description: Rua.
+                        number:
+                          type: string
+                          description: Número.
+                        neighborhood:
+                          type: string
+                          description: Bairro.
+                        city:
+                          type: string
+                          description: Cidade.
+                        state:
+                          type: string
+                          description: Estado.
+                        country:
+                          type: string
+                          description: País.
+                        zipCode:
+                          type: string
+                          description: CEP.
+                        complement:
+                          type: string
+                          description: Complemento.
+                    bankAccounts:
+                      type: object
+                      description: Contas do comprador.
+                      properties:
+                        bankCode:
+                          type: string
+                          description: Código do banco.
+                        bankName:
+                          type: string
+                          description: Nome do banco.
+                        branch:
+                          type: string
+                          description: Filial.
+                        branchCheckDigit:
+                          type: string
+                          description: Dígito de verificação da filial.
+                        account:
+                          type: string
+                          description: Conta bancária.
+                        accountCheckDigit:
+                          type: string
+                          description: Dígito de verificação da conta bancária.
+                        type:
+                          type: integer
+                          format: int32
+                          description: Tipo de conta.
+                        isActive:
+                          type: boolean
+                          description: Se a conta está ativa ou não.
+                    gender:
+                      type: string
+                      description: Gênero do recebedor.
+                    type:
+                      type: string
+                      description: Tipo de recebedor.
+                    userId:
+                      type: string
+                      description: O ID de usuário do recebedor.
+                    isActive:
+                      type: boolean
+                      description: Indica se o recebedor está ativo ou não.
+                    paymentDueDate:
+                      type: string
+                      description: A data de vencimento.
+                    maximumAmount:
+                      type: integer
+                      format: int32
+                      description: Quantia máxima.
+                    rentalComission:
+                      type: number
+                      description: Comissão de locação.
+                    membershipComission:
+                      type: number
+                      description: Comissão de sócio.
+                    mdrCommission:
+                      type: number
+                      description: A comissão em cima de uma taxa cobrada na transação.
+                    fixedAmountComission:
+                      type: number
+                      description: A quantia fixa que o recebedor deve receber.
+                    mdrDiscount:
+                      type: boolean
+                      description: IDs dos receptores envolvidos na cobrança. Isso definirá quem recebe a transação, dividindo o valor total da cobrança em pagamentos separados.
+                    chargeRemainder:
+                      type: boolean
+                      description: Após o processamento dos valores de cada divisão, se sobrar centavos da divisão, este sinalizador indica o recebedor que deve receber os centavos extras. Isso pode ser usado para penny split (exemplo 100/3) ou para quando o recebedor não tem uma regra específica.
+                    percentageComission:
+                      type: number
+                      description: O valor da comissão em porcentagem.
+                    minimumAmountAutomaticPayment:
+                      type: number
+                      description: O valor mínimo para pagamento automático do recebedor.
+                description: Dados dos recebedores.
+              success:
+                type: boolean
+                description: Se o endpoint processou a requisição com sucesso.
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    errorCode:
+                      type: integer
+                      format: int32
+                      description: Código do erro.
+                    message:
+                      type: string
+                      description: Mensagem para identificar qual foi o erro retornado.
+                description: 'Se success: false , esse array contem a descrição dos erros retornados.'
+              traceKey:
+                type: string
+                description: Identificador da operação.
+          example:
+            charge:
+              merchantChargeId: TASK5333
+              id: abcc2428-eb4e-4470-9d55-72edca459daf
+              nsu: '000005044'
+              customerId: ffede3ee-37ab-47bb-9981-d3d14697d67z
+              chargeStatus: PreAuthorized
+              transactions:
+              - card:
+                  id: 7903ef09-83c3-458d-ad39-9ea9e736e59e
+                  customerId: ffede3ee-37ab-47bb-9981-d3d14697d67z
+                  cardNumber: 549167******0005
+                  brand: Mastercard
+                  cardholderName: Yago Sebastião Lima
+                  cardholderDocument: '78112482802'
+                  isPrivateLabel: false
+                  expirationMonth: 12
+                  expirationYear: 2026
+                  brandName: Mastercard
+                isApproved: true
+                paymentType: Credit
+                installmentType: None
+                installmentNumber: 1
+                softDescriptor: TASK*5333
+                amount: 1000
+                isCapture: false
+                isRecurrency: false
+                isCanceled: false
+                transactionId: '1623967391659'
+                transactionStatus: PreAuthorized
+                merchantTransactionId: TASK5333
+                acquirer: Simulator
+                creationDateTime: '2021-06-17T19:03:11.6832635-03:00'
+                captureDateTime: '0001-01-01T00:00:00'
+                authorizationResponseCode: '00'
+                authorizationCode: '304848'
+                merchantAdviceCode: '01'
+                acquirerTransactionId: ff478f2d-r569-568s-22ds-52s6742
+                bankSlipStatus: 0
+              metadata:
+                key_Sample: Value_Sample
+            success: true
+            errors: []
+            traceKey: 8d8d389b-8742-4668-8380-ad7ab94bc90d
+    '400':
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '401':
+      description: Não autenticado / token inválido
+  security:
+  - bearerAuth: []

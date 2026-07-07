@@ -1,0 +1,33 @@
+description: |-
+  Enumerador `PaymentType`. Aceita o valor inteiro ou a string equivalente.
+
+  * `1` — **Debit**: Débito.
+  * `2` — **Credit**: Crédito.
+  * `3` — **Voucher**: Voucher.
+  * `4` — **Boleto**: Boleto.
+  * `5` — **Ted**: Transferência Eletrônica de Fundos.
+  * `6` — **Doc**: Documento de Ordem de Crédito.
+  * `7` — **SafetyPay**: SafetyPay.
+  * `8` — **Pix**: Pix
+oneOf:
+- type: integer
+  format: int32
+  enum:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  - 6
+  - 7
+  - 8
+- type: string
+  enum:
+  - Debit
+  - Credit
+  - Voucher
+  - Boleto
+  - Ted
+  - Doc
+  - SafetyPay
+  - Pix

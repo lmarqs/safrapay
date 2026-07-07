@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+#MISE description="Bootstrap the repo: create .env, install deps for every toolchain"
+set -e
+
+if [ ! -f ".env" ]; then
+  cp .env.example .env
+fi
+
+mise run '**:setup'

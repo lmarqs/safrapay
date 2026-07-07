@@ -1,0 +1,59 @@
+put:
+  tags:
+  - Webhook
+  summary: PUT /Webhook/Cancel/{webhookId}
+  operationId: put_v1_Webhook_Cancel_webhookId
+  description: O endpoint responsável por cancelar notificação webhook por ID.
+  parameters:
+  - name: webhookId
+    in: path
+    required: true
+    schema:
+      type: string
+    description: O ID único do Webhook.
+  responses:
+    '200':
+      description: Sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                description: Se o endpoint processou a requisição com sucesso.
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    errorCode:
+                      type: integer
+                      format: int32
+                      description: Não
+                    message:
+                      type: string
+                      description: Não
+                description: 'Se success: false , esse array contem a descrição dos erros retornados.'
+              traceKey:
+                type: string
+                description: Identificador da operação.
+          example:
+            success: true
+            errors: []
+            traceKey: 9563608b-408b-4a21-bb22-ced4d2eb1d81
+    '400':
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '401':
+      description: Não autenticado / token inválido
+  security:
+  - bearerAuth: []
+  servers:
+  - url: https://webhook.safrapay.com.br
+    description: Produção
+  - url: https://webhook-hml.safrapay.com.br
+    description: Homologação (sandbox)

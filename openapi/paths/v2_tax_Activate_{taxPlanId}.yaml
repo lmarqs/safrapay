@@ -1,0 +1,50 @@
+put:
+  tags:
+  - Taxas
+  summary: PUT /tax/Activate/{{taxPlanId}}
+  operationId: put_v2_tax_Activate_taxPlanId
+  parameters:
+  - name: taxPlanId
+    in: path
+    required: true
+    schema:
+      type: string
+    description: O id de uma taxa.
+  responses:
+    '200':
+      description: Sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              taxPlanId:
+                type: string
+                description: O ID da taxa.
+              success:
+                type: boolean
+                description: Se o endpoint processou a requisição com sucesso.
+              errors:
+                type: array
+                items:
+                  type: object
+                  additionalProperties: true
+                description: 'Se success: false , esse array contem a descrição dos erros retornados.'
+              traceKey:
+                type: string
+                description: Identificador da operação.
+          example:
+            taxPlanId: 27dcaa67-ec5e-6994-97fe-6396534506a4
+            success: true
+            errors: []
+            traceKey: af7e0261-6412-483f-bec3-6525aa184df2
+    '400':
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '401':
+      description: Não autenticado / token inválido
+  security:
+  - bearerAuth: []

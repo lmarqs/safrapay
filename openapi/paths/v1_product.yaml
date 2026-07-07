@@ -1,0 +1,287 @@
+post:
+  tags:
+  - Pagamentos
+  summary: POST /product
+  operationId: post_v1_product
+  parameters:
+  - name: merchantId
+    in: header
+    required: true
+    schema:
+      type: string
+    description: O número de identificação do comerciante.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            amount:
+              type: integer
+              format: int32
+              description: O preço do produto.
+            name:
+              type: string
+              description: O nome do produto.
+            description:
+              type: string
+              description: A descrição do produto.
+            imagesRef:
+              type: array
+              items:
+                type: string
+              description: Urls das imagens do produto.
+            membershipFee:
+              type: integer
+              format: int32
+              description: O valor de entrega.
+            isActive:
+              type: boolean
+              description: Indica se produto está ativo ou não.
+            sku:
+              type: string
+              description: Código identificador do produto.
+            merchantId:
+              type: string
+              description: O ID do comerciante.
+          required:
+          - amount
+          - membershipFee
+          - isActive
+        example:
+          amount: 800
+          name: Suco de Uva 100%
+          membershipFee: 350
+          isActive: true
+          sku: SKU_Suco_D_Uva
+          merchantId: '{{merchantId}}'
+  responses:
+    '200':
+      description: Sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              product:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: O ID do produto.
+                  quantity:
+                    type: integer
+                    format: int32
+                    description: Quantidade do produto.
+                  amount:
+                    type: integer
+                    format: int32
+                    description: O preço do produto.
+                  name:
+                    type: string
+                    description: O nome do produto.
+                  description:
+                    type: string
+                    description: A descrição do produto.
+                  imagesRef:
+                    type: array
+                    items:
+                      type: object
+                      additionalProperties: true
+                    description: Urls das imagens do produto.
+                  membershipFee:
+                    type: integer
+                    format: int32
+                    description: O valor de entrega.
+                  isActive:
+                    type: boolean
+                    description: Indica se produto está ativo ou não.
+                  sku:
+                    type: string
+                    description: Código identificador do produto.
+                  merchantId:
+                    type: string
+                    description: O ID do comerciante.
+              success:
+                type: boolean
+                description: Se o endpoint processou a requisição com sucesso.
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    errorCode:
+                      type: integer
+                      format: int32
+                      description: Código do erro.
+                    message:
+                      type: string
+                      description: Mensagem para identificar qual foi o erro retornado.
+                description: 'Se success: false , esse array contem a descrição dos erros retornados.'
+              traceKey:
+                type: string
+                description: Identificador da operação.
+          example:
+            product:
+              id: 230fded2-9d2b-4e9f-8bc8-2100c5759e8a
+              quantity: 0
+              amount: 800
+              name: Suco de Uva 100%
+              membershipFee: 350
+              isActive: true
+              sku: SKU_Suco_D_Uva
+              merchantId: 22eb9083-ec20-4b9e-85d6-22cf9c35a898
+            success: true
+            errors: []
+            traceKey: 39b2c0a4-9027-4fed-925e-d6c79be33567
+    '400':
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '401':
+      description: Não autenticado / token inválido
+  security:
+  - bearerAuth: []
+  servers: &id001
+  - url: https://portal-api.safrapay.com.br
+    description: Produção (Portal API)
+  - url: https://portal-api-hml.safrapay.com.br
+    description: Homologação (Portal API)
+get:
+  tags:
+  - Pagamentos
+  summary: GET /product
+  operationId: get_v1_product
+  parameters:
+  - name: merchantId
+    in: header
+    required: true
+    schema:
+      type: string
+    description: O número de identificação do comerciante.
+  - name: merchantId
+    in: query
+    required: true
+    schema:
+      type: string
+    description: O ID do comerciante.
+  - name: name
+    in: query
+    required: true
+    schema:
+      type: string
+    description: O nome do produto.
+  - name: currentPage
+    in: query
+    required: false
+    schema:
+      type: integer
+      format: int32
+    description: Página atual da busca..
+  - name: pageSize
+    in: query
+    required: false
+    schema:
+      type: integer
+      format: int32
+    description: Quantidade de itens por página.
+  responses:
+    '200':
+      description: Sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              products:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      description: O ID do produto.
+                    quantity:
+                      type: integer
+                      format: int32
+                      description: Quantidade do produto.
+                    amount:
+                      type: integer
+                      format: int32
+                      description: O preço do produto.
+                    name:
+                      type: string
+                      description: O nome do produto.
+                    description:
+                      type: string
+                      description: A descrição do produto.
+                    imagesRef:
+                      type: array
+                      items:
+                        type: object
+                        additionalProperties: true
+                      description: Urls das imagens do produto.
+                    membershipFee:
+                      type: integer
+                      format: int32
+                      description: O valor de entrega.
+                    isActive:
+                      type: boolean
+                      description: Indica se produto está ativo ou não.
+                    sku:
+                      type: string
+                      description: Código identificador do produto.
+                    merchantId:
+                      type: string
+                      description: O ID do comerciante.
+              total:
+                type: integer
+                format: int32
+                description: Quantidade total de produtos encontrados.
+              success:
+                type: boolean
+                description: Se o endpoint processou a requisição com sucesso.
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    errorCode:
+                      type: integer
+                      format: int32
+                      description: Código do erro.
+                    message:
+                      type: string
+                      description: Mensagem para identificar qual foi o erro retornado.
+                description: 'Se success: false , esse array contem a descrição dos erros retornados.'
+              traceKey:
+                type: string
+                description: Identificador da operação.
+          example:
+            products:
+            - id: 230fded2-9d2b-5e9f-9bc8-2100c5759e8a
+              quantity: 0
+              amount: 800
+              name: Suco de Uva 100%
+              membershipFee: 350
+              isActive: true
+              sku: SKU_Suco_D_Uva
+              merchantId: 22eb9083-ec20-4b0e-95d6-22cf9c35a898
+            total: 1
+            success: true
+            errors: []
+            traceKey: 9b72d660-6baf-4066-bfcb-1e55a8f3a547
+    '400':
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '401':
+      description: Não autenticado / token inválido
+  security:
+  - bearerAuth: []
+  servers: *id001

@@ -1,0 +1,52 @@
+post:
+  tags:
+  - Autenticação
+  summary: POST /merchant/auth
+  operationId: post_v2_merchant_auth
+  responses:
+    '200':
+      description: Sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              accessToken:
+                type: string
+                description: Token JWT que deve ser utilizado no Authorization das próximas requisições. Esse token expira em 30 minutos e pode ser atualizado com o refreshToken .
+              refreshToken:
+                type: string
+                description: Token utilizado para gerar outros JWT sem precisar enviar o merchantToken .
+              success:
+                type: boolean
+                description: Se o endpoint processou a requisição com sucesso.
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    errorCode:
+                      type: integer
+                      format: int32
+                    message:
+                      type: string
+                description: 'Se success: false , esse array contem a descrição dos erros retornados.'
+              traceKey:
+                type: string
+                description: Identificador da operação.
+          example:
+            accessToken: eyJhbHciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Im1rX2c1RHJLQ0RzRGt1RjFpTFBuRFdvbUEiLCJuYW1laWQiOiJta19nNURyS0NEc0RrdUYxaUxQbkRXb21BIiwibmJmIjoxNjI0MDIzNDc3LCJleHAiOjE2MjUyMzMwNzcsImlhdCI6MTYyNDAyMzQ3NywiaXNzIjoiQWRpdHVtIiwiYXVkIjoiQWRpdHVtIn0.g9jVQKHCsmCwj35ST-tIkhpilGivLKMXG_rVJSI9hXUK5kTklEjV-Pzta5j94UwpvAljcbVAG0uuyL06-Vg1qTMq9UoieynGwzyDXDbKMC8bVbcioJaN7XSLqCEUS6dTizhyXESCaZtpQop0_ibAaBa0yJAIfzCyZYQxeLBcvNENOiaKrMRSYLzAmsBcBsg7EgnD_VvAoqvdQG9J_ZkdDxMlc0e8UHrDlSVBUoEpF09UOH7TtHedHFpgeF5CANUU9-MD7epb5AGLR6cOR-HvHIyrGH-mdKcCXQiGj5tZ8JIcH6diLOp1AP5DZQecCvHxGChIIV2MF2f55OeuMwvZnQ
+            refreshToken: 6546f5a4a9bb43d39b7cde6b8fdce5d9
+            success: true
+            errors: []
+            traceKey: e899d6bc-954b-46b7-a52d-5d9ddcf9dbb0
+    '400':
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '401':
+      description: Não autenticado / token inválido
+  security:
+  - merchantToken: []

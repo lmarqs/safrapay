@@ -1,0 +1,56 @@
+# Jekyll configuration for the (UNOFFICIAL) SafraPay API documentation.
+#
+# Build locally:
+#   cd docs/safrapay-api
+#   bundle install        # needs the Gemfile alongside this file
+#   bundle exec jekyll serve
+#
+# The site is plain Jekyll (no external theme) so it also renders correctly
+# when the folder is browsed as Markdown on GitHub.
+
+title: "SafraPay API — Documentação (não oficial)"
+description: >-
+  Documentação NÃO OFICIAL da API SafraPay, feita por engenharia reversa do
+  portal de desenvolvedores. Não use como garantia contratual.
+lang: pt-BR
+
+# Leave empty for local `jekyll serve`; set to "/repo-name" if published on
+# GitHub Pages under a project subpath.
+baseurl: ""
+url: ""
+
+# --- Markdown / highlighting -------------------------------------------------
+markdown: kramdown
+kramdown:
+  input: GFM                 # GitHub-flavoured Markdown (tables, fenced code)
+  syntax_highlighter: rouge
+  hard_wrap: false
+
+# --- Plugins -----------------------------------------------------------------
+plugins:
+  - jekyll-relative-links    # turn relative *.md links into page URLs
+  - jekyll-seo-tag
+
+relative_links:
+  enabled: true
+  collections: true
+
+# --- Defaults ----------------------------------------------------------------
+# IMPORTANT: render_with_liquid:false makes Jekyll emit `{{ENDPOINT_GATEWAY}}`
+# style placeholders literally. Without it, Liquid would eat them (they look
+# like Liquid output tags). Layouts/includes still run Liquid regardless, so
+# the sidebar navigation keeps working.
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: "doc"
+      render_with_liquid: false
+
+# --- Housekeeping ------------------------------------------------------------
+exclude:
+  - README.md
+  - TEMPLATES.md
+  - Gemfile
+  - Gemfile.lock
+  - vendor

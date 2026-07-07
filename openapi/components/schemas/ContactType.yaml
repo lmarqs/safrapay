@@ -1,0 +1,18 @@
+description: |-
+  Enumerador `ContactType`. Aceita o valor inteiro ou a string equivalente.
+
+  * `1` — **Administration**: Administração
+  * `2` — **Financial**: Financeiro
+  * `3` — **Technical**: Técnico
+oneOf:
+- type: integer
+  format: int32
+  enum:
+  - 1
+  - 2
+  - 3
+- type: string
+  enum:
+  - Administration
+  - Financial
+  - Technical

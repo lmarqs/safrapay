@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+#MISE description="Install Ruby dependencies for the Jekyll docs site"
+#MISE dir="docs/safrapay"
+set -e
+gem install bundler --conservative
+bundle install

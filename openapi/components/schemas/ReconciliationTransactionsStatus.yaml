@@ -1,0 +1,27 @@
+description: |-
+  Enumerador `ReconciliationTransactionsStatus`. Aceita o valor inteiro ou a string equivalente.
+
+  * `1` — **PendingPayment**: Pendente de Pagamento.
+  * `2` — **Paid**: Pago
+  * `3` — **Anticipated**: Antecipado.
+  * `4` — **Canceled**: Cancelado.
+  * `5` — **Chargeback**: Chargeback.
+  * `6` — **PendingAnticipation**: Pendente de antecipação.
+oneOf:
+- type: integer
+  format: int32
+  enum:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  - 6
+- type: string
+  enum:
+  - PendingPayment
+  - Paid
+  - Anticipated
+  - Canceled
+  - Chargeback
+  - PendingAnticipation

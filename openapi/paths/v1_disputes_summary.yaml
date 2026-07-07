@@ -1,0 +1,205 @@
+get:
+  tags:
+  - Chargeback
+  summary: Consultar Disputa (Sumário)
+  operationId: get_v1_disputes_summary
+  description: |-
+    Descrição: Lista as disputas por status (Análise, Pendentes e Concluídas).
+
+    Endpoint:
+  parameters:
+  - name: Status
+    in: query
+    required: true
+    schema:
+      type: string
+      enum:
+      - Pending
+      - UnderAnalysis
+      - Completed
+    description: Status da disputa.
+  - name: CreatedDate.gte
+    in: query
+    required: true
+    schema:
+      type: string
+      format: date
+    description: Retorna registros com data de criação >= data informada.
+  - name: CreatedDate.lte
+    in: query
+    required: true
+    schema:
+      type: string
+      format: date
+    description: Retorna registros com data de criação <= data informada.
+  - name: Page
+    in: query
+    required: true
+    schema:
+      type: integer
+      format: int32
+    description: Número da página a ser retornada.
+  - name: Limit
+    in: query
+    required: true
+    schema:
+      type: integer
+      format: int32
+    description: Quantidade de itens retornados por página.
+  - name: Nsu
+    in: query
+    required: false
+    schema:
+      type: string
+    description: Número sequencial único da transação.
+  - name: Category
+    in: query
+    required: false
+    schema:
+      type: string
+      enum:
+      - Authorization
+      - ConsumerDisputes
+      - ProcessingError
+      - Fraud
+      - RetrievalRequest
+  responses:
+    '200':
+      description: Sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              pagination:
+                type: object
+                properties:
+                  first:
+                    type: integer
+                    format: int32
+                  last:
+                    type: integer
+                    format: int32
+                  previous:
+                    type: integer
+                    format: int32
+                  next:
+                    type: integer
+                    format: int32
+                  page:
+                    type: integer
+                    format: int32
+                  isFirst:
+                    type: boolean
+                  isLast:
+                    type: boolean
+                  totalElements:
+                    type: integer
+                    format: int32
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    disputeId:
+                      type: string
+                    merchantCode:
+                      type: string
+                    cycleId:
+                      type: integer
+                      format: int32
+                    cycle:
+                      type: string
+                    nsu:
+                      type: integer
+                      format: int64
+                    categoryId:
+                      type: integer
+                      format: int32
+                    category:
+                      type: string
+                    transactionPaymentMethod:
+                      type: string
+                    deadline:
+                      type: integer
+                      format: int32
+                      description: Prazo. Presente apenas quando status for Pending.
+                    brandDescription:
+                      type: string
+                    createdDate:
+                      type: string
+                      format: date
+                    value:
+                      type: number
+                      format: float
+                    analysisStage:
+                      type: string
+                      description: Estágio da análise. Presente apenas quando status for UnderAnalysis.
+                    conclusion:
+                      type: string
+                      description: Conclusão. Presente apenas quando status for Completed.
+                    status:
+                      type: string
+              success:
+                type: boolean
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    errorCode:
+                      type: integer
+                      format: int32
+                    message:
+                      type: string
+                    field:
+                      type: string
+              traceKey:
+                type: string
+          example:
+            pagination:
+              first: 1
+              last: 10
+              previous: 2
+              next: 4
+              page: 3
+              isFirst: false
+              isLast: false
+              totalElements: 750
+            data:
+            - disputeId: '000010527200157418652024061800'
+              merchantCode: '21'
+              cycleId: 1
+              cycle: 1ª Chargeback
+              nsu: 20012212154
+              categoryId: 1
+              category: Reversal Fee Colect
+              transactionPaymentMethod: CRÉDITO PARCELADO C/ JUROS
+              deadline: 12
+              brandDescription: Mastercard
+              createdDate: '2024-10-10'
+              value: 15
+              analysisStage: AwaitingSafrapay
+              conclusion: Gain
+              status: Pending
+            success: true
+            errors:
+            - errorCode: 0
+              message: string
+              field: string
+            traceKey: 9f624100-ca4c-4461-86ea-a11da428f81e
+    '400':
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '401':
+      description: Não autenticado / token inválido
+  security:
+  - bearerAuth: []
+  servers:
+  - url: https://payment.safrapay.com.br/chargeback
+    description: Produção
+  - url: https://payment-hml.safrapay.com.br/chargeback
+    description: Homologação (sandbox)

@@ -1,0 +1,23 @@
+# ==== Segredos reais — NUNCA commitar ====
+# Só o .env tem valores reais. Os demais (.env.example/.env.prd/.env.hml)
+# são templates/config sem segredo e SÃO versionados.
+.env
+
+# ==== Dados sensíveis / PII de clientes ====
+.data/
+
+# ==== Ambiente Python / ferramentas ====
+.venv/
+.playwright-mcp/
+__pycache__/
+*.pyc
+*.pyo
+
+# ==== Local / sessão ====
+.claude/
+
+# ==== Node (redocly/orval tooling) ====
+node_modules/
+
+# ==== Artefatos de build gerados — reproduzíveis via `npm run docs:build`/`generate:client`, não versionados ====
+generated/

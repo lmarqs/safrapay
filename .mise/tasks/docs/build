@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+#MISE description="Generate the SafraPay docs site into docs/safrapay/_site"
+#MISE dir="docs/safrapay"
+set -e
+bundle exec jekyll build

@@ -1,0 +1,124 @@
+post:
+  tags:
+  - Cartão Protegido
+  summary: POST /temporary/card
+  operationId: post_v2_temporary_card
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            brand:
+              $ref: ../components/schemas/CardBrand.yaml
+              description: A bandeira do cartão à qual o imposto se aplica. .
+            cardNumber:
+              type: string
+              description: O número impresso na frente do cartão.
+            cardholderName:
+              type: string
+              description: O nome do títular do cartão.
+            cardholderDocument:
+              type: string
+              description: O documento do títular do cartão.
+            expirationMonth:
+              type: integer
+              format: int32
+              description: O Mês de expiração do cartão com 2 dígitos.
+            expirationYear:
+              type: integer
+              format: int32
+              description: O Ano de expiração do cartão com 4 dígitos.
+            cvv:
+              type: string
+              description: Card Verification Value (CVV), recurso de segurança para transações de cartão de pagamento com "ausência de cartão" instituídas para reduzir a incidência de fraude.
+            billingAddress:
+              type: object
+              description: Informações do endereço conectado ao cartão de crédito ou débito. As empresas usam o endereço de cobrança para verificar o uso autorizado de tal cartão. É também para onde as empresas enviam contas em papel e extratos bancários.
+              properties:
+                street:
+                  type: string
+                  description: Rua.
+                number:
+                  type: string
+                  description: Número.
+                neighborhood:
+                  type: string
+                  description: Bairro.
+                city:
+                  type: string
+                  description: Cidade.
+                state:
+                  type: string
+                  description: Estado.
+                country:
+                  type: string
+                  description: País.
+                zipCode:
+                  type: string
+                  description: CEP.
+                complement:
+                  type: string
+                  description: Complemento.
+          required:
+          - brand
+          - cardNumber
+          - cardholderName
+          - cardholderDocument
+          - expirationMonth
+          - expirationYear
+          - cvv
+        example:
+          brand: 1
+          cardNumber: '4444585001234562'
+          cardholderName: Renan Soarez
+          cardholderDocument: '01234567891'
+          expirationMonth: 12
+          expirationYear: 2026
+          cvv: '111'
+  responses:
+    '200':
+      description: Sucesso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              cardToken:
+                type: string
+                description: Token do cartão.
+              success:
+                type: boolean
+                description: Se o endpoint processou a requisição com sucesso.
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    errorCode:
+                      type: integer
+                      format: int32
+                      description: Código do erro.
+                    message:
+                      type: string
+                      description: Mensagem para identificar qual foi o erro retornado.
+                description: 'Se success: false , esse array contem a descrição dos erros retornados.'
+              traceKey:
+                type: string
+                description: Identificador da operação.
+          example:
+            cardToken: card_0CLtvaYy2UgPN2U4Mq8UQqYZnxdxnhVc
+            success: true
+            errors: []
+            traceKey: ddf2f808-2ce1-4d8a-88e4-1982b5ae7d8a
+    '400':
+      description: Requisição inválida
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+    '401':
+      description: Não autenticado / token inválido
+  security:
+  - bearerAuth: []

@@ -1,0 +1,20 @@
+{%- comment -%}
+Sidebar navigation built from _data/navigation.yml.
+Marks the current page active by comparing normalized URLs.
+{%- endcomment -%}
+<nav class="site-nav">
+  {%- assign here = page.url | remove_first: site.baseurl -%}
+  {%- for group in site.data.navigation -%}
+    <p class="nav-section">{{ group.section }}</p>
+    <ul>
+      {%- for item in group.items -%}
+        {%- assign target = item.url | relative_url -%}
+        {%- if here == item.url -%}
+          <li class="active"><a href="{{ target }}" aria-current="page">{{ item.title }}</a></li>
+        {%- else -%}
+          <li><a href="{{ target }}">{{ item.title }}</a></li>
+        {%- endif -%}
+      {%- endfor -%}
+    </ul>
+  {%- endfor -%}
+</nav>

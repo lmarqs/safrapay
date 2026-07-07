@@ -1,4 +1,4 @@
-# safrapay-doc
+# safrapay
 
 ## Quick Reference
 

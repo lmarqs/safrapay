@@ -39,7 +39,7 @@ Total: **79 endpoints** documentados. Clique no caminho para abrir a documentaç
 | `GET` | [`/smartcheckout/{smartcheckoutId}/detail`](../api/link-de-pagamento.md#get-smartcheckout-smartcheckoutid-detail) | Link de Pagamentos |
 | `DELETE` | [`/smartcheckout/{smartcheckoutId}`](../api/link-de-pagamento.md#delete-smartcheckout-smartcheckoutid) | Link de Pagamentos |
 | `GET` | [`/smartcheckout`](../api/link-de-pagamento.md#get-smartcheckout) | Link de Pagamentos |
-| `POST` | [`/smartcheckout Chechout`](../api/checkout.md#post-smartcheckout-chechout) | Checkout |
+| `POST` | [`/smartcheckout`](../api/checkout.md#post-smartcheckout) | Checkout |
 | `GET` | [`/smartcheckout/{smartcheckoutId}/detail Checkout`](../api/checkout.md#get-smartcheckout-smartcheckoutid-detail-checkout) | Checkout |
 | `POST` | [`/charge/boleto`](../api/boletos.md#post-charge-boleto) | Boletos |
 | `GET` | [`/charge/{{chargeId}}/boleto/{{transactionId}}`](../api/boletos.md#get-charge-chargeid-boleto-transactionid) | Boletos |

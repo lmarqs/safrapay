@@ -29,9 +29,9 @@ Checkout redirect: o cliente final será redirecionado à uma página de checkou
 >
 > 📖 Consulte a [documentação do Device Fingerprint e SDK SafraPay Antifraud](../guias/antifraude.md#device-fingerprint) e [Serviço de Antifraude](../guias/antifraude.md) para mais detalhes.
 
-<a id="post-smartcheckout-chechout"></a>
+<a id="post-smartcheckout"></a>
 
-### `POST` /smartcheckout Chechout
+### `POST` /smartcheckout
 
 **Versão** `v2.0`
 
@@ -835,7 +835,7 @@ Após gerar o token, esse token pode ser enviado para seu servidor e ser usado p
 
 ## Checkout Redirect
 
-**1º** Crie o link de pagamento através do endpoint [POST /smartcheckout](checkout.md#post-smartcheckout-chechout).
+**1º** Crie o link de pagamento através do endpoint [POST /smartcheckout](checkout.md#post-smartcheckout).
 
 **2º** Após a criação do link de pagamento, o mesmo deve ser enviado para o cliente com um novo parametro na URL, que é o `redirect_url`.
 

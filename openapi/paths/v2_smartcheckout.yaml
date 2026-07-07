@@ -131,7 +131,7 @@ get:
 post:
   tags:
   - Checkout
-  summary: POST /smartcheckout Chechout
+  summary: POST /smartcheckout
   operationId: post_v2_smartcheckout
   requestBody:
     required: true

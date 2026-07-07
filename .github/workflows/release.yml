@@ -1,0 +1,49 @@
+name: Release artifacts
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "openapi/**"
+      - "orval.config.ts"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/release.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-snapshot
+  cancel-in-progress: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - run: npm ci
+
+      - run: npm run docs:build
+
+      - run: npm run generate:client
+
+      - name: Package Node client
+        run: cd generated && zip -r safrapay-node-client.zip node
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: snapshot
+          name: Snapshot
+          body: Built from the latest main (${{ github.sha }}). Always reflects the current spec — not a stable release.
+          prerelease: true
+          files: |
+            generated/openapi.bundled.yaml
+            generated/docs/index.html
+            generated/safrapay-node-client.zip
